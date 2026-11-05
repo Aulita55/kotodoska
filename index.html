@@ -665,6 +665,12 @@ html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%}
 }
 
 @media (max-width:1000px){.top-word{display:none}.status{max-width:190px}}
+
+#netbar{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:7;max-width:calc(100vw - 16px);padding:6px 14px;background:var(--ink);color:#fff;border-radius:12px;font-size:14px;font-weight:700;text-align:center;pointer-events:none}
+.emptynet{margin:6px 0 0;font-weight:800;color:var(--plate2)}
+@media (max-width:760px){#zoom .fit{display:grid}#netbar{top:auto;bottom:128px}}
+
+#stage.learner .media-body,#stage.learner .media-body *{pointer-events:auto!important}
 </style>
 </head>
 <body>
@@ -3385,6 +3391,8 @@ const stageEl=$('#stage'),world=$('#world'),overlay=$('#overlay');
 const FONTS=['Nunito','Comfortaa','Caveat','Marck Script','Lobster','PT Serif','PT Mono','Arial','Times New Roman'];
 const BGS=[['blank','Чистый лист'],['grid','Клетка'],['lines','Линейка'],['narrow','Узкая линейка, 1 класс'],['slant','Косая линейка, прописи'],['dots','Точки'],['paws','Лапки'],['chalk','Школьная доска'],['night','Ночная доска']];
 const canEdit=()=>B&&B.role!=='viewer';
+const canManage=()=>B&&(B.role==='owner'||B.role==='editor');
+const isPiece=r=>!!(r&&(r.pc||r.wk));
 const isOwner=()=>B&&B.role==='owner';
 const newer=(a,b)=>!b||a.l>b.l||(a.l===b.l&&a.c>b.c);
 
@@ -3420,6 +3428,8 @@ function cleanRec(r){
   const o={id:r.id,l:Math.floor(num(r.l,0,9e15)),c:r.c,t:r.t};
   if(r.del)o.del=true;
   if(r.lock)o.lock=true;
+  if(r.pc)o.pc=true;
+  if(typeof r.by==='string'&&r.by.length<=30)o.by=r.by;
   if(typeof r.grp==='string'&&/^[\w-]{1,40}$/.test(r.grp))o.grp=r.grp;
   if(r.t==='page'){o.title=String(r.title||'').slice(0,60);o.order=num(r.order);o.bg=BGS.some(b=>b[0]===r.bg)?r.bg:'grid';return o;}
   if(typeof r.page!=='string'||r.page.length>40)return null;
@@ -3451,7 +3461,7 @@ function setRecs(list,{undo=true,before=null}={}){
   for(const r of list){
     const prev=recs.get(r.id);
     group.push({b:before?before.get(r.id)||null:prev||null,a:r});
-    r.l=++clock;r.c=B.clientId;
+    r.l=++clock;r.c=B.clientId;if(!r.by)r.by=(prev&&prev.by)||B.clientId;
     recs.set(r.id,r);Store.mark(r.id);renderRec(r);
   }
   Net.queueRecs(list);
@@ -3483,7 +3493,7 @@ function ingest(list){ // данные от других участников
     clock=Math.max(clock,r.l);
     if(newer(r,recs.get(r.id))){recs.set(r.id,r);Store.mark(r.id);renderRec(r);applied.push(r);}
   }
-  if(applied.length)afterChange(applied);
+  if(applied.length){afterChange(applied);guestAutoFit(applied);}
   return applied;
 }
 function afterChange(list){
@@ -3549,7 +3559,7 @@ function renderRec(r){
   if(!el){el=makeEl(r);els.set(r.id,el);world.append(el);}
   else if(el.dataset.t!==r.t){dropEl(r.id);return renderRec(r);}
   el.style.left=r.x+'px';el.style.top=r.y+'px';el.style.zIndex=Math.round(r.z%2e9);
-  el.classList.toggle('frozen',!editable(r)&&!isOwner());
+  el.classList.toggle('frozen',!editable(r)&&!isPiece(r)&&!isOwner()&&r.t!=='audio'&&r.t!=='video');
   switch(r.t){
     case'stroke':{
       const sx=r.ow?r.w/r.ow:1,sy=r.oh?r.h/r.oh:1,d=strokeD(r.pts,sx,sy);
@@ -3661,6 +3671,7 @@ function remoteMediaCtl(m){
 
 // ---- Страницы и вид ----
 function gotoPage(id){
+  if(isOwner()&&id&&id!==curPage)setTimeout(()=>Net.relay({t:'follow',page:id}),0);
   if(editing)finishEdit();
   sel.clear();
   for(const k of[...els.keys()])dropEl(k);
@@ -3689,29 +3700,42 @@ function applyView(){
   drawSel();Net.drawCursors();Net.followTick();
 }
 const toWorld=(cx,cy)=>({x:(cx-view.x)/view.z,y:(cy-view.y)/view.z});
-function zoomAt(cx,cy,z){z=Math.max(.15,Math.min(6,z));const w=toWorld(cx,cy);view.z=z;view.x=cx-w.x*z;view.y=cy-w.y*z;applyView();}
+function zoomAt(cx,cy,z){viewTouched=true;z=Math.max(.15,Math.min(6,z));const w=toWorld(cx,cy);view.z=z;view.x=cx-w.x*z;view.y=cy-w.y*z;applyView();}
 function boxOf(r){
   const el=els.get(r.id);
   if(r.t==='text'&&el)return{x:r.x,y:r.y,w:r.w,h:el.offsetHeight};
   if(r.t==='cover'&&r.raised)return{x:r.x,y:r.y,w:r.w,h:46};
   return{x:r.x,y:r.y,w:r.w,h:r.h};
 }
+let viewTouched=false,fitT=null;
+function freeArea(){
+  // Часть экрана, не закрытая панелями
+  const W=innerWidth,H=innerHeight,r=q=>{const e=$(q);return e&&!e.hidden?e.getBoundingClientRect():null;},ctx=r('#ctx'),pg=r('#pages'),cat=r('#cat .cat-body'),phone=W<=760;
+  return{l:phone?8:Math.max(8,cat?cat.right+12:8),r:W-8,t:Math.max(phone?118:122,ctx?ctx.bottom+8:60),b:Math.max(200,Math.min(H-8,pg?pg.top-8:H-8))};
+}
 function fitView(){
-  const list=pageObjs();const W=innerWidth,H=innerHeight;
-  if(!list.length){view.x=W/2;view.y=H/2;view.z=1;applyView();return;}
+  const list=pageObjs(),A=freeArea(),cx=(A.l+A.r)/2,cy=(A.t+A.b)/2;
+  if(!list.length){view.x=cx;view.y=cy;view.z=1;applyView();return;}
   let a=1e9,b=1e9,c=-1e9,d=-1e9;
   for(const r of list){const q=boxOf(r);a=Math.min(a,q.x);b=Math.min(b,q.y);c=Math.max(c,q.x+q.w);d=Math.max(d,q.y+q.h);}
-  const z=Math.max(.15,Math.min(1.5,Math.min((W-200)/Math.max(c-a,1),(H-180)/Math.max(d-b,1))));
-  view.z=z;view.x=W/2-(a+c)/2*z;view.y=H/2-(b+d)/2*z;applyView();
+  const z=Math.max(.15,Math.min(1.5,Math.min((A.r-A.l-24)/Math.max(c-a,1),(A.b-A.t-24)/Math.max(d-b,1))));
+  view.z=z;view.x=cx-(a+c)/2*z;view.y=cy-(b+d)/2*z;applyView();
+}
+// Ученик всегда видит записи учителя, пока сам не начал двигать доску
+function guestAutoFit(list){
+  if(!B||isOwner()||viewTouched)return;
+  const A=freeArea(),out=(list||[]).some(r=>{if(r.t==='page'||r.page!==curPage||r.del)return false;const q=boxOf(r),x1=q.x*view.z+view.x,y1=q.y*view.z+view.y,x2=(q.x+q.w)*view.z+view.x,y2=(q.y+q.h)*view.z+view.y;return x1<A.l||x2>A.r||y1<A.t||y2>A.b;});
+  if(!out)return;clearTimeout(fitT);fitT=setTimeout(fitView,120);
 }
 function refreshEmpty(){
   const e=$('#empty');if(!B)return;
   const hasPage=!!curPage,show=!hasPage||pageObjs().length===0;
   e.hidden=!show;if(!show)return;
-  if(e.dataset.k===String(hasPage)+B.role)return;
-  e.dataset.k=String(hasPage)+B.role;e.textContent='';
-  e.append(h('b',{},hasPage?(canEdit()?'Лист чистый':'Учитель ещё не начал'):'Ждём доску от учителя'),
-    hasPage?(canEdit()?'Выберите в меню ручку или маркер, или перетащите сюда картинку, аудио, видео или PDF.':'Записи появятся здесь сами.'):'Она появится, как только учитель выйдет на связь.');
+  if(e.dataset.k===String(hasPage)+B.role+(isOwner()?'o':'g'))return;
+  e.dataset.k=String(hasPage)+B.role+(isOwner()?'o':'g');e.textContent='';
+  e.append(h('b',{},hasPage?(canManage()?'Лист чистый':'Учитель ещё не начал'):'Ждём доску от учителя'),
+    !isOwner()?h('p',{class:'emptynet'},''):null,
+    hasPage?(canManage()?'Выберите в меню ручку или маркер, или перетащите сюда картинку, аудио, видео или PDF.':'Записи появятся здесь сами.'):'Она появится, как только учитель выйдет на связь.');
 }
 
 // ---- Выделение ----
@@ -3740,10 +3764,12 @@ function deleteObjs(list){
 }
 function deleteSel(){deleteObjs(selRecs().filter(editable));}
 function duplicateSel(){
+  if(!canManage())return;
   const l=selRecs().map(r=>({...clone(r),id:rid(),x:r.x+24,y:r.y+24,z:topZ()}));if(!l.length)return;
   setRecs(l);sel=new Set(l.map(r=>r.id));drawSel();showCtx();
 }
 function zOrder(front){
+  if(!canManage())return;
   const list=selRecs();if(!list.length)return;
   const all=pageObjs().map(r=>r.z);let z=front?Math.max(...all,clock)+1:Math.min(...all)-list.length-1;
   setRecs(list.sort((a,b)=>a.z-b.z).map(r=>({...r,z:z++})));
@@ -3778,7 +3804,7 @@ async function storeMedia(boardId,mid,blob,type,name){
 
 // ---- Добавление файлов ----
 async function addFiles(files,at){
-  if(!canEdit()||!curPage)return;
+  if(!canManage()||!curPage)return;
   const c=at||toWorld(innerWidth/2,innerHeight/2);let off=0;const added=[];
   for(const f of files){
     if(f.type==='application/pdf'||/\.pdf$/i.test(f.name||'')){importPDF(f);continue;}
@@ -3888,6 +3914,7 @@ const MARK_COLORS=['#FFE14D','#FFB3C7','#A5EDC8','#A8DBFF','#FFC78A','#D9BEFF'];
 const CHALK_COLORS=['#F7F5EE','#FFE98F','#FFB3C7','#A8DBFF','#A5EDC8','#FFC78A'];
 const NOTE_COLORS=['none','#FFF3A3','#FFD3DE','#CFF3DF','#D5ECFF','#E8DBFF'];
 const TOOLS=[['select','Выбрать','V'],['hand','Двигать доску','H'],['pen','Ручка','P'],['marker','Маркер','M'],['tape','Корректор','C'],['eraser','Ластик','E'],['text','Текст','T'],['shape','Фигуры','R'],['sticker','Оценки и символы','K'],['media','Картинка, аудио, видео, PDF','I'],['laser','Указки','L'],['magic','Фишки для урока','F']];
+const STUDENT_TOOLS=new Set(['select','hand','pen','marker','eraser','text','laser']);
 const EDIT_TOOLS=new Set(['pen','marker','tape','eraser','text','shape','sticker','media','magic']);
 
 function buildCat(){
@@ -3906,13 +3933,15 @@ function buildCat(){
 }
 function setTool(t){
   if(!canEdit()&&EDIT_TOOLS.has(t))t='hand';
+  if(B&&B.role==='student'&&!STUDENT_TOOLS.has(t))t='pen';
   if(editing)finishEdit();
   if(t!=='select'&&t!=='sticker')sel.clear();
   if(t!=='sticker'&&markArm)armMark(null);
   eraseHl([]);
   S.tool=t;saveTool();
-  document.querySelectorAll('.tool').forEach(b=>{const id=b.dataset.tool;b.classList.toggle('on',id===t);b.disabled=!canEdit()&&EDIT_TOOLS.has(id);});
+  document.querySelectorAll('.tool').forEach(b=>{const id=b.dataset.tool;b.classList.toggle('on',id===t);b.disabled=!canEdit()&&EDIT_TOOLS.has(id);b.hidden=!!B&&B.role==='student'&&!STUDENT_TOOLS.has(id);});
   stageEl.className=stageEl.className.replace(/\bt-\w+|\bnopick\b/g,'').trim()+' t-'+t+(t==='select'||t==='text'||t==='sticker'?'':' nopick');
+  stageEl.classList.toggle('learner',!canManage());
   refreshSprite();drawSel();showCtx();
 }
 // След указки: звёздочки, отпечатки лапок, кусочки сыра, пузырьки
@@ -3989,7 +4018,7 @@ function showCtx(){
     const em=eraseMode(),ch=isChalk(),modes=[['obj','Элемент',ICON.target,'Нажмите на то, что нужно убрать'],['part',ch?'Тряпка':'Кусочек',ch?TOOL_ICON.rag:TOOL_ICON.eraser,'Сотрите только то место линии, где провели'],['area','Область',ICON.area,'Обведите рамкой всё, что нужно убрать']];
     for(const[k,n,ic,tip]of modes)add(h('button',{class:'erbtn'+(em===k?' on':''),title:tip,onclick:()=>{S.eraseMode=k;saveTool();eraseHl([]);refreshSprite();showCtx();},html:ic},h('span',{},n)));
     if(em==='part'){add(sep());for(const[r,sz]of[[14,8],[26,14],[44,22]])add(h('button',{class:'cbtn'+(S.eraseR===r?' on':''),'aria-label':'Размер '+r,onclick:()=>{S.eraseR=r;saveTool();refreshSprite();showCtx();}},h('span',{class:'width-dot',style:`width:${sz}px;height:${sz}px`})));}
-    add(sep(),h('span',{class:'clabel erhint'},em==='obj'?'Наведите и нажмите на элемент, он подсветится красным':em==='area'?'Обведите рамкой всё, что нужно убрать':'Проведите там, где нужно стереть'),sep(),h('button',{class:'btn small danger',onclick:clearPage},'Очистить страницу'));
+    add(sep(),h('span',{class:'clabel erhint'},em==='obj'?'Наведите и нажмите на элемент, он подсветится красным':em==='area'?'Обведите рамкой всё, что нужно убрать':'Проведите там, где нужно стереть'),canManage()?sep():null,canManage()?h('button',{class:'btn small danger',onclick:clearPage},'Очистить страницу'):null);
   }else if(t==='laser'){
     for(const k in PTRS)add(h('button',{class:'ptrbtn'+(S.ptr===k?' on':''),title:PTRS[k].name,'aria-label':PTRS[k].name,html:ptrHtml(PTRS[k]),onclick:()=>{S.ptr=k;saveTool();refreshSprite();showCtx();}}));
     add(sep(),h('span',{class:'clabel'},`${(PTRS[S.ptr]||PTRS.oskar).name}. Указку видят все, а след исчезает сам`));
@@ -4016,6 +4045,7 @@ function showCtx(){
   refreshSprite();
 }
 function selActions(add){
+  if(!canManage()){if(selRecs().some(editable))add(cbtn(ICON.trash,'Удалить',deleteSel));return;}
   if(isOwner()){const l=selRecs(),on=l.length&&l.every(r=>r.lock);add(cbtn(on?ICON.lock:ICON.unlock,on?'Открепить':'Закрепить для учеников',toggleLock,on));}
   add(cbtn(ICON.copy,'Дублировать (Ctrl+D)',duplicateSel),cbtn(ICON.front,'На передний план',()=>zOrder(true)),cbtn(ICON.back,'На задний план',()=>zOrder(false)),cbtn(ICON.trash,'Удалить (Delete)',deleteSel));
 }
@@ -4118,7 +4148,7 @@ function startEdit(id,caretAtEnd=true){
   editing=id;editBefore=r;sel=new Set([id]);savedRange=null;
   el.classList.add('editing');const tx=el.firstChild;tx.contentEditable='true';tx.focus();
   // На телефоне клавиатура закрывает низ экрана: поднимаем текст выше
-  if(matchMedia('(pointer:coarse)').matches&&innerWidth<1000){const q=el.getBoundingClientRect(),want=Math.max(90,innerHeight*.14);if(q.top>innerHeight*.32){view.y-=q.top-want;applyView();}}
+  if(matchMedia('(pointer:coarse)').matches&&innerWidth<1000){const c0=$('#ctx').getBoundingClientRect(),q=el.getBoundingClientRect(),want=Math.max(90,(c0.height?c0.bottom:60)+12);viewTouched=true;if(view.z<.9){const wx=r.x,wy=r.y;view.z=1;view.x=14-wx;view.y=want-wy;applyView();}else if(q.top>innerHeight*.32||q.top<want){view.y+=want-q.top;applyView();}}
   if(caretAtEnd){const q=document.createRange();q.selectNodeContents(tx);q.collapse(false);const s=getSelection();s.removeAllRanges();s.addRange(q);}
   tx.oninput=()=>{clearTimeout(editTimer);editTimer=setTimeout(syncEdit,250);drawSel();};
   drawSel();showCtx();
@@ -4144,6 +4174,7 @@ function addText(p){
   setRecs([r],{undo:false});startEdit(r.id);
 }
 function addSticker(k){
+  if(!canManage())return;
   if(!curPage)return;const cb=$('#ctx').getBoundingClientRect(),c=toWorld(innerWidth/2,Math.max(innerHeight/2,(cb.bottom+innerHeight)/2)),n=(Math.random()-.5)*60;
   const tall=k[0]==='g',sym=k[0]==='y'||k[0]==='e',hero=k.startsWith('t_')&&ASSETS.sizes[k.slice(2)],hh=hero?230:tall?172:sym?90:140,w=hero?230*hero[0]/hero[1]:tall?160:hh;
   const r={id:rid(),t:'sticker',s:k,page:curPage,x:c.x-w/2+n,y:c.y-hh/2+n,w,h:hh,z:topZ()};
@@ -4151,6 +4182,7 @@ function addSticker(k){
   if(/^g[re](0|1|2|3|4|9|10)$/.test(k))fxSend({k:'party'});
 }
 function clearPage(){
+  if(!canManage())return;
   const l=isOwner()?pageObjs():pageObjs().filter(editable);if(!l.length)return;
   confirmBox('Очистить страницу?',`Будет удалено объектов: ${l.length}. Они исчезнут у всех участников, но их можно вернуть кнопкой «Отменить».`,'Очистить',()=>{sel.clear();setRecs(l.map(r=>({...r,del:true})));});
 }
@@ -4210,11 +4242,12 @@ stageEl.addEventListener('pointerdown',e=>{
   if(e.pointerType==='pen')penSeen=true;
   if(e.pointerType==='touch'){
     touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
-    if(touches.size===2){cancelGesture();const q=pinchState();G={type:'pinch',...q,z:view.z,vx:view.x,vy:view.y};stageEl.setPointerCapture(e.pointerId);return;}
+    if(touches.size===2){cancelGesture();const q=pinchState();viewTouched=true;G={type:'pinch',...q,z:view.z,vx:view.x,vy:view.y};stageEl.setPointerCapture(e.pointerId);return;}
     if(penSeen&&['pen','marker','eraser'].includes(S.tool))return; // ладонь на планшете
   }
   const t=e.target,tool=S.tool;
   if(t.closest&&t.closest('.cover-btn,.wbtn'))return;
+  if(!canManage()&&t.closest&&t.closest('.media-body'))return; // ученик сам включает запись
   if(tool==='sticker'&&markArm&&e.button===0&&curPage&&canEdit()){if(editing)finishEdit();stageEl.setPointerCapture(e.pointerId);G=markStart(toWorld(e.clientX,e.clientY));return;}
   if(editing){const ed=els.get(editing);if(ed&&ed.contains(t))return;finishEdit();if(tool==='text'){return;}}
   if(e.button===2)return;
@@ -4229,11 +4262,11 @@ stageEl.addEventListener('pointerdown',e=>{
   }
   if(tool==='select'||tool==='sticker'){
     const obj=t.closest&&t.closest('[data-id]'),id=obj&&obj.dataset.id;
-    if(id&&(isOwner()||editable(recs.get(id)||{}))){
+    if(id&&(isOwner()||editable(recs.get(id)||{})||isPiece(recs.get(id)))){
       const wasSel=sel.has(id);
       if(e.shiftKey){sel.has(id)?sel.delete(id):sel.add(id);drawSel();showCtx();}
       else if(!sel.has(id)){const q=recs.get(id);sel=new Set(q&&q.grp?pageObjs().filter(x=>x.grp===q.grp).map(x=>x.id):[id]);drawSel();showCtx();}
-      const before=new Map();for(const q of selRecs())if(editable(q)){before.set(q.id,q);if(q.t==='walk')for(const c of pageObjs())if(c.wk===q.id)before.set(c.id,c);}
+      const before=new Map();for(const q of selRecs())if(editable(q)||isPiece(q)){before.set(q.id,q);if(q.t==='walk')for(const c of pageObjs())if(c.wk===q.id)before.set(c.id,c);}
       G={type:'move',start:pt,before,moved:false,last:0,wasSel};
     }else{
       if(!e.shiftKey){sel.clear();drawSel();showCtx();}
@@ -4264,7 +4297,7 @@ stageEl.addEventListener('pointerdown',e=>{
     G={type:'texttap',pt,id:obj?obj.dataset.id:null};return;
   }
 });
-function startPan(e){stageEl.setPointerCapture(e.pointerId);stageEl.classList.add('panning');G={type:'pan',x:e.clientX,y:e.clientY,vx:view.x,vy:view.y};}
+function startPan(e){viewTouched=true;stageEl.setPointerCapture(e.pointerId);stageEl.classList.add('panning');G={type:'pan',x:e.clientX,y:e.clientY,vx:view.x,vy:view.y};}
 function drawLive(g){
   const e=world.querySelector(`[data-live="${g.id}"]`);if(e)e.firstChild.setAttribute('d',strokeD(g.pts));
 }
@@ -4381,7 +4414,7 @@ function endGesture(e){
   if(e.pointerType==='touch'){touches.delete(e.pointerId);if(G&&G.type==='pinch'){if(touches.size<2)G=null;return;}}
   if(!G)return;const g=G;G=null;stageEl.classList.remove('panning');
   switch(g.type){
-    case'texttap':if(g.id)startEdit(g.id);else addText(g.pt);break;
+    case'texttap':if(g.id&&editable(recs.get(g.id)||{}))startEdit(g.id);else addText(g.pt);break;
     case'draw':{
       sendLive(g,true);
       const e2=world.querySelector(`[data-live="${g.id}"]`);if(e2)e2.remove();
@@ -4429,7 +4462,7 @@ stageEl.addEventListener('dblclick',e=>{
 });
 stageEl.addEventListener('wheel',e=>{
   if(e.target.closest&&e.target.closest('.tx[contenteditable=true]'))return;
-  e.preventDefault();
+  e.preventDefault();viewTouched=true;
   if(e.ctrlKey||e.metaKey)zoomAt(e.clientX,e.clientY,view.z*Math.exp(-e.deltaY*.0035));
   else{view.x-=e.shiftKey?e.deltaY:e.deltaX;view.y-=e.shiftKey?0:e.deltaY;applyView();}
 },{passive:false});
@@ -4510,7 +4543,7 @@ addEventListener('keydown',e=>{
   if(e.key.startsWith('Arrow')&&sel.size){e.preventDefault();const s=e.shiftKey?10:1,dx=e.key==='ArrowLeft'?-s:e.key==='ArrowRight'?s:0,dy=e.key==='ArrowUp'?-s:e.key==='ArrowDown'?s:0;patchSel(r=>(r.x+=dx,r.y+=dy,r));return;}
   const map={KeyC:'tape',KeyF:'magic',KeyV:'select',KeyH:'hand',KeyP:'pen',KeyM:'marker',KeyE:'eraser',KeyT:'text',KeyR:'shape',KeyK:'sticker',KeyL:'laser'};
   if(map[k])setTool(map[k]);
-  if(k==='KeyI')$('#file-media').click();
+  if(k==='KeyI'&&canManage())$('#file-media').click();
 });
 addEventListener('keyup',e=>{if(e.key===' ')spaceDown=false;});
 
@@ -4534,7 +4567,7 @@ document.addEventListener('paste',e=>{
   const txt=e.clipboardData.getData('text/plain');if(!txt)return;e.preventDefault();
   if(txt.startsWith(CLIP)){
     try{const d=JSON.parse(txt.slice(CLIP.length));
-      const list=d.list.map(cleanRec).filter(r=>r&&(!isMedia(r)||d.b===B.id)).map(r=>({...r,id:rid(),page:curPage,x:r.x+24,y:r.y+24,z:topZ()}));
+      const list=d.list.map(cleanRec).filter(r=>r&&(!isMedia(r)||d.b===B.id)&&(canManage()||r.t==='stroke'||r.t==='text')).map(r=>({...r,id:rid(),page:curPage,x:r.x+24,y:r.y+24,z:topZ()}));
       if(list.length){setRecs(list);setTool('select');sel=new Set(list.map(r=>r.id));drawSel();showCtx();}
     }catch(err){}
     return;
@@ -4560,6 +4593,20 @@ function peerOptions(extra){
   if(c.host){o.host=c.host;o.port=+c.port||(c.secure?443:80);o.path=c.path||'/';o.secure=!!c.secure;if(c.key)o.key=c.key;}
   if(c.ice){try{o.config={iceServers:JSON.parse(c.ice)};}catch(e){}}
   return o;
+}
+let pendingPage=null;
+// Что разрешено ученику: только своё, а чужие фишки можно лишь передвигать
+function studentFilter(list,k,c){
+  const ok=[],back=[];
+  for(const raw of list||[]){
+    if(!raw||typeof raw.id!=='string')continue;const cur=recs.get(raw.id);let out=null;
+    if(!cur){if((raw.t==='stroke'||raw.t==='text')&&!raw.lock&&!raw.grp&&!raw.pc&&!raw.wk&&!raw.del&&raw.kind!=='tape'&&recs.get(raw.page))out={...raw,by:k.cid};}
+    else if(cur.by&&cur.by===k.cid&&(cur.t==='stroke'||cur.t==='text')&&!raw.lock&&raw.kind!=='tape')out={...raw,t:cur.t,by:k.cid};
+    else if((cur.pc||cur.wk)&&!raw.del&&!cur.del)out={...cur,x:raw.x,y:raw.y,z:raw.z,l:raw.l,c:raw.c,...(Number.isFinite(+raw.cell)?{cell:raw.cell}:{})};
+    if(out)ok.push(out);else if(cur)back.push(cur);
+  }
+  if(back.length)try{c.send({t:'recs',list:back});}catch(e){}
+  return ok;
 }
 const hostPeerId=id=>'kotodoska-v1-'+id;
 const Net={
@@ -4638,13 +4685,14 @@ const Net={
       case'digest':{
         const d=m.d||{},send=[],want=[];
         for(const r of recs.values()){const v=d[r.id];if(!v||newer(r,{l:v[0],c:v[1]}))send.push(r);}
-        if(k.role==='editor')for(const id in d){const v=d[id],r=recs.get(id);if(!r||newer({l:v[0],c:v[1]},r))want.push(id);}
+        if(k.role!=='viewer')for(const id in d){const v=d[id],r=recs.get(id);if(!r||newer({l:v[0],c:v[1]},r))want.push(id);}
         this.sendRecs(c,send);
+        if(curPage)c.send({t:'follow',page:curPage});
         if(want.length)c.send({t:'want',ids:want});
         this.pullMissing();break;}
       case'recs':{
-        if(k.role!=='editor')return;
-        const applied=ingest((m.list||[]).filter(raw=>{const cur=raw&&recs.get(raw.id);return raw&&!(raw.lock||raw.t==='cover'||raw.t==='walk'||(cur&&(cur.lock||cur.t==='cover'||cur.t==='walk')));}));
+        if(k.role==='viewer')return;
+        const applied=ingest(k.role==='student'?studentFilter(m.list,k,c):(m.list||[]).filter(raw=>{const cur=raw&&recs.get(raw.id);return raw&&!(raw.lock||raw.t==='cover'||raw.t==='walk'||(cur&&(cur.lock||cur.t==='cover'||cur.t==='walk')));}));
         if(applied.length)this.relay({t:'recs',list:applied},c);
         this.pullMissing(c);break;}
       case'fx':
@@ -4652,7 +4700,7 @@ const Net={
         if(!['hand','gop','bs','bs2op','wdice'].includes(m.k)&&k.role!=='editor')return;
         m.f=k.id;m.fn=k.name;m.fr=k.role;this.onFx(m);if(m.k!=='gop'&&m.k!=='bs2op')this.relay(m,c);break;
       case'live':case'mctl':case'cur':
-        if(m.t!=='cur'&&k.role!=='editor'&&!(m.t==='live'&&m.kind==='laser'))return;
+        if(m.t!=='cur'&&k.role!=='editor'&&!(m.t==='live'&&(m.kind==='laser'||k.role==='student')))return;
         m.f=k.id;m.fn=k.name;m.fc=k.cat;this.onShared(m);this.relay(m,c);break;
       default:await this.onMedia(c,m);
     }
@@ -4717,18 +4765,20 @@ const Net={
         this.set('ok','На связи с учителем');
         const d={};for(const r of recs.values())d[r.id]=[r.l,r.c];
         c.send({t:'digest',d});this.pullMissing();break;}
-      case'recs':ingest(m.list);this.pullMissing();break;
+      case'recs':ingest(m.list);if(pendingPage&&recs.get(pendingPage)){const pp=pendingPage;pendingPage=null;gotoPage(pp);viewTouched=false;fitView();}this.pullMissing();break;
       case'want':{const l=(m.ids||[]).map(id=>recs.get(id)).filter(Boolean);this.sendRecs(c,l);break;}
       case'peers':
         this.peers=new Map((m.list||[]).filter(p=>p.id!==undefined&&p.id!==k.you).map(p=>[p.id,p]));
         refreshFaces();this.set('ok',this.peers.size>1?`На связи: ${this.peers.size}`:'На связи с учителем');break;
-      case'role':this.applyRole(m.role);Store.meta();toast(m.role==='viewer'?'Теперь доска открыта только для просмотра':'Теперь можно писать на доске');break;
+      case'role':this.applyRole(m.role);Store.meta();toast(m.role==='viewer'?'Теперь доска открыта только для просмотра':m.role==='student'?'Можно писать и выполнять задания':'Теперь доступны все инструменты');break;
       case'title':B.title=String(m.title||'').slice(0,120);Store.meta();refreshTop();break;
-      case'goto':if(recs.get(m.page))gotoPage(m.page);if(m.v){view.x=innerWidth/2-m.v.x*m.v.z;view.y=innerHeight/2-m.v.y*m.v.z;view.z=m.v.z;applyView();}toast('Учитель показывает эту страницу');break;
+      case'goto':if(recs.get(m.page)){gotoPage(m.page);viewTouched=false;}if(m.v){view.x=innerWidth/2-m.v.x*m.v.z;view.y=innerHeight/2-m.v.y*m.v.z;view.z=m.v.z;applyView();}toast('Учитель показывает эту страницу');break;
       case'live':case'mctl':case'cur':this.onShared(m);break;
       case'fx':this.onFx(m);break;
       case'follow':
-        if(typeof m.page==='string'&&recs.get(m.page)&&m.page!==curPage)gotoPage(m.page);
+        if(typeof m.page==='string'&&!recs.get(m.page)){pendingPage=m.page;break;}
+        if(typeof m.page==='string'&&m.page!==curPage){gotoPage(m.page);viewTouched=false;fitView();}
+        else if(!m.v&&!viewTouched)fitView();
         if(m.v){view.z=Math.max(.15,Math.min(6,num(m.v.z,1,6)));view.x=innerWidth/2-num(m.v.x)*view.z;view.y=innerHeight/2-num(m.v.y)*view.z;applyView();}
         break;
       default:await this.onMedia(c,m);
@@ -4741,9 +4791,9 @@ const Net={
     const v=toWorld(innerWidth/2,innerHeight/2);this.relay({t:'follow',page:curPage,v:{x:v.x,y:v.y,z:view.z}});
   },
   applyRole(role){
-    if(role!=='editor'&&role!=='viewer')return;
+    if(!['editor','viewer','student'].includes(role))return;
     const was=B.role;B.role=role;
-    if(was!==role){if(editing&&role==='viewer')finishEdit();setTool(S.tool);refreshEmpty();showCtx();refreshTop();}
+    if(was!==role){if(editing&&role==='viewer')finishEdit();sel.clear();setTool(S.tool);renderPages();refreshEmpty();drawSel();showCtx();refreshTop();}
   },
   deny(why){
     if(why==='bad'){
@@ -4886,7 +4936,7 @@ setInterval(()=>{
 addEventListener('pagehide',()=>{if(B)for(const c of Net.connected()){try{c.send({t:'bye'});}catch(e){}}});
 
 // ---- Весёлые возможности для урока ----
-const editable=r=>isOwner()?true:!(r.lock||r.t==='cover'||r.t==='walk');
+const editable=r=>isOwner()?true:B.role==='student'?!!(r&&r.by&&r.by===B.clientId&&(r.t==='stroke'||r.t==='text')):!(r.lock||r.t==='cover'||r.t==='walk');
 // Звук рисуется на месте, файлов не нужно
 let audioCtx=null;
 function sfx(notes,type='triangle'){
@@ -4946,7 +4996,7 @@ function drawTimer(){
   let b=$('#timerbox');if(!b){b=h('div',{id:'timerbox'});$('#app').append(b);}
   b.textContent='';b.classList.toggle('done',Timer.done);
   b.append(h('div',{class:'tcat',html:catFace(Timer.done?'tim':Timer.run?'felix':'oskar')}),h('b',{class:'tv'},timerText()));
-  if(canEdit()){
+  if(canManage()){
     if(!Timer.done)b.append(h('button',{class:'cbtn','aria-label':Timer.run?'Пауза':'Продолжить',onclick:()=>fxSend({k:'timer',a:Timer.run?'pause':'start',sec:Timer.run?(Timer.end-Date.now())/1000:Timer.left})},Timer.run?'❚❚':'▶'));
     b.append(h('button',{class:'cbtn','aria-label':'Убрать таймер',html:ICON.x,onclick:()=>fxSend({k:'timer',a:'stop'})}));
   }
@@ -5013,11 +5063,11 @@ function toggleLock(){
 }
 // Крестики-нолики: котики против мышек
 function addGame(){
-  if(!curPage||!canEdit())return;const c=toWorld(innerWidth/2,innerHeight/2),S0=360,x0=c.x-S0/2,y0=c.y-S0/2,q=S0/3,base={t:'shape',s:'line',page:curPage,col:'#231F2B',fill:'none',sw:7,fx:false,fy:false},gp=rid();
+  if(!curPage||!canManage())return;const c=toWorld(innerWidth/2,innerHeight/2),S0=360,x0=c.x-S0/2,y0=c.y-S0/2,q=S0/3,base={t:'shape',s:'line',page:curPage,col:'#231F2B',fill:'none',sw:7,fx:false,fy:false},gp=rid();
   const list=[[x0+q,y0,1,S0],[x0+2*q,y0,1,S0],[x0,y0+q,S0,1],[x0,y0+2*q,S0,1]].map(([x,y,w,hh])=>{const r={...base,id:rid(),x,y,w,h:hh,z:topZ()};if(isOwner())r.lock=true;r.grp=gp;return r;});
   for(let i=0;i<5;i++){
-    list.push({id:rid(),t:'sticker',s:'t_maks',page:curPage,x:x0-112,y:y0-20+i*78,w:62,h:95,z:topZ()});
-    list.push({id:rid(),t:'sticker',s:'t_mia',page:curPage,x:x0+S0+40,y:y0-20+i*78,w:54,h:95,z:topZ()});
+    list.push({pc:true,id:rid(),t:'sticker',s:'t_maks',page:curPage,x:x0-112,y:y0-20+i*78,w:62,h:95,z:topZ()});
+    list.push({pc:true,id:rid(),t:'sticker',s:'t_mia',page:curPage,x:x0+S0+40,y:y0-20+i*78,w:54,h:95,z:topZ()});
   }
   setRecs(list);setTool('select');sel.clear();drawSel();showCtx();toast('Перетаскивайте Макса и Мию на поле.');
 }
@@ -5044,7 +5094,7 @@ function loadPdf(){
   return pdfReady;
 }
 async function importPDF(f){
-  if(!canEdit())return;
+  if(!canManage())return;
   toast('Открываю PDF…');
   try{
     const lib=await loadPdf(),doc=await lib.getDocument({data:await f.arrayBuffer()}).promise,n=Math.min(doc.numPages,60);
@@ -5136,7 +5186,7 @@ const HANG_LANGS={
 };
 // Состояние игры ведёт учитель, ученик присылает ему только действия
 let gState=null;
-const canRun=role=>role!=='viewer';
+const canRun=role=>role==='owner'||role==='editor';
 function shuffle(a){a=[...a];const r=crypto.getRandomValues(new Uint32Array(a.length));for(let i=a.length-1;i>0;i--){const j=r[i]%(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
 function gOp(m,from,name,role){
   const local=from===undefined;
@@ -5214,7 +5264,7 @@ function gStartDialog(type){
     m.append(err,h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:()=>{const s=read();if(!cleanGame(s)){err.textContent=type==='hang'?'Слово должно быть написано буквами выбранного языка.':type==='memory'?'Нужно хотя бы две пары, например: cat — кот.':'Нужно хотя бы два варианта.';return;}close();start(s);}},'Начать')));
   });
 }
-const gClose=()=>{if(canEdit())gOp({op:'close'});else{const e=$('#gamebox');if(e)e.remove();}};
+const gClose=()=>{if(canManage())gOp({op:'close'});else{const e=$('#gamebox');if(e)e.remove();}};
 let lastSpin=0,lastHit=0,lastEnd=null,lastWin=null;
 function gApply(s){
   const prev=gState;gState=s&&typeof s==='object'?s:null;
@@ -5231,7 +5281,7 @@ function drawWheel(s,prev){
   if(!same){
     const b=ensureBox('Колесо удачи','wheel',prev),n=s.items.length,R=130,COL=['#FE0000','#FFC928','#2C9C72','#0F5CA8','#7A4FD6','#FF8FB0','#0E7C86','#E07F10'];let seg='';
     s.items.forEach((t,i)=>{const a=i/n*2*Math.PI-Math.PI/2,c=(i+1)/n*2*Math.PI-Math.PI/2,m=(a+c)/2;const lt=esc(t.length>16?t.slice(0,15)+'…':t);seg+=`<path d="M0 0L${R*Math.cos(a)} ${R*Math.sin(a)}A${R} ${R} 0 ${n<2?1:0} 1 ${R*Math.cos(c)} ${R*Math.sin(c)}Z" fill="${COL[i%COL.length]}" stroke="#fff" stroke-width="2"/><text transform="rotate(${m*180/Math.PI}) translate(${R-10} 0)" text-anchor="end" dominant-baseline="middle" fill="#fff" font-family="Nunito" font-weight="800" font-size="${n>12?10:13}">${lt}</text>`;});
-    b.append(h('div',{class:'wheelwrap',html:`<svg class="wheelsvg" viewBox="-140 -140 280 280"><g class="wheelrot">${seg}</g><circle r="22" fill="#fff" stroke="#1E2430" stroke-width="2"/></svg><div class="wheelhub">${catFace('tim')}</div><div class="wheelptr"></div>`}),h('p',{class:'gres',id:'wres'},'Крутите колесо'),canEdit()?h('button',{class:'btn main',style:'width:100%',onclick:()=>gOp({op:'spin'})},'Крутить'):null);
+    b.append(h('div',{class:'wheelwrap',html:`<svg class="wheelsvg" viewBox="-140 -140 280 280"><g class="wheelrot">${seg}</g><circle r="22" fill="#fff" stroke="#1E2430" stroke-width="2"/></svg><div class="wheelhub">${catFace('tim')}</div><div class="wheelptr"></div>`}),h('p',{class:'gres',id:'wres'},'Крутите колесо'),canManage()?h('button',{class:'btn main',style:'width:100%',onclick:()=>gOp({op:'spin'})},'Крутить'):null);
   }
   if(s.n){
     const g=$('#gamebox .wheelrot'),n=s.items.length,base=(s.n*5)*360,ang=base-(s.idx+.5)/n*360;g.style.transition='transform 3.2s cubic-bezier(.12,.72,.14,1)';g.style.transform=`rotate(${ang}deg)`;
@@ -5248,12 +5298,12 @@ function drawPoll(s,prev){
     if(s.show)row.style.background=`linear-gradient(90deg,var(--sky) ${pc}%,#fff ${pc}%)`;
     b.append(row);
   });
-  b.append(h('p',{class:'gres'},`Ответили: ${n}`),canEdit()?h('button',{class:'btn',style:'width:100%',onclick:()=>gOp({op:'reveal'})},s.show?'Скрыть результаты':'Показать результаты'):null);
+  b.append(h('p',{class:'gres'},`Ответили: ${n}`),canManage()?h('button',{class:'btn',style:'width:100%',onclick:()=>gOp({op:'reveal'})},s.show?'Скрыть результаты':'Показать результаты'):null);
 }
 function drawBuzz(s,prev){
   const b=ensureBox('Кто первый','buzz',prev);
   if(s.win&&(!prev||prev.win!==s.win)){sfx(SND.paw);}
-  b.append(h('button',{class:'buzzbtn'+(s.win?' done':''),disabled:!!s.win,onclick:()=>gOp({op:'buzz'})},s.win?s.win:'Жми!'),h('p',{class:'gres'},s.win?'нажал(а) первым':'Кто нажмёт быстрее всех?'),canEdit()?h('button',{class:'btn',style:'width:100%',disabled:!s.win,onclick:()=>gOp({op:'rearm'})},'Новый раунд'):null);
+  b.append(h('button',{class:'buzzbtn'+(s.win?' done':''),disabled:!!s.win,onclick:()=>gOp({op:'buzz'})},s.win?s.win:'Жми!'),h('p',{class:'gres'},s.win?'нажал(а) первым':'Кто нажмёт быстрее всех?'),canManage()?h('button',{class:'btn',style:'width:100%',disabled:!s.win,onclick:()=>gOp({op:'rearm'})},'Новый раунд'):null);
 }
 function drawScore(s,prev){
   const b=ensureBox('Рыбки-баллы','score',prev),ow=isOwner(),rows=Object.entries(s.players).sort((a,c)=>c[1]-a[1]);
@@ -5385,10 +5435,10 @@ function bsMsg(m){
 function center(){return toWorld(innerWidth/2+40,innerHeight/2+40);}
 function line(x,y,w,hh,o={}){const r={t:'shape',s:o.s||'line',page:curPage,id:rid(),x,y,w:Math.max(w,1),h:Math.max(hh,1),z:topZ(),col:o.col||'#1E2430',fill:o.fill||'none',sw:o.sw||3,fx:false,fy:false};if(isOwner()&&o.lock!==false)r.lock=true;return r;}
 function label(x,y,t,fs=20,o={}){const d=h('div',{});d.textContent=t;const r={id:rid(),t:'text',page:curPage,x,y,w:o.w||Math.max(30,String(t).length*fs*.7),h:fs*1.3,z:topZ(),html:d.innerHTML,ff:'Nunito',fs,col:o.col||'#1E2430',al:o.al||'center',bg:o.bg||'none'};if(isOwner()&&o.lock)r.lock=true;return r;}
-const placed=(list,msg,grouped=true)=>{if(!curPage||!canEdit())return;if(grouped){const g=rid();list.forEach(r=>{r.grp=g;});}setRecs(list);setTool('select');sel.clear();drawSel();showCtx();if(msg)toast(msg);};
+const placed=(list,msg,grouped=true)=>{if(!curPage||!canManage())return;if(grouped){const g=rid();list.forEach(r=>{r.grp=g;});}setRecs(list);setTool('select');sel.clear();drawSel();showCtx();if(msg)toast(msg);};
 function addLetters(chars){
   if(!curPage)return;const c=center(),COL=['#FFD3DE','#CFE9FF','#CFF3DF','#FFF3A3','#E8DBFF'],n=[...chars],cols=Math.min(11,n.length),S0=62,x0=c.x-cols*S0/2,y0=c.y-120;
-  placed(n.map((ch,i)=>label(x0+(i%cols)*S0,y0+Math.floor(i/cols)*S0,ch,34,{w:52,bg:COL[i%COL.length],lock:false})),'Буквы можно перетаскивать.',false);
+  placed(n.map((ch,i)=>Object.assign(label(x0+(i%cols)*S0,y0+Math.floor(i/cols)*S0,ch,34,{w:52,bg:COL[i%COL.length],lock:false}),{pc:true})),'Буквы можно перетаскивать.',false);
 }
 function addAxes(){
   if(!curPage)return;const c=center(),R=240,st=40,list=[];
@@ -5403,7 +5453,7 @@ function addTable(cols,rows){
   placed(list,'Таблица готова. Выберите «Текст» и пишите в клетках.');
 }
 function addTool(kind){
-  if(!curPage||!canEdit())return;const c=center(),list=[],gp=rid();
+  if(!curPage||!canManage())return;const c=center(),list=[],gp=rid();
   if(kind==='ruler'){const W=600,x=c.x-W/2,y=c.y-34;list.push(line(x,y,W,68,{s:'rect',fill:'#FFE9A8',col:'#B9860B',sw:2,lock:false}));for(let i=0;i<=30;i++){const t=i%10===0?28:i%5===0?20:12;list.push(line(x+i*20,y,1,t,{sw:1.5,lock:false}));if(i%5===0)list.push(label(x+i*20-14,y+30,String(i),14,{w:28}));}}
   else{const R=210,y=c.y+90;list.push(line(c.x-R,y-R,R*2,R*2,{s:'ellipse',fill:'none',col:'#0F5CA8',sw:2,lock:false}),line(c.x-R,y,R*2,1,{col:'#0F5CA8',sw:2,lock:false}));
     for(let a=0;a<=180;a+=10){const q=a*Math.PI/180,x1=c.x-R*Math.cos(q),y1=y-R*Math.sin(q),x2=c.x-(R-(a%30?10:20))*Math.cos(q),y2=y-(R-(a%30?10:20))*Math.sin(q),seg=line(Math.min(x1,x2),Math.min(y1,y2),Math.abs(x1-x2),Math.abs(y1-y2),{sw:1.5,lock:false});seg.fx=x2<x1;seg.fy=y2<y1;list.push(seg);if(a%30===0)list.push(label(c.x-(R-40)*Math.cos(q)-16,y-(R-40)*Math.sin(q)-10,String(a),14,{w:32}));}}
@@ -5706,7 +5756,7 @@ function calcOpen(){
   const keys=[['C','AC'],['⌫','DEL'],['(','('],[')',')'],['√','√('],['7','7'],['8','8'],['9','9'],['÷','÷'],['x²','^2'],['4','4'],['5','5'],['6','6'],['×','×'],['xʸ','^'],['1','1'],['2','2'],['3','3'],['−','−'],['%','%'],['0','0'],[',',','],['π','π'],['+','+'],['=','=']];
   const g=h('div',{class:'calcgrid'});
   for(const[l,v]of keys)g.append(h('button',{class:'ck'+(l==='='?' eq':/[÷×−+%]/.test(l)?' op':/C|⌫/.test(l)?' clr':''),onmousedown:e=>e.preventDefault(),onclick:()=>{if(v==='AC'){inp.value='';res.textContent=' ';inp.focus();}else if(v==='DEL'){inp.value=inp.value.slice(0,-1);inp.focus();}else if(v==='=')run();else put(v);}},l));
-  b.append(inp,res,g,hist,canEdit()?h('button',{class:'btn',style:'width:100%;margin-top:8px',onclick:()=>{if(!last)return;const d=h('div',{});d.textContent=last;const c=center();setRecs([{id:rid(),t:'text',page:curPage,x:c.x-120,y:c.y-20,w:300,h:40,z:topZ(),html:d.innerHTML,ff:'Nunito',fs:28,col:S.txtCol,al:'left',bg:'none'}]);}},'Вставить результат на доску'):null);
+  b.append(inp,res,g,hist,canManage()?h('button',{class:'btn',style:'width:100%;margin-top:8px',onclick:()=>{if(!last)return;const d=h('div',{});d.textContent=last;const c=center();setRecs([{id:rid(),t:'text',page:curPage,x:c.x-120,y:c.y-20,w:300,h:40,z:topZ(),html:d.innerHTML,ff:'Nunito',fs:28,col:S.txtCol,al:'left',bg:'none'}]);}},'Вставить результат на доску'):null);
   inp.focus();
 }
 // ---- Конструктор заданий ----
@@ -6152,12 +6202,13 @@ async function createBoard(title){
 async function openBoard(id,mem){
   const meta=mem?mem.meta:await DB.get('boards',id);if(!meta){toast('Доска не найдена.',1);return;}
   if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+  if(meta.role==='owner')for(const a of meta.accesses||[])if(!a.rv){if(a.role==='editor')a.role='student';a.rv=2;}
   B=meta;recs.clear();undoStack=[];redoStack=[];sel.clear();editing=null;clock=meta.clock||0;
   const rows=mem?mem.list.map(r=>({r})):await DB.all('recs','b',id);
   for(const x of rows){recs.set(x.r.id,x.r);clock=Math.max(clock,x.r.l||0);}
   purrOff();$('#home').hidden=true;$('#unlock').hidden=true;$('#app').hidden=false;
   buildCat();buildTop();buildZoom();
-  const pg=pagesList();curPage=null;gotoPage(pg[0]?pg[0].id:null);
+  const pg=pagesList();curPage=null;viewTouched=false;gotoPage(pg[0]?pg[0].id:null);
   setTool(canEdit()?(S.tool==='media'?'pen':S.tool):'hand');
   fitView();applyView();refreshTop();refreshFaces();
   if(!DB.ok)toast('Браузер не разрешает сохранять. Сохраните копию доски через меню до закрытия.',1);
@@ -6190,6 +6241,11 @@ function refreshStatus(){
   const s=$('#status');if(!s||!B)return;
   const cls={ok:'ok',wait:'wait',bad:'bad',off:''}[Net.state]||'';
   s.firstChild.className='dot '+cls;s.lastChild.textContent=Net.msg||'Работает без интернета';s.title=Net.msg;
+  // Ученик видит словами, что со связью, на любом экране
+  const guest=!isOwner(),msg=Net.msg||'Подключаюсь…';let bar=$('#netbar');
+  if(!bar){bar=h('div',{id:'netbar',role:'status'});$('#app').append(bar);}
+  bar.hidden=!guest||Net.state==='ok';bar.textContent=msg;
+  document.querySelectorAll('.emptynet').forEach(x=>{x.textContent=guest&&Net.state!=='ok'?msg:'';});
 }
 function refreshFaces(){
   const f=$('#faces');if(!f)return;f.textContent='';
@@ -6198,7 +6254,7 @@ function refreshFaces(){
 function moreMenu(a){
   openMenu(a,[
     {icon:ICON.download,label:'Сохранить копию доски',fn:saveBackup},
-    {icon:ICON.upload,label:'Объединить с копией',fn:()=>$('#file-backup').click()},
+    canManage()?{icon:ICON.upload,label:'Объединить с копией',fn:()=>$('#file-backup').click()}:null,
     {icon:ICON.image,label:'Скачать страницу картинкой',fn:exportPNG},
     isOwner()&&Net.connected().length?{icon:ICON.users,label:'Показать страницу всем',fn:()=>Net.showEveryone()}:null,
     {icon:ICON.gear,label:'Настройки связи',fn:netDialog},
@@ -6233,7 +6289,7 @@ function renderPages(){
   const pg=pagesList(),tabs=h('div',{class:'ptabs'});
   pg.forEach((x,i)=>tabs.append(h('button',{class:'ptab'+(x.id===curPage?' on':''),'aria-label':'Страница '+(i+1),title:x.title||'Страница '+(i+1),onclick:()=>{gotoPage(x.id);fitView();}},String(i+1))));
   p.append(tabs);
-  if(canEdit()){
+  if(canManage()){
     p.append(h('button',{class:'cbtn',title:'Новая страница','aria-label':'Новая страница',onclick:addPage},'+'));
     p.append(h('button',{class:'cbtn',title:'Фон и страница','aria-label':'Фон и страница',html:ICON.page,onclick:e=>pageMenu(e.currentTarget)}));
   }
@@ -6254,7 +6310,7 @@ function buildZoom(){
   z.append(h('button',{class:'cbtn','aria-label':'Уменьшить',onclick:()=>zoomAt(innerWidth/2,innerHeight/2,view.z/1.2)},'−'),
     h('button',{class:'cbtn pct','aria-label':'Масштаб 100%',onclick:()=>zoomAt(innerWidth/2,innerHeight/2,1)},'100%'),
     h('button',{class:'cbtn','aria-label':'Увеличить',onclick:()=>zoomAt(innerWidth/2,innerHeight/2,view.z*1.2)},'+'),
-    h('button',{class:'cbtn fit',title:'Показать всё','aria-label':'Показать всё',html:ICON.fit,onclick:fitView}));
+    h('button',{class:'cbtn fit',title:'Показать всё','aria-label':'Показать всё',html:ICON.fit,onclick:()=>{viewTouched=false;fitView();}}));
 }
 
 // ---- Доступы ----
@@ -6300,14 +6356,14 @@ function shareDialog(){
       const id='a'+rid(10),k=await Crypt.derive(pw,B.id+'|'+id);
       const used=(B.accesses||[]).length;
       const firstAccess=!used;
-      B.accesses=[...(B.accesses||[]),{id,name,password:pw,role:'editor',cat:AVATARS[used%AVATARS.length],auth:k.auth,enc:k.enc}];
+      B.accesses=[...(B.accesses||[]),{id,name,password:pw,role:'student',rv:2,cat:AVATARS[used%AVATARS.length],auth:k.auth,enc:k.enc}];
       Store.meta();await Store.flush();nameI.value='';passI.value=genPassword();draw();
       if(firstAccess)Net.start();
     };
     const row=a=>{
       const online=[...Net.conns.values()].some(c=>c.kd&&c.kd.authed&&c.kd.a===a);
       const roleS=h('select',{class:'csel','aria-label':'Права '+a.name,onchange:e=>{a.role=e.target.value;Store.meta();Net.setAccessRole(a);}},
-        h('option',{value:'editor',selected:a.role==='editor'},'Может писать'),h('option',{value:'viewer',selected:a.role==='viewer'},'Только смотрит'));
+        h('option',{value:'student',selected:a.role==='student'},'Выполняет задания'),h('option',{value:'editor',selected:a.role==='editor'},'Все инструменты'),h('option',{value:'viewer',selected:a.role==='viewer'},'Только смотрит'));
       return h('div',{class:'access'},
         h('div',{class:'face',html:catFace(a.cat)},h('i',{class:'dot online '+(online?'ok':'')})),
         h('div',{},h('h4',{},a.name),h('div',{class:'pw'},'Пароль ',h('code',{},a.password),h('button',{class:'cbtn','aria-label':'Скопировать пароль',title:'Скопировать пароль',html:ICON.copy,onclick:async()=>{toast(await copyText(a.password)?'Пароль скопирован.':'Не удалось скопировать.');}}))),
@@ -6327,7 +6383,7 @@ function shareDialog(){
       acc.forEach(a=>list.append(row(a)));
     };
     shareRedraw=draw;
-    m.append(h('p',{class:'sharehow'},'Для телефона и планшета отправьте ученику ссылку или покажите QR-код. Для компьютера подойдёт и личный файл. Пока идёт урок, держите эту доску открытой.'),h('div',{class:'addrow'},h('label',{class:'field'},h('span',{},'Имя ученика'),nameI),h('label',{class:'field'},h('span',{},'Пароль'),passI),h('button',{class:'btn main',onclick:add},'Добавить доступ')),err,list);
+    m.append(h('p',{class:'sharehow'},'Для телефона и планшета отправьте ученику ссылку или покажите QR-код. Ученик пишет и выполняет задания, но не ставит оценки и не создаёт задания. Пока идёт урок, держите эту доску открытой.'),h('div',{class:'addrow'},h('label',{class:'field'},h('span',{},'Имя ученика'),nameI),h('label',{class:'field'},h('span',{},'Пароль'),passI),h('button',{class:'btn main',onclick:add},'Добавить доступ')),err,list);
     draw();
     nameI.addEventListener('keydown',e=>{if(e.key==='Enter')add();});
   },{wide:true,onClose:()=>{shareRedraw=null;}});
@@ -6386,7 +6442,7 @@ async function joinBoard(inv,pw){
     try{pack=await Crypt.open(k.enc,fromB64(inv.s));}catch(e){throw new Error('bad');}
     pack=await unpackBoard(new Blob([pack]));
   }
-  const meta={id:inv.b,title:(pack&&pack.board.title)||String(inv.t||'Доска').slice(0,120),role:'editor',created:Date.now(),updated:Date.now(),clientId:rid(10),clock:0,guest:{accessId:inv.a,auth:k.auth,enc:k.enc,verified:!!pack,name:String(inv.n||'').slice(0,40)},net:inv.net&&typeof inv.net==='object'?inv.net:undefined};
+  const meta={id:inv.b,title:(pack&&pack.board.title)||String(inv.t||'Доска').slice(0,120),role:'student',created:Date.now(),updated:Date.now(),clientId:rid(10),clock:0,guest:{accessId:inv.a,auth:k.auth,enc:k.enc,verified:!!pack,name:String(inv.n||'').slice(0,40)},net:inv.net&&typeof inv.net==='object'?inv.net:undefined};
   const list=[];
   for(const raw of(pack?pack.recs:[])){const r=cleanRec(raw);if(r){list.push(r);meta.clock=Math.max(meta.clock,r.l);}}
   await DB.put('boards',meta);
@@ -6442,7 +6498,7 @@ async function importBackup(file){
     const id=p.board.id;
     if(p.meta&&Array.isArray(p.meta.sets)){const cur=setsAll(),have=new Set(cur.map(s=>s.id));for(const s of p.meta.sets)if(s&&s.id&&!have.has(s.id))cur.push({id:clip(s.id,40),name:clip(s.name,60),kind:clip(s.kind,10),text:clip(s.text,20000),rows:Array.isArray(s.rows)?s.rows.slice(0,300):undefined});setsSave(cur);}
     if(B&&B.id===id){
-      if(!canEdit()){toast('С правом просмотра объединять копии нельзя.',1);return;}
+      if(!canManage()){toast('Объединять копии может только учитель.',1);return;}
       const applied=ingest(p.recs);
       await saveMedia(id,p.media);
       for(const r of recs.values())if(isMedia(r)&&!r.del)refreshMedia(r.mid);
@@ -6453,7 +6509,7 @@ async function importBackup(file){
     if(B){toast('Эта копия от другой доски. Откройте её с обложки.',1);return;}
     const exist=await DB.get('boards',id);
     if(!exist){
-      const m=p.meta||{},role=m.role==='owner'?'owner':m.role==='viewer'?'viewer':'editor';
+      const m=p.meta||{},role=m.role==='owner'?'owner':m.role==='viewer'?'viewer':'student';
       if(role!=='owner'&&!(m.guest&&m.guest.accessId)){toast('В копии нет сведений о доступе.',1);return;}
       await DB.put('boards',{id,title:String(p.board.title||'Доска').slice(0,120),role,created:Date.now(),updated:Date.now(),clientId:rid(10),clock:0,accesses:role==='owner'?(m.accesses||[]):[],guest:m.guest,myName:m.myName||'Учитель',net:m.net,tasks:role==='owner'?m.tasks:undefined});
     }
@@ -6476,6 +6532,8 @@ $('#file-backup').addEventListener('change',e=>{const f=e.target.files[0];e.targ
 
 // ---- Запуск ----
 if(IS_WEB&&'serviceWorker' in navigator){
+  const hadSW=!!navigator.serviceWorker.controller;let swDone=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadSW&&!swDone){swDone=true;location.reload();}});
   navigator.serviceWorker.register('sw.js').catch(()=>{});
   document.head.append(h('link',{rel:'manifest',href:'manifest.webmanifest'}),h('link',{rel:'apple-touch-icon',href:'apple-touch-icon.png'}),h('meta',{name:'apple-mobile-web-app-capable',content:'yes'}),h('meta',{name:'theme-color',content:'#0F5CA8'}));
 }
