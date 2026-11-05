@@ -4583,6 +4583,89 @@ addEventListener('drop',e=>{
 });
 $('#file-media').addEventListener('change',e=>{addFiles([...e.target.files]);e.target.value='';});
 
+// ---- Запасной канал: если прямое соединение не удалось, данные идут через общие серверы ----
+// Содержимое шифруется паролем ученика, поэтому серверы его не видят.
+const RELAY_DEFAULT=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://broker-cn.emqx.io:8084/mqtt','wss://test.mosquitto.org:8081/mqtt'];
+const relayList=()=>{const v=lsGet('kd.relay',null);return Array.isArray(v)?v:RELAY_DEFAULT;};
+async function relayBase(boardId){
+  const d=new Uint8Array(await crypto.subtle.digest('SHA-256',enc.encode('kotodoska-relay|'+boardId)));let s='';for(const x of d.subarray(0,16))s+=x.toString(16).padStart(2,'0');return'kd1/'+s;
+}
+function mqttLen(n){const o=[];do{let b=n%128;n=Math.floor(n/128);if(n>0)b|=128;o.push(b);}while(n>0);return o;}
+function mqttStr(s){const u=enc.encode(s);return[u.length>>8,u.length&255,...u];}
+class MqttBus{
+  constructor(url,onmsg,onstate){this.url=url;this.onmsg=onmsg;this.onstate=onstate||(()=>{});this.subs=new Set();this.up=false;this.closed=false;this.buf=new Uint8Array(0);this.pid=1;this.connect();}
+  connect(){
+    if(this.closed)return;
+    let ws;try{ws=new WebSocket(this.url,'mqtt');}catch(e){this.again();return;}
+    this.ws=ws;ws.binaryType='arraybuffer';this.buf=new Uint8Array(0);
+    ws.onopen=()=>{const cid='kd'+rid(16),body=[...mqttStr('MQTT'),4,2,0,60,...mqttStr(cid)];this.raw([0x10,...mqttLen(body.length),...body]);};
+    ws.onmessage=e=>this.feed(new Uint8Array(e.data));
+    ws.onerror=()=>{};
+    ws.onclose=()=>{const was=this.up;this.up=false;clearInterval(this.ping);if(was)this.onstate();this.again();};
+  }
+  again(){if(!this.closed){clearTimeout(this.t);this.t=setTimeout(()=>this.connect(),5000);}}
+  raw(a){if(this.ws&&this.ws.readyState===1)this.ws.send(new Uint8Array(a));}
+  feed(u){
+    const b=new Uint8Array(this.buf.length+u.length);b.set(this.buf);b.set(u,this.buf.length);let o=0;
+    for(;;){
+      if(b.length-o<2)break;let m=1,l=0,i=o+1,done=false;
+      while(i<b.length&&i<o+5){const x=b[i++];l+=(x&127)*m;m*=128;if(!(x&128)){done=true;break;}}
+      if(!done||b.length-i<l)break;
+      this.packet(b[o],b.subarray(i,i+l));o=i+l;
+    }
+    this.buf=b.slice(o);
+  }
+  packet(h,p){
+    const ty=h>>4;
+    if(ty===2){if(p[1]===0){this.up=true;for(const t of this.subs)this.sub1(t);clearInterval(this.ping);this.ping=setInterval(()=>this.raw([0xC0,0]),25000);this.onstate();}}
+    else if(ty===3){const n=(p[0]<<8)|p[1],qos=(h>>1)&3,topic=dec.decode(p.subarray(2,2+n)),body=p.subarray(2+n+(qos?2:0));this.onmsg(topic,dec.decode(body));}
+  }
+  sub1(t){const pid=this.pid=(this.pid%60000)+1,body=[pid>>8,pid&255,...mqttStr(t),0];this.raw([0x82,...mqttLen(body.length),...body]);}
+  subscribe(t){this.subs.add(t);if(this.up)this.sub1(t);}
+  publish(t,s){const tp=mqttStr(t),pl=enc.encode(s),len=tp.length+pl.length,hd=[0x30,...mqttLen(len)],out=new Uint8Array(hd.length+len);out.set(hd);out.set(tp,hd.length);out.set(pl,hd.length+tp.length);if(this.ws&&this.ws.readyState===1)this.ws.send(out);}
+  close(){this.closed=true;clearTimeout(this.t);clearInterval(this.ping);this.up=false;try{this.ws&&this.ws.close();}catch(e){}}
+}
+const RELAY_PLAIN=new Set(['hello','chal','auth','deny']);
+class RelayConn{
+  constructor(bus,pubTopic,myId,peerId,keyB64){this.bus=bus;this.pub=pubTopic;this.me=myId;this.peer='r-'+peerId;this.relay=true;this.open=true;this.h={data:[],close:[],error:[],open:[]};this.q=[];this.bufferSize=0;this.busy=false;this.parts=new Map();this.rxChain=Promise.resolve();this.setKey(keyB64);this.timer=setInterval(()=>this.flush(),100);}
+  setKey(b){this.key=b||null;}
+  on(ev,fn){(this.h[ev]=this.h[ev]||[]).push(fn);if(ev==='open')setTimeout(()=>{if(this.open)fn();},0);}
+  emit(ev,x){for(const f of this.h[ev]||[])f(x);}
+  frame(o){this.bus.publish(this.pub,JSON.stringify({f:this.me,...o}));}
+  send(m){
+    if(!this.open)return;
+    if(RELAY_PLAIN.has(m.t)){this.frame({p:m});return;}
+    if(m.t==='cur')this.q=this.q.filter(x=>x.t!=='cur');
+    if(m.t==='mc'&&m.d){m={...m,d:toB64(new Uint8Array(m.d))};}
+    this.q.push(m);this.bufferSize=this.q.length;
+  }
+  async flush(){
+    if(this.busy||!this.q.length||!this.key||!this.bus.up)return;this.busy=true;
+    try{
+      const out=[];let size=0;
+      while(this.q.length){const s=JSON.stringify(this.q[0]);if(out.length&&size+s.length>48000)break;out.push(s);size+=s.length;this.q.shift();}
+      this.bufferSize=this.q.length;
+      const c=toB64(await Crypt.seal(this.key,enc.encode('['+out.join(',')+']'))),id=rid(6),n=Math.ceil(c.length/32000)||1;
+      for(let i=0;i<n;i++)this.frame({i:id,n,k:i,c:c.slice(i*32000,(i+1)*32000)});
+    }catch(e){console.warn(e);}
+    this.busy=false;
+  }
+  receive(fr){
+    if(!this.open||!fr)return;
+    if(fr.p){this.emit('data',fr.p);return;}
+    if(typeof fr.c!=='string'||typeof fr.i!=='string')return;
+    let pt=this.parts.get(fr.i);if(!pt){if(this.parts.size>40)this.parts.clear();pt={n:Math.min(+fr.n||1,4000),got:0,a:[]};this.parts.set(fr.i,pt);}
+    if(pt.a[fr.k]==null){pt.a[fr.k]=fr.c;pt.got++;}
+    if(pt.got<pt.n)return;this.parts.delete(fr.i);const all=pt.a.join('');
+    this.rxChain=this.rxChain.then(async()=>{
+      if(!this.key||!this.open)return;
+      const list=JSON.parse(dec.decode(await Crypt.open(this.key,fromB64(all))));
+      for(const m of list){if(m&&m.t==='mc'&&typeof m.d==='string')m.d=fromB64(m.d).buffer;this.emit('data',m);}
+    }).catch(()=>{});
+  }
+  close(){if(!this.open)return;this.open=false;clearInterval(this.timer);this.emit('close');}
+}
+
 // ---- Совместная работа ----
 // Учитель держит доску, ученики подключаются к нему напрямую.
 // Без связи каждый работает у себя, а при встрече записи объединяются.
@@ -4610,6 +4693,7 @@ function studentFilter(list,k,c){
 }
 const hostPeerId=id=>'kotodoska-v1-'+id;
 const Net={
+  askedAt:new Map(),buses:[],rc:new Map(),gBus:null,relayConn:null,relayAny:false,relayT:null,lastDigest:0,
   peer:null,conns:new Map(),state:'off',msg:'',hostConn:null,retry:null,outbox:[],sendT:null,peers:new Map(),lastCur:0,rx:new Map(),asked:new Map(),tx:new Map(),fail:new Map(),cursors:new Map(),closing:false,
 
   start(){
@@ -4619,7 +4703,7 @@ const Net={
     else this.startGuest();
   },
   stop(){
-    this.closing=true;clearTimeout(this.retry);
+    this.closing=true;clearTimeout(this.retry);clearTimeout(this.relayT);this.relayStop();
     for(const c of this.conns.values()){try{c.close();}catch(e){}}
     this.conns.clear();this.hostConn=null;this.peers.clear();this.cursors.clear();this.asked.clear();
     if(this.peer){try{this.peer.destroy();}catch(e){}}this.peer=null;
@@ -4631,21 +4715,22 @@ const Net={
   // ---- Учитель ----
   startHost(){
     if(this.peer)return;
-    this.set('wait','Подключаюсь к сети…');
+    if(!this.connected().length)this.set('wait','Подключаюсь к сети…');
+    this.relayHost();
     const p=this.peer=new Peer(hostPeerId(B.id),peerOptions(B.net));
-    p.on('open',()=>this.set('wait','Ждём учеников'));
+    p.on('open',()=>this.hostStatus());
     p.on('connection',c=>this.acceptGuest(c));
-    p.on('disconnected',()=>{if(!this.closing&&this.peer===p){this.set('off','Нет интернета. Работа сохраняется');clearTimeout(this.retry);this.retry=setTimeout(()=>{try{p.reconnect();}catch(e){}},5000);}});
+    p.on('disconnected',()=>{if(!this.closing&&this.peer===p){this.hostStatus();clearTimeout(this.retry);this.retry=setTimeout(()=>{try{p.reconnect();}catch(e){}},5000);}});
     p.on('error',e=>this.peerError(e,p));
   },
   peerError(e,p){
     if(this.closing||this.peer!==p)return;
     if(e.type==='peer-unavailable'){return;}
     if(e.type==='unavailable-id'){this.set('bad','Доска уже открыта в другом окне');}
-    else this.set('off','Нет связи. Работа сохраняется');
+    else this.hostStatus();
     if(['network','server-error','socket-error','socket-closed','unavailable-id','webrtc'].includes(e.type)&&!p.destroyed){
       clearTimeout(this.retry);
-      this.retry=setTimeout(()=>{if(this.closing)return;try{p.destroy();}catch(x){}this.peer=null;this.start();},8000);
+      this.retry=setTimeout(()=>{if(this.closing)return;try{p.destroy();}catch(x){}this.peer=null;this.startHost();},8000);
     }
   },
   acceptGuest(c){
@@ -4664,6 +4749,7 @@ const Net={
         if(!a){c.send({t:'deny',why:'revoked'});return;}
         const f=this.fail.get(a.id)||{n:0,until:0};
         if(Date.now()<f.until){c.send({t:'deny',why:'wait'});return;}
+        if(c.relay)c.setKey(a.enc);
         k.a=a;k.cn=String(m.cn||'').slice(0,64);k.sn=rid(24);k.cid=String(m.cid||'').slice(0,30);
         c.send({t:'chal',sn:k.sn,pr:await Crypt.hmac(a.auth,'H|'+k.cn+'|'+k.sn)});
       }else if(m.t==='auth'&&k.a){
@@ -4687,7 +4773,7 @@ const Net={
         for(const r of recs.values()){const v=d[r.id];if(!v||newer(r,{l:v[0],c:v[1]}))send.push(r);}
         if(k.role!=='viewer')for(const id in d){const v=d[id],r=recs.get(id);if(!r||newer({l:v[0],c:v[1]},r))want.push(id);}
         this.sendRecs(c,send);
-        if(curPage)c.send({t:'follow',page:curPage});
+        if(curPage&&!m.re)c.send({t:'follow',page:curPage});
         if(want.length)c.send({t:'want',ids:want});
         this.pullMissing();break;}
       case'recs':{
@@ -4710,9 +4796,58 @@ const Net={
   publishPeers(){
     const list=[...this.conns.values()].filter(c=>c.kd&&c.kd.authed).map(c=>({id:c.kd.id,name:c.kd.name,cat:c.kd.cat,aid:c.kd.a.id}));
     this.peers=new Map(list.map(p=>[p.id,p]));
-    const n=list.length;this.set(n?'ok':(this.peer&&this.peer.open?'wait':'off'),n?`На связи: ${n}`:(this.peer&&this.peer.open?'Ждём учеников':this.msg));
+    this.hostStatus();
     this.relay({t:'peers',list:[{id:'host',name:B.myName||'Учитель',cat:'oskar'},...list]});
     refreshFaces();refreshShareOnline();
+  },
+  hostStatus(){
+    const n=this.connected().length,up=(this.peer&&this.peer.open)||(this.buses||[]).some(b=>b.up);
+    this.set(n?'ok':up?'wait':'off',n?`На связи: ${n}`:up?'Ждём учеников':'Нет связи. Проверьте интернет');
+  },
+  async relayHost(){
+    if(this.buses&&this.buses.length)return;this.buses=[];this.rc=new Map();
+    const bid=B.id,base=await relayBase(bid);if(this.closing||!B||B.id!==bid)return;
+    for(const url of relayList()){
+      const bus=new MqttBus(url,(top,s)=>{
+        let fr;try{fr=JSON.parse(s);}catch(e){return;}
+        if(!fr||typeof fr.f!=='string'||!/^[\w-]{4,40}$/.test(fr.f))return;
+        const key=url+'|'+fr.f;let c=this.rc.get(key);
+        if(!c){
+          if(!(fr.p&&fr.p.t==='hello')||this.rc.size>200)return;
+          c=new RelayConn(bus,base+'/g/'+fr.f,'h',fr.f,null);this.rc.set(key,c);c.on('close',()=>this.rc.delete(key));this.acceptGuest(c);
+        }
+        c.receive(fr);
+      },()=>this.hostStatus());
+      bus.subscribe(base+'/h');this.buses.push(bus);
+    }
+  },
+  relayStop(){
+    for(const b of this.buses||[])b.close();this.buses=[];if(this.rc){for(const c of [...this.rc.values()])c.close();this.rc.clear();}
+    if(this.gBus){this.gBus.close();this.gBus=null;}if(this.relayConn){const c=this.relayConn;this.relayConn=null;c.close();}
+  },
+  // Ученик: перебираем серверы, пока учитель не ответит
+  async relayDial(i){
+    if(this.closing||!B||isOwner()||B.denied||this.connected().length)return;
+    const list=relayList();if(!list.length)return;
+    if(i>=list.length){i=0;if(!this.relayAny)this.set('off','Нет связи с сервером. Проверьте интернет или включите другую сеть');else this.set('wait','Учитель не отвечает. Проверьте, что его доска открыта');}
+    if(this.gBus){this.gBus.close();this.gBus=null;}if(this.relayConn){const o=this.relayConn;this.relayConn=null;o.close();}
+    const bid=B.id,base=await relayBase(bid);if(this.closing||!B||B.id!==bid)return;
+    const gid='g'+rid(14),me=base+'/g/'+gid;let c=null;
+    const bus=this.gBus=new MqttBus(list[i],(top,s)=>{let fr;try{fr=JSON.parse(s);}catch(e){return;}if(c)c.receive(fr);},()=>{
+      if(!bus.up){return;}
+      this.relayAny=true;
+      if(c)return;
+      bus.subscribe(me);
+      c=new RelayConn(bus,base+'/h',gid,'h',B.guest.enc);this.relayConn=c;c.kd={authed:false,cn:rid(24)};
+      c.on('data',m=>{c.kd.seen=Date.now();if(m&&m.t==='bye'){c.close();return;}if(m&&m.t==='ping')return;this.onGuest(c,m).catch(e=>console.warn(e));});
+      c.on('close',()=>this.guestGone(c));
+      setTimeout(()=>{if(c.open)c.send({t:'hello',a:B.guest.accessId,cid:B.clientId,cn:c.kd.cn});},400);
+    });
+    clearTimeout(this.relayT);this.relayT=setTimeout(()=>{if(!this.connected().length)this.relayDial(i+1);},7000);
+  },
+  guestGone(c){
+    if(this.hostConn!==c||this.closing)return;this.hostConn=null;this.asked.clear();this.peers.clear();this.cursors.clear();this.drawCursors();refreshFaces();
+    if(!B.denied){this.set('wait','Учитель отключился. Работа сохраняется');this.redial(3000);clearTimeout(this.relayT);this.relayT=setTimeout(()=>this.relayDial(0),3000);}
   },
   setAccessRole(a){
     for(const c of this.conns.values())if(c.kd&&c.kd.a===a){c.kd.role=a.role;c.send({t:'role',role:a.role});}
@@ -4724,28 +4859,29 @@ const Net={
   // ---- Ученик ----
   startGuest(){
     if(this.peer)return;
-    this.set('wait','Ищу учителя…');
+    if(!this.connected().length)this.set('wait','Ищу учителя…');
+    this.relayAny=false;clearTimeout(this.relayT);this.relayT=setTimeout(()=>this.relayDial(0),4000);
     const p=this.peer=new Peer('kotodoska-g-'+rid(16),peerOptions(B.net));
     p.on('open',()=>this.dial());
-    p.on('disconnected',()=>{if(!this.closing&&this.peer===p){this.set('off','Нет интернета. Работа сохраняется');clearTimeout(this.retry);this.retry=setTimeout(()=>{try{p.reconnect();}catch(e){}this.dial();},5000);}});
+    p.on('disconnected',()=>{if(!this.closing&&this.peer===p){clearTimeout(this.retry);this.retry=setTimeout(()=>{try{p.reconnect();}catch(e){}this.dial();},5000);}});
     p.on('error',e=>{
       if(this.closing||this.peer!==p)return;
-      if(e.type==='peer-unavailable'){this.set('wait','Учитель пока не в сети. Работа сохраняется');this.redial();return;}
-      this.set('off','Нет связи. Работа сохраняется');
-      clearTimeout(this.retry);this.retry=setTimeout(()=>{if(this.closing)return;try{p.destroy();}catch(x){}this.peer=null;this.start();},8000);
+      if(e.type==='peer-unavailable'){this.redial();return;}
+      clearTimeout(this.retry);this.retry=setTimeout(()=>{if(this.closing)return;try{p.destroy();}catch(x){}this.peer=null;if(!this.connected().length){const sv=this.relayT;this.startPeerOnly();}},8000);
     });
   },
+  startPeerOnly(){if(this.peer)return;const p=this.peer=new Peer('kotodoska-g-'+rid(16),peerOptions(B.net));p.on('open',()=>this.dial());p.on('error',()=>{if(this.closing||this.peer!==p)return;clearTimeout(this.retry);this.retry=setTimeout(()=>{try{p.destroy();}catch(x){}this.peer=null;if(!this.closing&&!this.connected().length)this.startPeerOnly();},15000);});},
   redial(ms=6000){clearTimeout(this.retry);this.retry=setTimeout(()=>this.dial(),ms);},
   dial(){
     if(this.closing||!this.peer||!this.peer.open||B.denied)return;
-    if(this.hostConn&&this.hostConn.open)return;
+    if(this.hostConn&&this.hostConn.open&&(this.hostConn.kd.authed||!this.hostConn.relay))return;
     const c=this.peer.connect(hostPeerId(B.id),{reliable:true});if(!c)return this.redial();
     this.hostConn=c;c.kd={authed:false,cn:rid(24)};
-    const timeout=setTimeout(()=>{if(!c.open||!c.kd.authed){try{c.close();}catch(e){}if(this.hostConn===c){this.hostConn=null;this.redial(1000);}}},15000);
+    const timeout=setTimeout(()=>{if(!c.open||!c.kd.authed){try{c.close();}catch(e){}if(this.hostConn===c){this.hostConn=null;this.redial(6000);}}},15000);
     c.on('open',()=>c.send({t:'hello',a:B.guest.accessId,cid:B.clientId,cn:c.kd.cn}));
     c.kd.seen=Date.now();c.on('data',m=>{c.kd.seen=Date.now();if(m&&m.t==='bye'){c.close();return;}if(m&&m.t==='ping')return;this.onGuest(c,m).catch(e=>console.warn(e));});
     const bye=()=>{clearTimeout(timeout);if(this.hostConn!==c)return;this.hostConn=null;this.asked.clear();this.peers.clear();this.cursors.clear();this.drawCursors();refreshFaces();
-      if(!this.closing&&!B.denied){this.set('wait','Учитель отключился. Работа сохраняется');this.redial(3000);}};
+      if(!this.closing&&!B.denied){this.set('wait','Учитель отключился. Работа сохраняется');this.redial(3000);clearTimeout(this.relayT);this.relayT=setTimeout(()=>this.relayDial(0),3000);}};
     c.on('close',bye);c.on('error',bye);
   },
   async onGuest(c,m){
@@ -4758,7 +4894,9 @@ const Net={
         c.send({t:'auth',pr:await Crypt.hmac(B.guest.auth,'G|'+k.cn+'|'+m.sn)});break;}
       case'deny':this.deny(m.why);break;
       case'welcome':{
-        k.authed=true;k.you=m.you;B.denied=null;B.guest.verified=true;
+        k.authed=true;k.you=m.you;B.denied=null;B.guest.verified=true;clearTimeout(this.relayT);
+        for(const o of [this.hostConn,this.relayConn])if(o&&o!==c){try{o.close();}catch(e){}}
+        this.hostConn=c;if(!c.relay){if(this.gBus){this.gBus.close();this.gBus=null;}this.relayConn=null;}
         clock=Math.max(clock,+m.clock||0);
         if(m.title&&m.title!==B.title){B.title=String(m.title).slice(0,120);refreshTop();}
         this.applyRole(m.role);Store.meta();
@@ -4873,7 +5011,7 @@ const Net={
         const row=await DB.get('media',B.id+'/'+mid).catch(()=>null);
         if(row&&row.blob){blobCache.set(mid,row.blob);continue;}
         const c=conns[0];if(!c||!c.open)continue;
-        this.asked.set(mid,c);
+        this.asked.set(mid,c);this.askedAt.set(mid,Date.now());
         const rx=this.rx.get(mid);
         c.send({t:'need',m:mid,from:rx?rx.got:0});
       }
@@ -4893,7 +5031,7 @@ const Net={
         if(!(m.d instanceof ArrayBuffer||ArrayBuffer.isView(m.d)))return;
         let rx=this.rx.get(m.m);
         if(!rx){rx={parts:[],got:0,total:num(m.total,0,8e9),type:String(m.type||''),name:String(m.name||'').slice(0,120)};this.rx.set(m.m,rx);}
-        if(m.o!==rx.got)return;
+        rx.t=Date.now();if(m.o!==rx.got)return;
         const size=m.d.byteLength;rx.parts.push(new Blob([m.d]));rx.got+=size;
         if(rx.parts.length>=64){rx.parts=[new Blob(rx.parts)];}
         showTransfer(m.m,rx.got,rx.total||1);
@@ -4913,7 +5051,7 @@ const Net={
     this.tx.set(c,p.then(()=>this.streamFile(c,mid,blob,type,name,from)).catch(()=>{}));
   },
   async streamFile(c,mid,blob,type,name,from){
-    const CH=64*1024,total=blob.size;let o=Math.max(0,from||0);
+    const CH=c.relay?12*1024:64*1024,total=blob.size;let o=Math.max(0,from||0);
     while(o<total&&c.open){
       while(c.open&&((c.dataChannel&&c.dataChannel.bufferedAmount)||0)+(c.bufferSize||0)*16000>3e6)await sleep(25);
       if(!c.open)return;
@@ -4931,7 +5069,12 @@ setInterval(()=>{
   for(const c of Net.connected()){
     if(Date.now()-c.kd.seen>12000){try{c.close();}catch(e){}continue;}
     try{c.send({t:'ping'});}catch(e){}
+    // Запасной канал не гарантирует доставку: сверяем записи и докачиваем файлы
+    if(c.relay&&!isOwner()&&Date.now()-Net.lastDigest>30000){Net.lastDigest=Date.now();const d={};for(const r of recs.values())d[r.id]=[r.l,r.c];try{c.send({t:'digest',d,re:1});}catch(e){}}
   }
+  let again=false;const now=Date.now();
+  for(const[mid,at]of Net.askedAt){const rx=Net.rx.get(mid);if(now-Math.max(at,(rx&&rx.t)||0)>18000&&Net.asked.has(mid)){Net.asked.delete(mid);Net.askedAt.delete(mid);again=true;}}
+  if(again)Net.pullMissing();
 },4000);
 addEventListener('pagehide',()=>{if(B)for(const c of Net.connected()){try{c.send({t:'bye'});}catch(e){}}});
 
