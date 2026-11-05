@@ -1,0 +1,1 @@
+{"name": "Котодоска АюлитА", "short_name": "Котодоска", "start_url": "./index.html", "scope": "./", "display": "standalone", "background_color": "#FBFDFF", "theme_color": "#0F5CA8", "lang": "ru", "icons": [{"src": "icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}]}
