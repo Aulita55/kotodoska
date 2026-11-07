@@ -3140,7 +3140,7 @@ const Crypt={
 const DB={
   db:null,ok:false,
   open(){return new Promise(res=>{
-    let q;try{q=indexedDB.open('kotodoska');}catch(e){return res(false);}
+    let q;try{q=indexedDB.open(DB.name||'kotodoska');}catch(e){return res(false);}
     q.onupgradeneeded=()=>{const d=q.result;
       const has=n=>d.objectStoreNames.contains(n);
       if(!has('boards'))d.createObjectStore('boards',{keyPath:'id'});
@@ -6688,6 +6688,8 @@ function bootDone(){window.kdBoot.done=true;$('#boot').hidden=true;}
     const hm=$('#home');hm.hidden=false;hm.append(h('div',{class:'home-in'},h('h1',{class:'wordmark'},'Котодоска'),h('p',{class:'home-sub'},'Этот браузер не поддерживает защиту паролем. Откройте файл в свежем Chrome, Edge или Firefox.')));
     return;
   }
+  // На сайте у страницы учителя своё хранилище: доски учеников с этого устройства в нём не появляются
+  if(IS_WEB&&!EDITION)DB.name='kotodoska-teacher';
   await DB.open();await setsLoad();
   bootDone();
   const inv=parseInviteMeta(readInvite()||hashInvite());
