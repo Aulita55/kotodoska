@@ -1332,10 +1332,11 @@ body.present #cat,body.present #top,body.present #ctx,body.present #pages,body.p
 @media (max-width:760px){.kothost{height:min(250px,34vh);right:10px}.home-in{padding-bottom:calc(min(250px,34vh) + 30px)}
   .kbubble{left:auto;right:96%;top:6%;max-width:150px;font-size:12.500px;padding:7px 10px;border-radius:16px 16px 4px 16px}
   .kotacts{left:auto;right:100%;top:auto;bottom:3%;margin-right:2px;display:grid!important;grid-template-columns:repeat(3,44px);gap:6px}}
+.home-acts a.btn{text-decoration:none;display:inline-flex;align-items:center}.home-in>.home-acts{flex-wrap:wrap;max-width:min(560px,100%)}.home-in>.home-acts .hint{flex-basis:100%}
 </style>
 </head>
 <body>
-<script id="kd-edition" type="text/plain">site</script>
+<script id="kd-edition" type="text/plain">site</script><script id="kd-teacher" type="text/plain">teacher.html</script>
 <script id="kd-invite" type="text/plain"></script>
 
 <section id="boot" class="screen">
@@ -9877,6 +9878,8 @@ function siteHome(home,boards){
   const inner=h('div',{class:'home-in'});
   inner.append(h('div',{class:'brand-strokes'}),h('header',{class:'home-head'},h('img',{class:'home-logo',src:PIC.logo,alt:'Логотип АюлитА, Open the world',draggable:false}),h('div',{},h('h1',{class:'wordmark'},'Котодоска'),h('p',{class:'home-sub'},boards.length?'Ваши доски от учителя.':'Чтобы открыть доску, нажмите ссылку от учителя или отсканируйте его QR-код.'))));
   if(boards.length){const g=h('div',{class:'boards'});for(const b of boards)g.append(h('article',{class:'bcard'},h('button',{class:'bcard-open','aria-label':'Открыть доску '+b.title,onclick:()=>openBoard(b.id)}),h('h3',{},b.title),h('span',{class:'hint'},`Изменена ${new Date(b.updated||b.created).toLocaleDateString('ru-RU')}`)));inner.append(g);}
+  const tl=document.getElementById('kd-teacher'),tu=tl&&tl.textContent.trim();
+  if(tu)inner.append(h('div',{class:'home-acts'},h('a',{class:'btn main',href:tu},'👩‍🏫 Я учитель — создать доску'),h('span',{class:'hint'},'Полная версия: новые доски, ученики, домашка, все инструменты')));
   const kotHost=h('div',{class:'kothost'});buildKot(kotHost);home.append(inner,kotHost);
 }
 const DEFAULT_SITE='https://aulita55.github.io/kotodoska/';
