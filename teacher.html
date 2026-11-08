@@ -1172,7 +1172,7 @@ body.present #cat,body.present #top,body.present #ctx,body.present #pages,body.p
 .ptabs{padding:9px 9px 3px 3px;margin:-9px -6px -3px -3px;align-items:center}
 .ptab{min-width:38px;height:34px;padding:0 12px;font-size:15px;line-height:34px;white-space:nowrap}
 .ptab.hw{padding:0 14px}
-.rxlayer .rx3d.click{pointer-events:auto!important;cursor:pointer}
+.rxlayer .rx3d.click{pointer-events:none!important}
 .rx3d.tapped{animation:rxtap .3s ease-out forwards!important}@keyframes rxtap{to{transform:translate(-50%,-50%) scale(1.8);opacity:0}}
 .rxmini{position:absolute;font-size:26px;transform:translate(-50%,-50%);animation:rxmini .9s cubic-bezier(.2,.8,.3,1) forwards;filter:drop-shadow(0 4px 4px rgba(0,0,0,.2))}@keyframes rxmini{to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.4) rotate(180deg);opacity:0}}
 .rxring{position:absolute;width:20px;height:20px;margin:-10px;border-radius:50%;border:4px solid #FFD43B;animation:rxring2 .7s ease-out forwards}@keyframes rxring2{to{transform:scale(7);opacity:0}}
@@ -1289,10 +1289,42 @@ body.present #cat,body.present #top,body.present #ctx,body.present #pages,body.p
 .k3heart{position:absolute;top:30%;color:#FF5C86;font-size:22px;animation:k3h 2s ease-out forwards;text-shadow:0 2px 4px rgba(0,0,0,.2)}@keyframes k3h{0%{opacity:0;transform:translateY(10px) scale(.5)}20%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.2)}}
 .rxmini.m-fount{animation:rxfount 1.5s cubic-bezier(.25,.6,.4,1) forwards}@keyframes rxfount{0%{transform:translate(-50%,-50%) scale(.3)}45%{transform:translate(calc(-50% + var(--dx)*.6),calc(-50% + var(--dy))) scale(1.1) rotate(calc(var(--r)*.5))}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + 160px)) scale(.8) rotate(var(--r));opacity:0}}
 .rxmini.m-up{animation:rxup 1.5s ease-out forwards}@keyframes rxup{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}15%{opacity:1}50%{transform:translate(calc(-50% + var(--dx)*.4 + 14px),calc(-50% + var(--dy)*.5)) scale(1.1)}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.9);opacity:0}}
-.rxmini.m-rain{animation:rxrain 1.4s ease-in forwards}@keyframes rxrain{0%{transform:translate(calc(-50% + var(--dx)),-50%) scale(.6);opacity:0}15%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)*1.2),calc(-50% + 320px)) rotate(var(--r));opacity:0}}
+.rxmini.m-rain{animation:rxmrain 1.4s ease-in forwards}@keyframes rxmrain{0%{transform:translate(calc(-50% + var(--dx)),-50%) scale(.6);opacity:0}15%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)*1.2),calc(-50% + 320px)) rotate(var(--r));opacity:0}}
 .rxmini.m-spiral{animation:rxspiral 1.3s ease-out forwards}@keyframes rxspiral{0%{transform:translate(-50%,-50%) rotate(0) scale(.3)}100%{transform:translate(calc(-50% + var(--dx)*1.4),calc(-50% + var(--dy)*1.4)) rotate(540deg) scale(1);opacity:0}}
-.rxmini.m-spin{animation:rxspin 1.1s cubic-bezier(.2,.8,.3,1) forwards}@keyframes rxspin{0%{transform:translate(-50%,-50%) scale(.3)}60%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.2) rotate(var(--r))}80%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy) - 18px)) scale(1)}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.8);opacity:0}}
+.rxmini.m-spin{animation:rxmspin 1.1s cubic-bezier(.2,.8,.3,1) forwards}@keyframes rxmspin{0%{transform:translate(-50%,-50%) scale(.3)}60%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.2) rotate(var(--r))}80%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy) - 18px)) scale(1)}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.8);opacity:0}}
 .rxhero{position:absolute;font-size:110px;transform:translate(-50%,-50%);animation:rxhero 1.3s cubic-bezier(.2,1.5,.4,1) forwards;filter:drop-shadow(0 12px 14px rgba(0,0,0,.25));pointer-events:none}@keyframes rxhero{0%{transform:translate(-50%,-50%) scale(0) rotate(-30deg)}35%{transform:translate(-50%,-90%) scale(1.15) rotate(8deg)}75%{opacity:1;transform:translate(-50%,-110%) scale(1)}100%{opacity:0;transform:translate(-50%,-150%) scale(.8)}}
+/* тематические нажатия указок */
+.tapb .rxmini{position:absolute}.tapb.fx-neon .tcore{box-shadow:0 0 30px 8px var(--c),0 0 60px 20px var(--c)}.tapb.fx-neon .tr1,.tapb.fx-neon .tr2{box-shadow:0 0 14px var(--c),inset 0 0 10px var(--c)}
+.tapb .tr1.big{width:30px;height:30px;border:3px solid var(--c);opacity:0;animation:tripple 1.1s ease-out forwards}@keyframes tripple{0%{transform:scale(.3);opacity:.9}100%{transform:scale(7);opacity:0}}
+/* ракета улетает в космос */
+.rkt{position:absolute;width:0;height:0;pointer-events:none;z-index:5}
+.rktship{position:absolute;left:0;top:0;animation:rktfly 2.2s cubic-bezier(.55,0,.85,.4) .35s forwards}
+@keyframes rktfly{0%{transform:translate(0,0)}8%{transform:translate(-2px,2px)}12%{transform:translate(2px,-2px)}100%{transform:translate(0,-130vh)}}
+.rktbody{position:absolute;left:0;top:0;font-size:64px;line-height:1;transform:translate(-50%,-50%) rotate(-45deg);filter:drop-shadow(0 8px 10px rgba(0,0,0,.3));animation:rktshake .1s linear infinite}
+@keyframes rktshake{50%{margin-left:1.500px}}
+.rktfire{position:absolute;left:0;top:26px;font-size:40px;line-height:1;transform:translate(-50%,0) rotate(180deg);transform-origin:50% 50%;animation:rktflame .12s ease-in-out infinite alternate;filter:drop-shadow(0 0 10px #FF9F43)}
+@keyframes rktflame{from{scale:.85 1}to{scale:1.1 1.35}}
+.rktsmoke{position:absolute;left:0;top:30px;opacity:0;animation:rktsmoke 1.6s ease-out forwards;filter:grayscale(.2) drop-shadow(0 4px 6px rgba(0,0,0,.15))}
+@keyframes rktsmoke{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}20%{opacity:.95}100%{transform:translate(calc(-50% + var(--dx)),-20%) scale(1.6);opacity:0}}
+.rktsky{position:fixed;left:0;right:0;top:0;height:42vh;pointer-events:none;z-index:70;background:linear-gradient(#0B0F3A 0%,rgba(30,20,90,.75) 45%,rgba(60,40,140,0) 100%);opacity:0;animation:rktsky 3.1s ease forwards}
+@keyframes rktsky{0%,25%{opacity:0}45%,75%{opacity:1}100%{opacity:0}}
+.rktstar{position:absolute;opacity:0;animation:rkttw 1.6s ease-in-out forwards}@keyframes rkttw{0%{opacity:0;transform:scale(.3)}40%{opacity:1;transform:scale(1.2) rotate(20deg)}100%{opacity:0;transform:scale(.6)}}
+.rktplanet{position:absolute;font-size:46px;opacity:0;animation:rktpl 2s ease-out 1s forwards;filter:drop-shadow(0 0 12px rgba(255,255,255,.35))}@keyframes rktpl{0%{opacity:0;transform:scale(.4) translateY(20px)}40%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.1) translateY(-10px)}}
+/* Тим-подсказчик */
+.helpb{font:900 18px Nunito;color:#7A4FD6}
+.hlp{position:fixed;right:12px;top:64px;z-index:95;width:min(400px,calc(100vw - 24px));max-height:calc(100vh - 90px);display:flex;flex-direction:column;gap:8px;background:#fff;border-radius:22px;box-shadow:0 18px 50px rgba(20,24,50,.25);padding:12px;animation:hlpin .25s ease-out}
+@keyframes hlpin{from{opacity:0;transform:translateY(-8px) scale(.98)}}
+.hlphead{display:flex;align-items:center;gap:10px}.hlphead img{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 3px 4px rgba(0,0,0,.15))}.hlphead div{flex:1;display:grid}.hlphead b{font:900 17px Nunito}.hlphead span{font-size:13px;color:var(--mute)}
+.hlpday{background:linear-gradient(135deg,#FFF6D6,#FFE8F0);border-radius:16px;padding:10px 12px}.hlpday p{margin:4px 0 8px;font-size:14px;line-height:1.35}.hlprow{display:flex;gap:6px;flex-wrap:wrap}
+.hlpchips{display:flex;gap:5px;flex-wrap:wrap}.hlpchip{padding:5px 10px;border-radius:999px;background:#F1F4FA;font:700 12.500px Nunito;cursor:pointer}.hlpchip.on{background:#7A4FD6;color:#fff}
+.hlpbody{overflow:auto;display:grid;gap:6px;padding-right:2px}
+.hlpitem{display:flex;gap:8px;align-items:flex-start;background:#F7F9FC;border-radius:14px;padding:8px 10px}.hlpitem>div{flex:1}.hlpitem p{margin:3px 0 0;font-size:13.500px;line-height:1.35;color:#3A4150}
+.hlpgo{flex:none;width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px #E3E8F2;font-size:18px;cursor:pointer}.hlpgo:hover{box-shadow:inset 0 0 0 2px #7A4FD6}
+.hlpnow{background:#EAF4FF;border-radius:14px;padding:8px 10px}.hlpnow p{margin:3px 0 0;font-size:13.500px}
+.hlpspot{position:fixed;z-index:120;border-radius:16px;pointer-events:none;box-shadow:0 0 0 4px #7A4FD6,0 0 0 9999px rgba(20,24,50,.35);animation:hlpp 1.2s ease-in-out infinite}
+@keyframes hlpp{50%{box-shadow:0 0 0 8px #B58CFF,0 0 0 9999px rgba(20,24,50,.35)}}
+.hlpbub{position:absolute;left:0;display:flex;align-items:center;gap:6px;background:#fff;border-radius:16px;padding:6px 12px 6px 6px;font:800 14px Nunito;white-space:nowrap;box-shadow:0 8px 22px rgba(0,0,0,.2)}.hlpbub img{width:30px;height:30px;object-fit:contain}
+.hlpbub.down{top:calc(100% + 12px)}.hlpbub.up{bottom:calc(100% + 12px)}
 </style>
 </head>
 <body>
@@ -5008,7 +5040,7 @@ stageEl.addEventListener('pointerdown',e=>{
     }
     return;
   }
-  if(tool==='laser'){const P=PTRS[S.ptr];if(P&&P.tap&&curPage){fxSend({k:'tap',x:pt.x,y:pt.y,page:curPage,c:P.col});}return;} // указка оставляет след сама
+  if(tool==='laser'){const P=PTRS[S.ptr];if(P&&P.tap&&curPage){fxSend({k:'tap',x:pt.x,y:pt.y,page:curPage,c:P.col,fx:P.fx||'pshh'});}return;} // указка оставляет след сама
   if(tool==='pen'||tool==='marker'||tool==='tape'){
     if(!curPage)return;
     const chalk=tool==='pen'&&isChalk(),kind=chalk?'chalk':tool,color=chalk?S.chalk:tool==='pen'?S.pen:tool==='tape'?tapeColor():tool==='marker'?S.marker:(PTRS[S.ptr]||PTRS.wand).col,sw=chalk?S.chalkW:tool==='pen'?S.penW:tool==='tape'?S.tapeW:tool==='marker'?S.markerW:5/view.z;
@@ -8483,7 +8515,7 @@ const moods=new Map();let myMood=null,focusOn=false;
 function reactPop(btn){
   document.querySelectorAll('.reactpop').forEach(x=>x.remove());
   const p=h('div',{class:'reactpop'});
-  p.append(h('div',{class:'reactrow'},REACT_LIST.map(([e,n])=>h('button',{class:'reactbtn','data-tip':n,'aria-label':'Реакция: '+n,onclick:()=>{const t=Date.now();if(t-(reactPop.last||0)<1200)return;reactPop.last=t;fxSend({k:'react',e});p.remove();}},e))));
+  p.append(h('div',{class:'reactrow'},REACT_LIST.map(([e,n])=>h('button',{class:'reactbtn','data-tip':n,'aria-label':'Реакция: '+n,onclick:()=>{const t=Date.now();if(t-(reactPop.last||0)<450)return;reactPop.last=t;fxSend({k:'react',e});p.remove();}},e))));
   if(!isOwner()){
     p.append(h('div',{class:'clabel'},'Как вам тема?'),h('div',{class:'moodrow'},MOODS.map(([c,n],i)=>h('button',{class:'moodbtn'+(myMood===i?' on':''),onclick:()=>{myMood=i;fxSend({k:'mood',v:i});p.remove();refreshMoodBtn();toast('Учитель увидит: '+n);}},h('i',{style:`background:${c}`}),n))));
   }
@@ -8508,6 +8540,12 @@ const RX_TAP={'👍':[['👍','⭐','✨','💪'],'burst'],'❤️':[['💖','�
   '🌈':[['🦄','🍀','🪙','☁️','✨','💖'],'fount','🦄'],'🚀':[['🪐','🌙','⭐','👽','🛸','☄️'],'fount','🛸'],'💯':[['💯','✅','🔝','🏅'],'burst'],'🏆':[['🥇','🏅','🪙','👑','💎'],'fount','👑'],'💡':[['💡','⚡','🧠','✨'],'burst'],
   '🎈':[['🎈','🎈','🎀','🎁'],'up'],'❄️':[['❄️','⛄','☃️','✨'],'rain','⛄'],'🌸':[['🌸','🌷','🌼','🦋','🐝'],'spiral','🦋'],'🤯':[['💥','🧠','🌀','⚡'],'burst'],'😴':[['💤','🌙','⭐','🐑'],'up','🐑'],
   '🥳':[['🎂','🍰','🧁','🎉','🎊'],'fount','🎂'],'🙌':[['🙌','💫','🤩','🌟'],'burst'],'🍀':[['🍀','🪙','💰','🌈','🧚'],'fount','🧚'],'😺':[['😺','😸','😻','🐟','🧶','🐭'],'spin','🧶']};
+// Нажатие по летящему смайлику ловим на всём экране: даже быстрый или маленький смайлик легко «поймать»
+addEventListener('pointerdown',ev=>{const list=document.querySelectorAll('.rxlayer .rx3d.click:not(.tapped)');if(!list.length)return;
+  let best=null,bd=1e9;const x=ev.clientX,y=ev.clientY;
+  for(const el of list){const r=el.getBoundingClientRect();if(r.width<2||r.bottom<0||r.top>innerHeight)continue;if(+getComputedStyle(el).opacity<.12)continue;const pad=Math.max(28,Math.min(60,r.width*.25));
+    if(x<r.left-pad||x>r.right+pad||y<r.top-pad||y>r.bottom+pad)continue;const d=Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))/Math.max(1,r.width);if(d<bd){bd=d;best=el;}}
+  if(best)rxTap(ev,best,best.dataset.e);},true);
 function rxTap(ev,el,e){
   ev.stopPropagation();ev.preventDefault();const x=ev.clientX,y=ev.clientY,L=el.parentElement||document.body;
   el.classList.add('tapped');setTimeout(()=>el.remove(),300);
@@ -8525,12 +8563,12 @@ function rxTap(ev,el,e){
 }
 function reactFly(e,name){
   const R=REACT_LIST.find(x=>x[0]===e)||[e,'','giant'],mode=R[2],L=h('div',{class:'rxlayer'});document.body.append(L);setTimeout(()=>L.remove(),4200);
-  const big=(cls,x,y,size,delay=0,extra='')=>{const el=h('div',{class:'rx3d click '+cls,onpointerdown:ev=>rxTap(ev,el,e)},e);Object.assign(el.style,{left:x+'%',top:y+'%',fontSize:size+'px',animationDelay:delay+'s'});if(extra)el.style.cssText+=extra;L.append(el);return el;};
+  const big=(cls,x,y,size,delay=0,extra='')=>{const el=h('div',{class:'rx3d click '+cls,'data-e':e},e);Object.assign(el.style,{left:x+'%',top:y+'%',fontSize:size+'px',animationDelay:delay+'s'});if(extra)el.style.cssText+=extra;L.append(el);return el;};
   const R0=Math.random,reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   if(reduce)mode==='giant';
   switch(reduce?'giant':mode){
     case'giant':big('giant',50,50,230);for(let i=0;i<14;i++){const a=i/14*360;big('ray',50,50,48,.15,`--a:${a}deg`);}break;
-    case'rain':for(let i=0;i<34;i++)big('rain',R0()*100,-10,34+R0()*46,R0()*1.6,`--r:${R0()*720-360}deg;--d:${R0()*120-60}px`);break;
+    case'rain':for(let i=0;i<34;i++)big('rain',R0()*100,-6,34+R0()*46,R0()*1.1,`--r:${R0()*720-360}deg;--d:${R0()*120-60}px`);break;
     case'bounce':for(let i=0;i<12;i++)big('bounce',8+R0()*84,100,60+R0()*60,R0()*.8);break;
     case'pop':big('popbig',50,50,260);for(let i=0;i<8;i++)big('popring',50,50,60,.1*i);break;
     case'float':for(let i=0;i<10;i++)big('floatup',10+R0()*80,100,50+R0()*50,R0()*1.2);break;
@@ -8584,7 +8622,7 @@ function plusFx(m){
     case'mood':if(isOwner()&&m.f!=='me'&&m.v>=0&&m.v<3){moods.set(m.f,{v:m.v|0,fn:clip(m.fn,30)});refreshMoodBtn();if(m.v===2)toast(`${clip(m.fn,30)||'Ученик'}: не понятно`);}return true;
     case'moodreset':if(!isOwner()){myMood=null;refreshMoodBtn();toast('Учитель спрашивает: всё ли понятно? Нажмите на смайлик сверху.');const b=$('#b-react');if(b){b.classList.remove('ask');void b.offsetWidth;b.classList.add('ask');}}return true;
     case'focus':focusSet(m.on);return true;
-    case'tap':if(m.page===curPage&&isFinite(m.x)&&isFinite(m.y))tapBurst(+m.x,+m.y,/^#[0-9a-f]{6}$/i.test(m.c)?m.c:'#7A4FD6');return true;
+    case'tap':if(m.page===curPage&&isFinite(m.x)&&isFinite(m.y))tapBurst(+m.x,+m.y,/^#[0-9a-f]{6}$/i.test(m.c)?m.c:'#7A4FD6',TAP_FX.includes(m.fx)?m.fx:'pshh');return true;
   }
   return false;
 }
@@ -9296,6 +9334,81 @@ function kitten3dIdle(c){
   if(p==='roll'){try{if(S.sound!==false){purrOn();setTimeout(purrOff,2200);}}catch(x){}for(let i=0;i<4;i++){const ht=h('div',{class:'k3heart'},'❤');ht.style.left=(40+i*14)+'%';ht.style.animationDelay=i*.25+'s';c.e.append(ht);setTimeout(()=>ht.remove(),2400);}}
 }
 
+// ---- Тим-подсказчик: рассказывает о возможностях доски. Открывается только по кнопке «❓» ----
+const HELP_CATS=[['draw','✏️ Рисовать'],['text','🔤 Текст'],['lesson','📚 Урок'],['games','🎮 Игры'],['people','👩‍🎓 Ученики'],['files','🖼️ Файлы'],['wow','✨ Фишки'],['keys','⌨️ Удобство']];
+// c — раздел, t — что, d — как, show — что подсветить (tool — сначала выбрать инструмент), who — 't' только учителю, 's' только ученику
+const HELP=[
+  {c:'draw',t:'Ручка',d:'Пишите и рисуйте мышкой, пальцем или стилусом. Цвет и толщина — в панели внизу. «Умная ручка» превращает кривой круг, линию или квадрат в ровную фигуру.',show:{sel:'[data-tool=pen]'},tool:'pen'},
+  {c:'draw',t:'Канцтовары на выбор',d:'Выберите, чем рисовать: перьевая ручка, гусиное перо, восковой мелок, кисточка, ручка-рыбка, волшебная палочка… Отдельно — маркер и корректор.',show:{tool:'pen',sel:'#ctx button',txt:'Канцтовары'}},
+  {c:'draw',t:'Маркер',d:'Полупрозрачный маркер выделяет главное, а текст под ним остаётся видно.',show:{sel:'[data-tool=marker]'},tool:'marker'},
+  {c:'draw',t:'Корректор',d:'Замазывает ошибку белой лентой, как настоящий корректор, — поверх можно писать снова.',show:{sel:'[data-tool=tape]'},tool:'tape'},
+  {c:'draw',t:'Ластик',d:'Стирает то, что нарисовано. Можно стирать частично или целым штрихом — переключатель в панели внизу.',show:{sel:'[data-tool=eraser]'},tool:'eraser'},
+  {c:'draw',t:'Фигуры и геометрия',d:'Плоские и объёмные фигуры, развёртки, доли, числовая прямая. Фигуру можно повернуть и растянуть.',show:{sel:'[data-tool=shape]'},tool:'shape'},
+  {c:'draw',t:'Котостудия',d:'Большая студия рисования: 17 кистей, слои, симметрия, акварель и блёстки. В «Играх» → «Для удовольствия».',show:{tool:'magic',sel:'#ctx .tabbtn',txt:'удовольствия'}},
+  {c:'text',t:'Текст как в Word',d:'Инструмент «Текст»: шрифты, размер, жирный, списки, выравнивание, цвет и фон. Рамку текста можно тянуть в любую сторону.',show:{sel:'[data-tool=text]'},tool:'text'},
+  {c:'text',t:'Буквы растут вместе с рамкой',d:'Включите «Буквы с рамкой» — и при растягивании рамки увеличится сам текст.',show:{tool:'text',sel:'#ctx button',txt:'Буквы с рамкой'}},
+  {c:'text',t:'Заметки-стикеры',d:'Приклейте цветной листочек, напишите на нём. Заметку можно двигать и менять ей размер за уголок.',show:{sel:'[data-tool=note]'},tool:'note'},
+  {c:'text',t:'Оценки-котики и разбор слов',d:'Наклейки «Молодец», «5», «Подумай ещё», знаки разбора слова. На оценку все увидят свою реакцию: пятёрка — праздник, двойка — котик утешит.',show:{sel:'[data-tool=sticker]'},tool:'sticker'},
+  {c:'lesson',t:'Портфель урока',d:'Учебник в PDF сбоку, закладки, дата, расписание, калькулятор, словарик на трёх языках.',show:{sel:'[data-tool=lesson]'},tool:'lesson'},
+  {c:'lesson',t:'⚡ Быстрый вопрос',d:'Задайте вопрос — каждый ученик ответит у себя текстом, числом, рисунком или смайликом. Вы видите все ответы сразу, отмечаете верные и выносите на доску.',show:{sel:'[data-tool=lesson]'},who:'t'},
+  {c:'lesson',t:'🎟️ Билет на выход',d:'В конце урока ученики отмечают, как поняли тему, и пишут, что было интересно и что непонятно.',show:{sel:'[data-tool=lesson]'},who:'t'},
+  {c:'lesson',t:'📋 Отчёт для родителей',d:'Сам собирает, что было на уроке: темы, новые слова, оценки, домашку. Скопируйте в мессенджер или скачайте картинкой.',show:{sel:'[data-tool=lesson]'},who:'t'},
+  {c:'lesson',t:'🎬 Повтор урока',d:'Доска заново появляется по порядку, как её рисовали. Удобно повторить материал дома.',show:{sel:'[data-tool=lesson]'}},
+  {c:'lesson',t:'Страницы',d:'Внизу — страницы урока. «+» добавляет страницу, крестик на вкладке удаляет. Двойной щелчок — переименовать.',show:{sel:'#pages'}},
+  {c:'lesson',t:'Домашка',d:'Кнопка «Домашка»: задание с пунктами, ученик отмечает сделанное, учитель ставит оценку и пишет комментарий.',show:{sel:'#b-hw'}},
+  {c:'games',t:'Игры на уроке',d:'Опрос, «Кто первый», рыбки-баллы, кубики, таймер, колесо удачи, викторина и быстрый вопрос — всё в «Играх» → «На уроке».',show:{tool:'magic',sel:'#ctx .tabbtn',txt:'На уроке'}},
+  {c:'games',t:'Игры для занятий',d:'Морской бой, виселица, крестики-нолики, бродилка с вопросами, конструктор заданий.',show:{tool:'magic',sel:'#ctx .tabbtn',txt:'Игры'}},
+  {c:'games',t:'Для удовольствия',d:'Тамагочи Тим, пушистики, пузырики, котозума, пятнашки, скользящие блоки, пазлы с планетами и картины по номерам.',show:{tool:'magic',sel:'#ctx .tabbtn',txt:'удовольствия'}},
+  {c:'people',t:'Пригласить ученика',d:'«Поделиться» → имя и пароль → «Скачать файл для ученика». Ученик открывает файл и вводит пароль.',show:{sel:'#top .btn.main'},who:'t'},
+  {c:'people',t:'Реакции',d:'Смайлик летит на весь экран у всех. Нажмите на летящий смайлик — он рассыплется по-своему: сердечки, единороги, монетки, снеговики…',show:{sel:'#b-react'}},
+  {c:'people',t:'Поднять лапку',d:'Хотите спросить — поднимите лапку, учитель увидит.',show:{sel:'#b-hand'},who:'s'},
+  {c:'people',t:'Светофор понимания',d:'Ученики отмечают: всё понятно, не совсем или не понятно. Учитель сразу видит, кому помочь.',show:{sel:'#b-react'}},
+  {c:'people',t:'Указки',d:'Лазер с 3D-котёнком, неоновая, волшебная палочка, бабочка, ракета, прожектор. Нажмите указкой — и будет свой эффект. Ракета улетает в космос!',show:{sel:'[data-tool=laser]'},tool:'laser'},
+  {c:'files',t:'Картинки, видео, PDF',d:'«Файлы» — вставить картинку, аудио, видео, PDF или ссылку. Можно просто перетащить файл на доску. AVI и WMV перекодируются сами.',show:{sel:'[data-tool=media]'},tool:'media'},
+  {c:'files',t:'Учебник сбоку',d:'Откройте PDF-учебник в боковой панели и листайте его прямо на уроке.',show:{sel:'[data-tool=lesson]'}},
+  {c:'wow',t:'✨ Оживить',d:'Выделите рисунок, наклейку или текст и нажмите «Оживить» — он запрыгает, закачается, затанцует. Видят все!',show:{sel:'[data-tool=select]'},tool:'select'},
+  {c:'wow',t:'Занавес-сюрприз',d:'Спрячьте страницу под театральным занавесом и откройте с барабанной дробью и отсчётом «3-2-1».',show:{tool:'magic',sel:'#ctx .tabbtn',txt:'На уроке'},who:'t'},
+  {c:'wow',t:'Тим на главном экране',d:'Покормите, погладьте, бросьте клубок — Тим отвечает и мурчит. Двойной щелчок — сердечки.',show:null},
+  {c:'keys',t:'Горячие клавиши',d:'V — выбрать, H — лапка, P — ручка, M — маркер, E — ластик, T — текст, N — заметка, L — указки. Ctrl+Z — отменить, Ctrl+Y — повторить.',show:{sel:'#cat'}},
+  {c:'keys',t:'Масштаб',d:'Колёсико мыши или щипок двумя пальцами. Кнопки масштаба — внизу справа.',show:{sel:'#zoom'}},
+  {c:'keys',t:'Отменить ошибку',d:'Стрелочки наверху отменяют и возвращают последние действия.',show:{sel:'#b-undo'}},
+];
+function helpFind(sp){
+  if(!sp||!sp.sel)return null;const all=[...document.querySelectorAll(sp.sel)].filter(e=>e.offsetParent!==null||getComputedStyle(e).position==='fixed');
+  if(!sp.txt)return all[0]||null;const t=sp.txt.toLowerCase();
+  return all.find(e=>((e.textContent||'')+' '+(e.getAttribute('aria-label')||'')+' '+(e.title||'')+' '+(e.dataset.tip||'')).toLowerCase().includes(t))||null;
+}
+function helpShow(tip){
+  const sp=tip.show||{};if(sp.tool||tip.tool){const tb=document.querySelector(`[data-tool=${sp.tool||tip.tool}]`);if(tb&&!tb.classList.contains('on'))tb.click();}
+  setTimeout(()=>{const el=helpFind(sp)||(tip.tool&&document.querySelector(`[data-tool=${tip.tool}]`));if(!el){toast('Эта кнопка сейчас скрыта — откройте доску или нужный инструмент');return;}helpSpot(el,tip.t);},160);
+}
+function helpSpot(el,label){
+  document.querySelectorAll('.hlpspot').forEach(x=>x.remove());
+  const r=el.getBoundingClientRect(),pad=8,ring=h('div',{class:'hlpspot'});
+  Object.assign(ring.style,{left:r.left-pad+'px',top:r.top-pad+'px',width:r.width+pad*2+'px',height:r.height+pad*2+'px'});
+  const below=r.top<innerHeight/2,bub=h('div',{class:'hlpbub'+(below?' down':' up')},h('img',{src:PIC.k_head,alt:''}),h('span',{},'Вот здесь: '+label));
+  ring.append(bub);document.body.append(ring);
+  requestAnimationFrame(()=>{const b=bub.getBoundingClientRect();if(b.right>innerWidth-8)bub.style.left=(innerWidth-8-b.width-r.left+pad)+'px';if(b.left<8)bub.style.left=(8-r.left+pad)+'px';});
+  const off=()=>{ring.remove();removeEventListener('pointerdown',off,true);};setTimeout(()=>addEventListener('pointerdown',off,true),300);setTimeout(off,6500);
+}
+function helpOpen(){
+  const old=document.querySelector('.hlp');if(old){old.remove();return;}
+  const teacher=isOwner(),list=HELP.filter(x=>!x.who||(x.who==='t')===teacher);
+  let cat=lsGet('kd.helpCat','all'),q='',tipI=Math.floor(Math.random()*list.length);
+  const box=h('aside',{class:'hlp',role:'dialog','aria-label':'Тим-подсказчик'});
+  const body=h('div',{class:'hlpbody'}),chips=h('div',{class:'hlpchips'}),search=h('input',{class:'input',placeholder:'Что хотите сделать? Например: домашка, пазл, оценка',oninput:e=>{q=e.target.value.trim().toLowerCase();draw();}});
+  const day=h('div',{class:'hlpday'}),drawDay=()=>{const t=list[tipI%list.length];day.textContent='';day.append(h('b',{},'💡 Совет: '+t.t),h('p',{},t.d),h('div',{class:'hlprow'},t.show?h('button',{class:'btn',onclick:()=>helpShow(t)},'👀 Показать'):null,h('button',{class:'btn',onclick:()=>{tipI++;drawDay();}},'Ещё совет →')));};
+  const toolNow=()=>{const tl=S&&S.tool,t=list.find(x=>x.tool===tl);return t;};
+  const draw=()=>{chips.textContent='';for(const[k,n]of[['all','Всё'],...HELP_CATS])chips.append(h('button',{class:'hlpchip'+(cat===k?' on':''),onclick:()=>{cat=k;lsSet('kd.helpCat',k);draw();}},n));
+    body.textContent='';const now=toolNow();if(now&&!q&&cat==='all')body.append(h('div',{class:'hlpnow'},h('b',{},'Сейчас в руке: '+now.t),h('p',{},now.d)));
+    const found=list.filter(x=>(cat==='all'||x.c===cat)&&(!q||(x.t+' '+x.d).toLowerCase().includes(q)));
+    if(!found.length)body.append(h('p',{class:'hint'},'Ничего не нашлось. Попробуйте другое слово: «рисовать», «игры», «ученик»…'));
+    for(const x of found)body.append(h('div',{class:'hlpitem'},h('div',{},h('b',{},x.t),h('p',{},x.d)),x.show?h('button',{class:'hlpgo','data-tip':'Показать на доске',onclick:()=>helpShow(x)},'👀'):null));};
+  box.append(h('div',{class:'hlphead'},h('img',{src:PIC.k_head,alt:''}),h('div',{},h('b',{},'Тим-подсказчик'),h('span',{},'Расскажу, что умеет доска')),h('button',{class:'iconbtn','aria-label':'Закрыть',onclick:()=>box.remove()},'✕')),day,search,chips,body);
+  document.body.append(box);drawDay();draw();setTimeout(()=>search.focus({preventScroll:true}),60);
+}
+addEventListener('keydown',e=>{if(e.key==='Escape'){const b=document.querySelector('.hlp');if(b)b.remove();}});
+
 // ================= Современные указки: светящийся луч, комета, прожектор, волны =================
 const glowDot=(c1,c2)=>`<defs><radialGradient id="gd${c1.slice(1)}"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="${c1}"/><stop offset="1" stop-color="${c2}" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="22" fill="url(#gd${c1.slice(1)})"/><circle cx="32" cy="32" r="6" fill="#fff"/><circle cx="32" cy="32" r="12" fill="none" stroke="${c1}" stroke-width="2" opacity=".7"/>`;
 const NEW_PTRS={
@@ -9314,6 +9427,11 @@ const NEW_PTRS={
   paw:PTRS.paw,butterfly:PTRS.butterfly,rocket:Object.assign({},PTRS.rocket,{beam:'comet'}),
 };
 for(const k of Object.keys(PTRS))delete PTRS[k];
+// Большинство указок — без следа: красивая форма, а при нажатии — свой тематический эффект.
+// След оставляют только лазерный луч, лазер с котёнком и маркер-подсветка.
+{const FX={neon:'neon',comet:'comet',rainbow:'rainbow',ripple:'ripple',arrow3d:'pshh',hand:'pshh',wand:'wand',paw:'paw',butterfly:'butterfly',rocket:'rocket'};
+  const NM={neon:'Неоновая указка: нажмите — неоновая вспышка',comet:'Комета: нажмите — искры кометы',rainbow:'Радужная указка: нажмите — радуга брызг',ripple:'Волны внимания: нажмите — волны расходятся',arrow3d:'Большая 3D-стрелка: нажмите — «пшш»',hand:'Указательный пальчик: нажмите — «пшш»',wand:'Волшебная палочка: нажмите — звёздное волшебство',paw:'Фирменная лапка: нажмите — следы лапок',butterfly:'Бабочка: нажмите — вспорхнут бабочки',rocket:'Ракета: нажмите — и она улетит в космос!'};
+  for(const[k,f]of Object.entries(FX))if(NEW_PTRS[k]){NEW_PTRS[k]=Object.assign({},NEW_PTRS[k],{beam:null,trail:null,tap:true,fx:f,name:NM[k]});}}
 Object.assign(PTRS,NEW_PTRS);PTRS.oskar=Object.assign({},NEW_PTRS.beam,{hide:true});PTRS.mouse=PTRS.fish=PTRS.feather=PTRS.yarn=PTRS.oskar;
 if(!PTRS[S.ptr]||PTRS[S.ptr].hide)S.ptr='beam';
 // Холст для лучей поверх доски
@@ -9358,13 +9476,35 @@ const Beam={cv:null,g:null,src:new Map(),parts:[],raf:0,spot:new Map(),
     if(alive)this.loop();}
 };
 // «Пшш»: красивый всплеск там, куда нажали
-function tapBurst(wx,wy,col){
-  const box=$('#cursors');if(!box)return;const x=wx*view.z+view.x,y=wy*view.z+view.y,el=h('div',{class:'tapb',style:`left:${x}px;top:${y}px;--c:${col}`});
+const TAP_FX=['pshh','neon','comet','rainbow','ripple','wand','paw','butterfly','rocket'];
+const TAP_BITS={comet:[['☄️','✨','💫','🔥'],'burst'],rainbow:[['🌈','💖','💜','💙','💚','💛','🧡'],'spiral'],wand:[['✨','⭐','🌟','💫','🪄'],'spiral'],paw:[['🐾','🐾','🐾','😺'],'burst'],butterfly:[['🦋','🦋','🌸','🦋','✨'],'up']};
+function tapBurst(wx,wy,col,fx='pshh'){
+  const box=$('#cursors');if(!box)return;const x=wx*view.z+view.x,y=wy*view.z+view.y;
+  if(fx==='rocket')return rocketLaunch(x,y);
+  const el=h('div',{class:'tapb fx-'+fx,style:`left:${x}px;top:${y}px;--c:${col}`});
+  if(TAP_BITS[fx]){const[bits,mode]=TAP_BITS[fx],R0=Math.random;for(let i=0;i<12;i++){const a=i/12*Math.PI*2+R0()*.3,d=50+R0()*60,m=h('span',{class:'rxmini m-'+mode},bits[i%bits.length]);m.style.cssText=`left:0;top:0;font-size:${18+R0()*18}px;animation-delay:${mode==='up'?R0()*.25:0}s`;
+      m.style.setProperty('--dx',(mode==='up'?(R0()-.5)*160:Math.cos(a)*d)+'px');m.style.setProperty('--dy',(mode==='up'?-(90+R0()*120):Math.sin(a)*d)+'px');m.style.setProperty('--r',(R0()*540-270)+'deg');el.append(m);}
+    el.append(h('i',{class:'tcore'}));box.append(el);setTimeout(()=>el.remove(),1700);tapSound(fx);return;}
+  if(fx==='ripple'){for(let i=0;i<4;i++){const r=h('i',{class:'tr1 big'});r.style.animationDelay=i*.16+'s';el.append(r);}box.append(el);setTimeout(()=>el.remove(),1400);tapSound(fx);return;}
   el.append(h('i',{class:'tr1'}),h('i',{class:'tr2'}),h('i',{class:'tcore'}));
   for(let i=0;i<14;i++){const a=i/14*Math.PI*2+Math.random()*.3,d=40+Math.random()*40,s=h('b',{});s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d+'px');s.style.animationDelay=Math.random()*.06+'s';el.append(s);}
-  box.append(el);setTimeout(()=>el.remove(),900);
-  try{if(S.sound!==false){const a=audio();if(a){const sr=a.sampleRate,n=Math.floor(sr*.32),d=new Float32Array(n);let lp=0;for(let i=0;i<n;i++){const t=i/n;lp=lp*.6+(Math.random()*2-1)*.4;d[i]=lp*Math.pow(1-t,2.2)*.5*(t<.04?t/.04:1);}playBuf(d,.25);}}}catch(e){}
+  box.append(el);setTimeout(()=>el.remove(),900);tapSound(fx);
 }
+function tapSound(fx){
+  try{if(S.sound!==false){const a=audio();if(a){const sr=a.sampleRate,n=Math.floor(sr*(fx==='rocket'?1.4:.32)),d=new Float32Array(n);let lp=0;for(let i=0;i<n;i++){const t=i/n;lp=lp*.6+(Math.random()*2-1)*.4;d[i]=fx==='rocket'?lp*Math.sin(Math.PI*t)*(.6+.4*Math.sin(t*90))*.8:lp*Math.pow(1-t,2.2)*.5*(t<.04?t/.04:1);}playBuf(d,fx==='rocket'?.35:.25);}}}catch(e){}
+}
+// Ракета взлетает с места нажатия и улетает в космос: огонь, дым, звёзды и планеты наверху
+function rocketLaunch(x,y){
+  const box=$('#cursors');if(!box)return;const R0=Math.random,L=h('div',{class:'rkt',style:`left:${x}px;top:${y}px`});
+  const ship=h('div',{class:'rktship'},h('span',{class:'rktbody'},'🚀'),h('span',{class:'rktfire'},'🔥'));L.append(ship);
+  for(let i=0;i<9;i++){const c=h('span',{class:'rktsmoke'},'☁️');c.style.setProperty('--dx',(R0()-.5)*140+'px');c.style.animationDelay=R0()*.35+'s';c.style.fontSize=26+R0()*24+'px';L.append(c);}
+  box.append(L);
+  const sky=h('div',{class:'rktsky'});
+  for(let i=0;i<16;i++){const st=h('span',{class:'rktstar'},['✨','⭐','🌟','💫'][i%4]);st.style.cssText=`left:${R0()*100}%;top:${R0()*30}%;font-size:${12+R0()*20}px;animation-delay:${.6+R0()*.8}s`;sky.append(st);}
+  for(const[e,l,t]of[['🪐',12+R0()*20,6+R0()*10],['🌙',70+R0()*20,4+R0()*8],['🛸',40+R0()*20,12+R0()*8]]){const pl=h('span',{class:'rktplanet'},e);pl.style.cssText=`left:${l}%;top:${t}%`;sky.append(pl);}
+  document.body.append(sky);setTimeout(()=>{L.remove();sky.remove();},3200);tapSound('rocket');
+}
+
 
 // ---- Живой котик Тим: глаза следят, шерсть вздыбливается, можно гладить ----
 function eyesSvg(mt,pfx){
@@ -9776,6 +9916,7 @@ function buildTop(){
     h('button',{class:'iconbtn reactb',id:'b-react',title:isOwner()?'Реакции: смайлик летит на всех экранах':'Реакции и светофор: понятно или нет',onclick:e=>reactPop(e.currentTarget)},'😊'),
     !isOwner()?h('button',{class:'iconbtn handbtn',id:'b-hand',title:'Поднять лапку','aria-label':'Поднять лапку',html:TOOL_ICON.hand,onclick:()=>fxSend({k:'hand',on:!myHand})}):null,
     isOwner()?h('button',{class:'btn main',onclick:shareDialog,html:ICON.share+'<span class="hide-sm">Поделиться</span>'}):null,
+    h('button',{class:'iconbtn helpb',id:'b-help',title:'Тим-подсказчик: что умеет доска','aria-label':'Подсказки',onclick:helpOpen},'?'),
     h('button',{class:'iconbtn',title:'Ещё','aria-label':'Ещё',html:ICON.more,onclick:e=>moreMenu(e.currentTarget)})].filter(Boolean));
   t.querySelectorAll('.btn.main svg').forEach(s=>{s.style.width='20px';s.style.height='20px';});
   refreshStatus();setTimeout(hwBadge,50);
