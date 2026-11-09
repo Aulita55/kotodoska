@@ -1333,6 +1333,21 @@ body.present #cat,body.present #top,body.present #ctx,body.present #pages,body.p
   .kbubble{left:auto;right:96%;top:6%;max-width:150px;font-size:12.500px;padding:7px 10px;border-radius:16px 16px 4px 16px}
   .kotacts{left:auto;right:100%;top:auto;bottom:3%;margin-right:2px;display:grid!important;grid-template-columns:repeat(3,44px);gap:6px}}
 .home-acts a.btn{text-decoration:none;display:inline-flex;align-items:center}.home-in>.home-acts{flex-wrap:wrap;max-width:min(560px,100%)}.home-in>.home-acts .hint{flex-basis:100%}
+/* аватары учеников */
+.avemo{display:grid;place-items:center;width:100%;height:100%;font-size:1.6em;line-height:1;font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif;background:radial-gradient(circle at 35% 30%,#fff,#EAF2FF);border-radius:50%}
+.avfield{display:grid;gap:6px;margin:6px 0 4px}.avfield>span{font-weight:800;font-size:14px}
+.avpick{display:flex;flex-wrap:wrap;gap:6px;max-height:132px;overflow:auto;padding:2px}
+.avopt{width:44px;height:44px;border-radius:50%;padding:2px;background:#F3F6FB;box-shadow:inset 0 0 0 2px #E3E8F2;cursor:pointer;display:grid;place-items:center;overflow:hidden;transition:transform .12s}
+.avopt img{width:100%;height:100%;object-fit:contain}.avopt .avemo{font-size:24px;background:none}.avopt:hover{transform:scale(1.08)}
+.avopt.on{box-shadow:inset 0 0 0 3px #7A4FD6,0 0 0 3px #E4D9FF;background:#fff}
+.faceb{cursor:pointer;border:0;padding:0}.faceb:hover{outline:3px solid #B58CFF;outline-offset:1px}
+.peer .avemo{width:34px;height:34px;font-size:22px}
+/* облако */
+.cloudb{font-size:18px;position:relative}.cloudb[data-s=busy]{animation:cloudp 1s ease-in-out infinite}.cloudb[data-s=err]::after{content:'!';position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#E5304F;color:#fff;font:900 10px/14px Nunito}
+.cloudb[data-s=ok]::after{content:'';position:absolute;right:5px;bottom:5px;width:8px;height:8px;border-radius:50%;background:#2BC48A}
+@keyframes cloudp{50%{opacity:.45}}
+.cloudst{font-weight:800;background:#F3F7FF;border-radius:12px;padding:8px 12px}.linkbtn{background:none;border:0;color:#0F5CA8;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+.btn.cloudhome{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -3958,6 +3973,17 @@ const TOOL_ICON={
 const CHALK_SPRITE={col:'#fff',hot:[6,58],svg:`<path d="M6 58l9-3 42-42-9-9-42 42z" fill="#F7F5EE" stroke="#231F2B" stroke-width="2.500" stroke-linejoin="round"/><path d="M38 14l9 9" stroke="#C9C4D6" stroke-width="2"/>`};
 const RAG_SPRITE={dyn:true,col:'#fff',hot:[32,32],svg:`<path d="M8 18c8-8 16-3 24-8s18-2 24 6c2 10-4 14-1 22s-2 16-12 16-14 4-23 1S8 46 9 38 3 26 8 18z" fill="#8A6FA8" stroke="#231F2B" stroke-width="2.500" stroke-linejoin="round"/><path d="M16 22c8-4 14 0 22-2M14 34c10-4 20 2 34-3M18 46c8-3 16 1 26-1" fill="none" stroke="#B8A1CF" stroke-width="2.500" stroke-linecap="round"/>`};
 const AVATARS=['maks','mia','tim','lika','ponchik','felix','fil','rokki','lili'];
+// Аватары учеников: котики из нашей семьи и весёлые картинки-смайлики
+const AV_EMO=['🦊','🐼','🐰','🐶','🐻','🐨','🦁','🐯','🐸','🐵','🐧','🦄','🐹','🦉','🐢','🐙','🦋','🐝','🦖','🐳','⭐','🚀','⚽','🎨','🎸','🌸','🍓','🌈'];
+function avOk(c){return typeof c==='string'&&(!!CATS[c]||(c.startsWith('e:')&&AV_EMO.includes(c.slice(2))));}
+function avHtml(c){if(typeof c==='string'&&c.startsWith('e:')&&AV_EMO.includes(c.slice(2)))return`<span class="avemo">${c.slice(2)}</span>`;return catFace(CATS[c]?c:'maks');}
+function avPicker(cur,onPick){
+  const box=h('div',{class:'avpick',role:'listbox','aria-label':'Аватар ученика'});
+  const opts=[...AVATARS.map(c=>[c,CAT_NAMES[c]||c]),...AV_EMO.map(e=>['e:'+e,e])];
+  const mark=v=>box.querySelectorAll('.avopt').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  for(const[v,t]of opts)box.append(h('button',{type:'button',class:'avopt'+(v===cur?' on':''),'data-v':v,title:t,'aria-label':'Аватар '+t,html:avHtml(v),onclick:()=>{mark(v);onPick(v);}}));
+  return box;
+}
 const I=(d,extra='')=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${d}</svg>`;
 const ICON={
   select:I('<path d="M5 3l14 8-6 2-3 6z" fill="currentColor"/>'),
@@ -4535,7 +4561,7 @@ const Store={
     B.clock=clock;B.updated=Date.now();
     try{
       if(rows.length)await DB.putMany('recs',rows);
-      if(this.metaDirty||rows.length){this.metaDirty=false;await DB.put('boards',B);}
+      if(this.metaDirty||rows.length){this.metaDirty=false;await DB.put('boards',B);if(B.role==='owner')try{Cloud.kick();}catch(e){}}
     }catch(e){toast('Не получилось сохранить на компьютере. Сохраните копию через меню.',1);}
   },
 };
@@ -5781,7 +5807,7 @@ const Net={
       const vv=p.ptr||(p.kit?p.kit+p.kc:'none'),P=p.ptr?PTRS[p.ptr]:p.kit?kitSprite(p.kit,p.kc):null;
       if(e&&e.dataset.v!==vv){e.remove();e=null;}
       if(!e){
-        e=h('div',{class:'peer'+(P?' ptr':''),'data-p':id,'data-v':vv,html:P?ptrHtml(P):catFace(CATS[p.cat]?p.cat:'maks')},h('b',{},p.name||''));box.append(e);if(P&&P.size){e.firstChild.style.width=P.size+'px';e.firstChild.style.height=P.size+'px';}
+        e=h('div',{class:'peer'+(P?' ptr':''),'data-p':id,'data-v':vv,html:P?ptrHtml(P):avHtml(p.cat)},h('b',{},p.name||''));box.append(e);if(P&&P.size){e.firstChild.style.width=P.size+'px';e.firstChild.style.height=P.size+'px';}
       }
       const hot=P?(P.kit?[P.hot[0]*P.size/64,P.hot[1]*P.size/64]:P.hot):[0,0];
       e.style.transform=`translate(${p.x*view.z+view.x-hot[0]}px,${p.y*view.z+view.y-hot[1]}px)`;e.style.opacity=1;
@@ -9417,6 +9443,159 @@ function helpOpen(){
 }
 addEventListener('keydown',e=>{if(e.key==='Escape'){const b=document.querySelector('.hlp');if(b)b.remove();}});
 
+// ---- Облако: доски учителя сами синхронизируются между компьютерами (вход по почте и паролю) ----
+// Хранилище — Supabase (бесплатно): вход по почте + приватная папка учителя с копиями досок.
+// Каждая доска — файл «<id>.kotodoska» (тот же формат, что «Сохранить копию»), изменения складываются без потерь.
+const CLOUD_DEFAULT={url:'',key:''};// адрес проекта и публичный ключ можно «зашить» сюда, чтобы не вводить вручную
+const CLOUD_BUCKET='kotodoska';
+const Cloud={
+  cfg(){const c=lsGet('kd.cloudCfg',null)||{};return{url:String(c.url||CLOUD_DEFAULT.url||'').trim().replace(/\/+$/,''),key:String(c.key||CLOUD_DEFAULT.key||'').trim()};},
+  ready(){const c=this.cfg();return(/^https:\/\/[\w.-]+/.test(c.url)||/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(c.url))&&c.key.length>20;},
+  sess(){return lsGet('kd.cloudSess',null);},
+  st(){return lsGet('kd.cloudState',{up:{},down:{},del:[],at:0});},
+  save(s){lsSet('kd.cloudState',s);},
+  busy:false,timer:null,last:'',err:'',
+  async api(path,opt={},auth=true){
+    const c=this.cfg(),hd={apikey:c.key,...(opt.headers||{})};
+    if(auth){const t=await this.token();if(!t)throw new Error('auth');hd.Authorization='Bearer '+t;}else hd.Authorization='Bearer '+c.key;
+    const r=await fetch(c.url+path,{...opt,headers:hd});
+    if(!r.ok){let m='';try{const j=await r.json();m=j.msg||j.message||j.error_description||j.error||'';}catch(e){}const e=new Error(m||('HTTP '+r.status));e.status=r.status;throw e;}
+    return r;
+  },
+  async token(){
+    const s=this.sess();if(!s)return null;
+    if(Date.now()<(s.exp||0)-60000)return s.access_token;
+    try{const r=await fetch(this.cfg().url+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:this.cfg().key,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token})});
+      if(!r.ok)throw 0;const j=await r.json();this.keep(j);return j.access_token;}catch(e){return null;}
+  },
+  keep(j){lsSet('kd.cloudSess',{access_token:j.access_token,refresh_token:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,user:{id:j.user&&j.user.id,email:j.user&&j.user.email}});},
+  async signIn(email,pw){
+    const c=this.cfg(),r=await fetch(c.url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:c.key,'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error_description||j.msg||j.error||'Не получилось войти');this.keep(j);this.save({up:{},down:{},del:[],at:0});
+  },
+  async signUp(email,pw){
+    const c=this.cfg(),r=await fetch(c.url+'/auth/v1/signup',{method:'POST',headers:{apikey:c.key,'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.msg||j.error_description||j.error||'Не получилось создать аккаунт');
+    if(j.access_token){this.keep(j);this.save({up:{},down:{},del:[],at:0});return'in';}return'confirm';
+  },
+  out(){localStorage.removeItem('kd.cloudSess');this.save({up:{},down:{},del:[],at:0});},
+  uid(){const s=this.sess();return s&&s.user&&s.user.id;},
+  path(n){return`${this.uid()}/${n}`;},
+  // ---- синхронизация ----
+  kick(ms=4000){if(!this.ready()||!this.uid())return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.sync(),ms);},
+  async sync(){
+    if(this.busy){this.again=true;return;}if(!this.ready()||!this.uid()||!navigator.onLine)return;this.busy=true;this.again=false;this.err='';cloudBadge('busy');
+    let changed=false;
+    try{
+      if(B)await Store.flush();
+      const st=this.st();
+      // удалённые доски
+      let delList=[];try{const r=await this.api(`/storage/v1/object/authenticated/${CLOUD_BUCKET}/${this.path('_deleted.json')}`);delList=await r.json();}catch(e){if(e.status&&e.status!==400&&e.status!==404)throw e;}
+      if(!Array.isArray(delList))delList=[];
+      const mine=new Set(st.del||[]),allDel=new Set([...delList,...mine]);
+      if(mine.size&&[...mine].some(x=>!delList.includes(x))){await this.put('_deleted.json',new Blob([JSON.stringify([...allDel].slice(-500))],{type:'application/json'}));}
+      for(const id of mine)try{await this.api(`/storage/v1/object/${CLOUD_BUCKET}`,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({prefixes:[this.path(id+'.kotodoska')]})});}catch(e){}
+      const handled=new Set(mine);
+      for(const id of allDel){const loc=await DB.get('boards',id).catch(()=>null);if(loc&&loc.role==='owner'){if(B&&B.id===id)continue;await DB.delBoard(id);changed=true;}}
+      // что лежит в облаке
+      const r=await this.api(`/storage/v1/object/list/${CLOUD_BUCKET}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prefix:this.uid()+'/',limit:1000,offset:0,sortBy:{column:'name',order:'asc'}})});
+      const remote=(await r.json()).filter(o=>/^[\w-]{4,40}\.kotodoska$/.test(o.name));
+      // скачиваем новое
+      for(const o of remote){const id=o.name.replace(/\.kotodoska$/,'');if(allDel.has(id))continue;const ver=o.updated_at||o.created_at||'';if(st.down[id]===ver)continue;
+        const f=await (await this.api(`/storage/v1/object/authenticated/${CLOUD_BUCKET}/${this.path(o.name)}`)).blob();
+        if(await cloudMerge(f))changed=true;st.down[id]=ver;}
+      // отправляем изменённое
+      const pendDel=new Set(this.st().del||[]);const boards=(await DB.all('boards').catch(()=>[])).filter(b=>b.role==='owner'&&!String(b.id).startsWith('__')&&!allDel.has(b.id)&&!pendDel.has(b.id));
+      for(const b of boards){if(st.up[b.id]===(b.updated||0)&&remote.some(o=>o.name===b.id+'.kotodoska'))continue;
+        const blob=await cloudPack(b);const res=await this.put(b.id+'.kotodoska',blob);st.up[b.id]=b.updated||0;
+        try{const j=await res.json();void j;}catch(e){}
+        // запоминаем версию, чтобы не скачивать своё же
+        try{const r2=await this.api(`/storage/v1/object/list/${CLOUD_BUCKET}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prefix:this.uid()+'/',limit:1000,offset:0,search:b.id})});const o=(await r2.json()).find(x=>x.name===b.id+'.kotodoska');if(o)st.down[b.id]=o.updated_at||o.created_at||'';}catch(e){}}
+      {const cur=this.st();st.del=(cur.del||[]).filter(x=>!handled.has(x));for(const x of st.del){delete st.up[x];delete st.down[x];}if(st.del.length)this.again=true;}
+      st.at=Date.now();this.save(st);this.last=new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+      cloudBadge('ok');
+      if(changed&&!B){const re=()=>{if(B)return;if(document.querySelector('.modal'))setTimeout(re,600);else showHome();};re();}
+    }catch(e){this.err=e.message==='auth'?'Войдите в облако заново':(navigator.onLine?'Нет связи с облаком':'Нет интернета');cloudBadge('err');}
+    finally{this.busy=false;if(this.again)this.kick(400);}
+  },
+  put(name,blob){return this.api(`/storage/v1/object/${CLOUD_BUCKET}/${this.path(name)}`,{method:'POST',headers:{'x-upsert':'true','Content-Type':blob.type||'application/octet-stream'},body:blob});},
+  forget(id){const st=this.st();st.del=[...new Set([...(st.del||[]),id])];delete st.up[id];delete st.down[id];this.save(st);this.kick(500);},
+};
+// Упаковать доску из базы (все её записи и файлы)
+async function cloudPack(b){
+  const rows=await DB.all('recs','b',b.id),list=rows.map(x=>x.r);
+  const media=(await DB.all('media','b',b.id)).filter(m=>m.blob).map(m=>({id:m.id,blob:m.blob,type:m.type||m.blob.type,name:m.name||''}));
+  const meta=clone({role:'owner',accesses:b.accesses||[],accDel:b.accDel||[],myName:b.myName,net:b.net,tasks:b.tasks});
+  return new Blob([MAGIC,await packBoard(b,list,media,{meta})],{type:'application/octet-stream'});
+}
+// Сложить облачную копию с тем, что есть на компьютере. true — если что-то изменилось
+async function cloudMerge(file){
+  const head=dec.decode(await file.slice(0,MAGIC.length).arrayBuffer());if(head!==MAGIC)return false;
+  const p=await unpackBoard(file.slice(MAGIC.length));if(!p.board||!/^[\w-]{4,40}$/.test(p.board.id))return false;
+  const id=p.board.id,m=p.meta||{};
+  const remDel=Array.isArray(m.accDel)?m.accDel.filter(x=>typeof x==='string'):[];
+  const mergeAcc=(cur,curDel)=>{const del=new Set([...(curDel||[]),...remDel]);const have=new Map((cur||[]).filter(a=>!del.has(a.id)).map(a=>[a.id,a]));let ch=(cur||[]).length!==have.size||remDel.some(x=>!(curDel||[]).includes(x));
+    for(const a of m.accesses||[])if(!a||!a.id||del.has(a.id))continue;else if(!have.has(a.id)){have.set(a.id,a);ch=true;}else if(have.get(a.id).cat!==a.cat&&avOk(a.cat)){have.get(a.id).cat=a.cat;ch=true;}
+    return[[...have.values()],ch,[...del].slice(-300)];};
+  if(B&&B.id===id){
+    const applied=ingest(p.recs||[]);await saveMedia(id,p.media);for(const r of recs.values())if(isMedia(r)&&!r.del)refreshMedia(r.mid);
+    if(applied.length)Net.queueRecs(applied);
+    const[acc,ch,dl]=mergeAcc(B.accesses,B.accDel);if(ch){const gone=(B.accesses||[]).filter(a=>!acc.includes(a));B.accesses=acc;B.accDel=dl;for(const a of gone)try{Net.dropAccess(a,'revoked');}catch(e){}Store.meta();}
+    if(p.board.title&&p.board.title!==B.title&&applied.length)B.title=String(p.board.title).slice(0,120);
+    return applied.length>0||ch;
+  }
+  let exist=await DB.get('boards',id);const fresh=!exist;
+  if(fresh){exist={id,title:String(p.board.title||'Доска').slice(0,120),role:'owner',created:Date.now(),updated:Date.now(),clientId:rid(10),clock:0,accesses:m.accesses||[],myName:m.myName||'Учитель',net:m.net,tasks:m.tasks};}
+  else if(exist.role!=='owner')return false;
+  const list=(p.recs||[]).map(cleanRec).filter(Boolean),rows=[];
+  const cur=fresh?[]:await DB.all('recs','b',id);const map=new Map(cur.map(x=>[x.r.id,x.r]));
+  let mx=exist.clock||0;
+  for(const r of list){if(newer(r,map.get(r.id)))rows.push({k:id+'/'+r.id,b:id,r});if(r.l>mx)mx=r.l;}
+  const[acc,ch,dl]=mergeAcc(exist.accesses,exist.accDel);exist.accDel=dl;
+  if(!rows.length&&!ch&&!fresh)return false;
+  if(rows.length)await DB.putMany('recs',rows);
+  await saveMedia(id,p.media);
+  exist.accesses=acc;exist.clock=Math.max(exist.clock||0,mx);if(rows.length&&p.board.title)exist.title=String(p.board.title).slice(0,120);
+  // доска изменилась у нас из-за облака: в облаке уже всё есть, лишний раз не отправляем
+  exist.updated=Date.now();await DB.put('boards',exist);
+  const st=Cloud.st();st.up[id]=exist.updated;Cloud.save(st);
+  return true;
+}
+function cloudBadge(state){
+  const b=document.getElementById('b-cloud');if(!b)return;b.dataset.s=state||'';
+  b.title=state==='busy'?'Облако: синхронизирую…':state==='err'?'Облако: '+Cloud.err:state==='ok'?'Облако: всё сохранено'+(Cloud.last?' в '+Cloud.last:''):'Облако';
+}
+function cloudBtn(){return h('button',{class:'iconbtn cloudb',id:'b-cloud',title:'Облако','aria-label':'Облако',onclick:cloudDialog},'☁️');}
+function cloudDialog(){
+  modal('☁️ Облако: доски на всех ваших компьютерах',(m,close)=>{
+    const draw=()=>{m.textContent='';
+      if(!Cloud.ready()){
+        const url=h('input',{class:'input',placeholder:'https://xxxx.supabase.co',value:Cloud.cfg().url}),key=h('input',{class:'input',placeholder:'Публичный ключ (anon public key)',value:Cloud.cfg().key});
+        m.append(h('p',{class:'hint'},'Облако нужно подключить один раз: создайте бесплатный проект Supabase по инструкции и вставьте сюда его адрес и публичный ключ.'),
+          h('label',{class:'field'},h('span',{},'Адрес проекта (Project URL)'),url),h('label',{class:'field'},h('span',{},'Публичный ключ (anon public)'),key),
+          h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:()=>{lsSet('kd.cloudCfg',{url:url.value.trim(),key:key.value.trim()});if(!Cloud.ready()){toast('Проверьте адрес и ключ',1);return;}draw();}},'Сохранить')));return;}
+      if(!Cloud.uid()){
+        const em=h('input',{class:'input',type:'email',placeholder:'Почта',autocomplete:'email'}),pw=h('input',{class:'input',type:'password',placeholder:'Пароль (не короче 6 знаков)',autocomplete:'current-password'}),er=h('p',{class:'err'});
+        const go=async up=>{er.textContent='';const e=em.value.trim(),p=pw.value;if(!/.+@.+\..+/.test(e)){er.textContent='Напишите почту';return;}if(p.length<6){er.textContent='Пароль — не короче 6 знаков';return;}
+          try{if(up){const r=await Cloud.signUp(e,p);if(r==='confirm'){er.textContent='';toast('Мы отправили письмо: откройте его и нажмите ссылку, потом войдите здесь.');return;}}else await Cloud.signIn(e,p);draw();Cloud.sync();}catch(x){er.textContent=/invalid/i.test(x.message)?'Неверная почта или пароль':/confirm/i.test(x.message)?'Сначала подтвердите почту по ссылке из письма':/already/i.test(x.message)?'Такой аккаунт уже есть — нажмите «Войти»':x.message;}};
+        m.append(h('p',{class:'hint'},'Войдите одной и той же почтой на каждом компьютере — и доски будут одинаковые везде. Всё, что вы меняете, само сохраняется в облако.'),
+          h('label',{class:'field'},h('span',{},'Почта'),em),h('label',{class:'field'},h('span',{},'Пароль'),pw),er,
+          h('div',{class:'modal-acts'},h('button',{class:'btn',onclick:()=>go(true)},'Создать аккаунт'),h('button',{class:'btn main',onclick:()=>go(false)},'Войти')),
+          h('p',{class:'hint small'},h('button',{class:'linkbtn',onclick:()=>{lsSet('kd.cloudCfg',{});draw();}},'Подключить другой проект')));return;}
+      const s=Cloud.sess(),stt=h('p',{class:'cloudst'});
+      const upd=()=>{stt.textContent=Cloud.busy?'🔄 Синхронизирую…':Cloud.err?'⚠️ '+Cloud.err:Cloud.last?'✅ Всё сохранено в облаке в '+Cloud.last:'Синхронизация включена';};upd();const iv=setInterval(()=>{if(!stt.isConnected)clearInterval(iv);else upd();},700);
+      m.append(h('p',{},'Вы вошли как ',h('b',{},s.user.email)),stt,h('p',{class:'hint'},'Доски учителя сами сохраняются в облако и появляются на других компьютерах, где вы вошли этой же почтой. Изменения с разных компьютеров складываются — ничего не теряется. Если удалить доску, она удалится везде.'),
+        h('div',{class:'modal-acts'},h('button',{class:'btn',onclick:()=>{Cloud.out();cloudBadge('');draw();}},'Выйти'),h('button',{class:'btn main',onclick:()=>{Cloud.sync();upd();}},'🔄 Синхронизировать сейчас')));
+    };
+    draw();
+  });
+}
+// Автосинхронизация: при запуске, после изменений, каждые 30 секунд, при уходе со страницы
+setInterval(()=>{if(!document.hidden)Cloud.sync();},30000);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)Cloud.sync();else Cloud.kick(800);});
+addEventListener('online',()=>Cloud.kick(1000));
+setTimeout(()=>Cloud.kick(1500),0);
+
 // ================= Современные указки: светящийся луч, комета, прожектор, волны =================
 const glowDot=(c1,c2)=>`<defs><radialGradient id="gd${c1.slice(1)}"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="${c1}"/><stop offset="1" stop-color="${c2}" stop-opacity="0"/></radialGradient></defs><circle cx="32" cy="32" r="22" fill="url(#gd${c1.slice(1)})"/><circle cx="32" cy="32" r="6" fill="#fff"/><circle cx="32" cy="32" r="12" fill="none" stroke="${c1}" stroke-width="2" opacity=".7"/>`;
 const NEW_PTRS={
@@ -9848,6 +10027,7 @@ async function showHome(){
     h('button',{class:'btn main',onclick:newBoardDialog},'Новая доска'),
     h('button',{class:'btn',onclick:codeDialog},'Войти по коду'),
     h('button',{class:'btn',onclick:()=>$('#file-backup').click()},'Открыть копию доски'),
+    h('button',{class:'btn cloudhome',onclick:cloudDialog},Cloud.uid()?'☁️ Облако: '+Cloud.sess().user.email:'☁️ Облако'),
     h('button',{class:'btn',onclick:schedOpen},'Расписание')));
   {const st=h('div',{class:'schtoday'});inner.append(st);schedToday(st);}
   if(!DB.ok)inner.append(h('p',{class:'err'},'Браузер не разрешает сохранять доски на компьютере. Откройте файл в Chrome, Edge или Firefox.'));
@@ -9859,7 +10039,7 @@ async function showHome(){
         h('button',{class:'bcard-open','aria-label':'Открыть доску '+b.title,onclick:()=>openBoard(b.id)}),
         h('h3',{},b.title),
         h('span',{class:'hint'},`${role}. Изменена ${new Date(b.updated||b.created).toLocaleDateString('ru-RU')}`),
-        h('button',{class:'bcard-del','aria-label':'Удалить доску '+b.title,html:ICON.trash,onclick:()=>confirmBox('Удалить доску?',`«${b.title}» исчезнет с этого компьютера. У других участников их копии останутся.`,'Удалить',async()=>{await DB.delBoard(b.id);showHome();})})));
+        h('button',{class:'bcard-del','aria-label':'Удалить доску '+b.title,html:ICON.trash,onclick:()=>confirmBox('Удалить доску?',`«${b.title}» исчезнет с этого компьютера${b.role==='owner'&&Cloud.uid()?' и из облака':''}. У других участников их копии останутся.`,'Удалить',async()=>{await DB.delBoard(b.id);if(b.role==='owner')Cloud.forget(b.id);showHome();})})));
     }
     inner.append(g);
   }else inner.append(h('p',{class:'empty-home'},'Здесь появятся ваши доски. Начните с новой доски.'));
@@ -9947,6 +10127,7 @@ function buildTop(){
     h('button',{class:'iconbtn reactb',id:'b-react',title:isOwner()?'Реакции: смайлик летит на всех экранах':'Реакции и светофор: понятно или нет',onclick:e=>reactPop(e.currentTarget)},'😊'),
     !isOwner()?h('button',{class:'iconbtn handbtn',id:'b-hand',title:'Поднять лапку','aria-label':'Поднять лапку',html:TOOL_ICON.hand,onclick:()=>fxSend({k:'hand',on:!myHand})}):null,
     isOwner()?h('button',{class:'btn main',onclick:shareDialog,html:ICON.share+'<span class="hide-sm">Поделиться</span>'}):null,
+    isOwner()&&!STUDENT_FILE?cloudBtn():null,
     h('button',{class:'iconbtn helpb',id:'b-help',title:'Тим-подсказчик: что умеет доска','aria-label':'Подсказки',onclick:helpOpen},'?'),
     h('button',{class:'iconbtn',title:'Ещё','aria-label':'Ещё',html:ICON.more,onclick:e=>moreMenu(e.currentTarget)})].filter(Boolean));
   t.querySelectorAll('.btn.main svg').forEach(s=>{s.style.width='20px';s.style.height='20px';});
@@ -9968,7 +10149,7 @@ function refreshStatus(){
 }
 function refreshFaces(){
   const f=$('#faces');if(!f)return;f.textContent='';
-  for(const p of Net.peers.values())if(p.id!=='host'||!isOwner()){const up=hands.has(p.id);f.append(h('div',{class:'face'+(up?' raised':''),title:up?`${p.name} поднимает лапку. Нажмите, чтобы опустить`:p.name,html:catFace(CATS[p.cat]?p.cat:'maks'),onclick:up&&isOwner()?()=>handOff(p.id):null}));}
+  for(const p of Net.peers.values())if(p.id!=='host'||!isOwner()){const up=hands.has(p.id);f.append(h('div',{class:'face'+(up?' raised':''),title:up?`${p.name} поднимает лапку. Нажмите, чтобы опустить`:p.name,html:avHtml(p.cat),onclick:up&&isOwner()?()=>handOff(p.id):null}));}
 }
 function moreMenu(a){
   openMenu(a,[
@@ -10083,9 +10264,13 @@ async function buildGuestFile(a){
   saveBlob(new Blob([html],{type:'text/html'}),`Котодоска АюлитА — ${safeName(B.title)} — ${safeName(a.name)}.html`);
   toast(skipped?'Файл скачан. Большие файлы ученик получит при подключении.':'Файл для ученика скачан.');
 }
+function avChange(a,redraw){
+  modal('Аватар: '+a.name,(m,close)=>{m.append(h('p',{class:'hint'},'Выберите картинку — её увидят все на уроке рядом с именем.'),avPicker(a.cat,v=>{a.cat=v;Store.meta();for(const c of Net.conns.values())if(c.kd&&c.kd.a===a)c.kd.cat=v;try{Net.publishPeers();}catch(e){}redraw&&redraw();setTimeout(close,180);}));});
+}
 function shareDialog(){
   modal('Поделиться доской',(m)=>{
     const nameI=h('input',{class:'input',placeholder:'Например, Маша',maxLength:40});
+    let pickAv=AVATARS[(B.accesses||[]).length%AVATARS.length];const avBox=avPicker(pickAv,v=>{pickAv=v;});
     const passI=h('input',{class:'input',value:genPassword(),maxLength:60});
     const err=h('p',{class:'err'});
     const list=h('div',{});
@@ -10097,8 +10282,8 @@ function shareDialog(){
       const id='a'+rid(10),k=await Crypt.derive(pw,B.id+'|'+id);
       const used=(B.accesses||[]).length;
       const firstAccess=!used;
-      B.accesses=[...(B.accesses||[]),{id,name,password:pw,role:'student',rv:2,cat:AVATARS[used%AVATARS.length],auth:k.auth,enc:k.enc}];
-      Store.meta();await Store.flush();nameI.value='';passI.value=genPassword();draw();
+      B.accesses=[...(B.accesses||[]),{id,name,password:pw,role:'student',rv:2,cat:avOk(pickAv)?pickAv:AVATARS[used%AVATARS.length],auth:k.auth,enc:k.enc}];
+      Store.meta();await Store.flush();nameI.value='';passI.value=genPassword();pickAv=AVATARS[B.accesses.length%AVATARS.length];avBox.querySelectorAll('.avopt').forEach(b=>b.classList.toggle('on',b.dataset.v===pickAv));draw();
       if(firstAccess)Net.start();
     };
     const row=a=>{
@@ -10106,7 +10291,7 @@ function shareDialog(){
       const roleS=h('select',{class:'csel','aria-label':'Права '+a.name,onchange:e=>{a.role=e.target.value;Store.meta();Net.setAccessRole(a);}},
         h('option',{value:'student',selected:a.role==='student'},'Выполняет задания'),h('option',{value:'editor',selected:a.role==='editor'},'Все инструменты'),h('option',{value:'viewer',selected:a.role==='viewer'},'Только смотрит'));
       return h('div',{class:'access'},
-        h('div',{class:'face',html:catFace(a.cat)},h('i',{class:'dot online '+(online?'ok':'')})),
+        h('button',{type:'button',class:'face faceb',title:'Сменить аватар','aria-label':'Сменить аватар '+a.name,html:avHtml(a.cat),onclick:()=>avChange(a,draw)},h('i',{class:'dot online '+(online?'ok':'')})),
         h('div',{},h('h4',{},a.name),h('div',{class:'pw'},'Пароль ',h('code',{},a.password),h('button',{class:'cbtn','aria-label':'Скопировать пароль',title:'Скопировать пароль',html:ICON.copy,onclick:async()=>{toast(await copyText(a.password)?'Пароль скопирован.':'Не удалось скопировать.');}}))),
         roleS,
         h('div',{class:'access-acts'},
@@ -10115,7 +10300,7 @@ function shareDialog(){
           h('button',{class:'btn small',onclick:async()=>{toast(await copyText(studentText(a))?'Инструкция для ученика скопирована.':'Не удалось скопировать.');}},'Скопировать инструкцию'),
           h('button',{class:'btn small',onclick:()=>codeBox(a)},'Код для входа'),
           h('button',{class:'btn small',onclick:()=>changePassword(a,draw)},'Сменить пароль'),
-          h('button',{class:'btn small danger',onclick:()=>confirmBox('Закрыть доступ?',`${a.name} больше не подключится, но сохранит свою копию доски.`,'Закрыть доступ',()=>{B.accesses=B.accesses.filter(x=>x!==a);Net.dropAccess(a,'revoked');Store.meta();draw();if(!B.accesses.length)Net.start();})},'Закрыть доступ')));
+          h('button',{class:'btn small danger',onclick:()=>confirmBox(`Удалить ${a.name} из группы?`,`${a.name} больше не сможет подключиться к этой доске: ссылка и пароль перестанут работать. Копия доски, которая уже есть у ученика, останется у него.`,'Удалить из группы',()=>{B.accesses=B.accesses.filter(x=>x!==a);B.accDel=[...new Set([...(B.accDel||[]),a.id])].slice(-300);Net.dropAccess(a,'revoked');Store.meta();draw();if(!B.accesses.length)Net.start();toast(`${a.name}: удалён(а) из группы.`);})},'🗑 Удалить из группы')));
     };
     const draw=()=>{
       list.textContent='';
@@ -10124,7 +10309,7 @@ function shareDialog(){
       acc.forEach(a=>list.append(row(a)));
     };
     shareRedraw=draw;
-    m.append(h('p',{class:'sharehow'},'Для телефона и планшета отправьте ученику ссылку или покажите QR-код. Ученик пишет и выполняет задания, но не ставит оценки и не создаёт задания. Пока идёт урок, держите эту доску открытой.'),h('div',{class:'addrow'},h('label',{class:'field'},h('span',{},'Имя ученика'),nameI),h('label',{class:'field'},h('span',{},'Пароль'),passI),h('button',{class:'btn main',onclick:add},'Добавить доступ')),err,list);
+    m.append(h('p',{class:'sharehow'},'Для телефона и планшета отправьте ученику ссылку или покажите QR-код. Ученик пишет и выполняет задания, но не ставит оценки и не создаёт задания. Пока идёт урок, держите эту доску открытой.'),h('div',{class:'addrow'},h('label',{class:'field'},h('span',{},'Имя ученика'),nameI),h('label',{class:'field'},h('span',{},'Пароль'),passI),h('button',{class:'btn main',onclick:add},'Добавить доступ')),h('div',{class:'field avfield'},h('span',{},'Аватар ученика'),avBox),err,list);
     draw();
     nameI.addEventListener('keydown',e=>{if(e.key==='Enter')add();});
   },{wide:true,onClose:()=>{shareRedraw=null;}});
