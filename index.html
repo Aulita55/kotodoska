@@ -1471,6 +1471,62 @@ body.present #cat,body.present #top,body.present #ctx,body.present #pages,body.p
 .tbghost{position:absolute;border:2px dashed #7A4FD6;background:rgba(122,79,214,.08);pointer-events:none;background-image:linear-gradient(90deg,transparent calc(33.300% - 1px),#B58CFF calc(33.300% - 1px),#B58CFF 33.300%,transparent 33.300%,transparent calc(66.600% - 1px),#B58CFF calc(66.600% - 1px),#B58CFF 66.600%,transparent 66.600%)}
 #stage.tbdraw{cursor:crosshair}
 .cbtn.tbb{width:auto;min-width:34px;padding:0 6px;font:800 12px Nunito}
+
+/* ===== Разделы, стрелки, интеллект-карты, видео, формулы, комментарии ===== */
+.obj.frame{pointer-events:none;border:3px solid var(--fc,#0F5CA8);border-radius:18px;background:color-mix(in srgb,var(--fc,#0F5CA8) 6%,transparent)}
+.obj.frame .fr-t{position:absolute;left:4px;bottom:100%;margin-bottom:6px;pointer-events:auto;cursor:move;font:800 22px/1.1 Nunito,sans-serif;color:#fff;background:var(--fc,#0F5CA8);padding:5px 14px;border-radius:12px 12px 12px 4px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 0 rgba(0,0,0,.15)}
+svg.obj.conn{overflow:visible;pointer-events:none}svg.obj.conn .ah{pointer-events:none}
+.mmadd{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:#fff;border:2.5px solid var(--plate,#0F5CA8);color:var(--plate,#0F5CA8);font:900 20px/1 Nunito,sans-serif;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.18);pointer-events:auto;z-index:5;transition:transform .12s}
+.mmadd:hover{transform:translate(-50%,-50%) scale(1.15);background:var(--sun,#FFD23F)}
+.obj.embed{background:#000;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.obj.embed .media-body{flex:1;display:flex}.obj.embed iframe{flex:1;width:100%;height:100%;border:0;background:#000}
+.obj.mathobj{display:flex;align-items:center;white-space:nowrap}.obj.mathobj .mx{line-height:1.15}.obj.mathobj math{font-family:'Cambria Math','STIX Two Math','Latin Modern Math','Times New Roman',serif}
+.mathpal{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}.mathk{min-width:42px;font-weight:800;font-size:17px}
+.mathpv{min-height:70px;display:grid;place-items:center;font-size:40px;background:#F6F8FC;border-radius:12px;margin:8px 0;padding:8px;overflow:auto}
+.mathex{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.chip{padding:4px 10px;border-radius:999px;background:var(--sky2,#E6F3FF);font-weight:700;font-size:13px}
+.cmpin{position:absolute;z-index:2147483000;width:30px;height:30px;border-radius:50% 50% 50% 4px;background:#FFD23F;border:2px solid #1E2430;font-size:15px;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,.2);animation:cmpop .4s}
+@keyframes cmpop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.cmpop{position:fixed;z-index:9999;max-width:270px;background:#FFFBE6;border:2px solid #1E2430;border-radius:14px;padding:10px 12px;box-shadow:0 8px 24px rgba(0,0,0,.2);font-weight:700}
+.cmpop p{margin:0 0 6px;white-space:pre-wrap}.cmacts{display:flex;gap:6px}
+.pvobj{outline:2px dashed #7A4FD6;outline-offset:3px;border-radius:6px}
+.frcols{display:flex;gap:8px}.frcol{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px #C7CDD8}.frcol.on{box-shadow:0 0 0 3px #1E2430}
+.frnav,.sheetsbtn,.tplbtn{white-space:nowrap}.ptab.mysheet{background:#FFF3B0;font-weight:800}
+/* ===== Вкладка «Класс» ===== */
+.magicrow.klrow{display:flex;flex-wrap:wrap;align-items:flex-start}
+.klsec{flex-basis:100%;font:800 12px/1 Nunito,sans-serif;color:#5C6577;text-transform:uppercase;letter-spacing:.06em;margin:6px 4px 0}
+#privban{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:60;background:#7A4FD6;color:#fff;font-weight:800;padding:8px 16px;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.2);pointer-events:none}
+.shlist{display:flex;flex-direction:column;gap:6px;max-height:40vh;overflow:auto;margin:8px 0}
+.shrow{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:12px;background:#F6F8FC;cursor:pointer}.shrow svg,.shrow img{width:30px;height:30px}
+.tabrow{display:flex;gap:6px;flex-wrap:wrap}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;max-height:62vh;overflow:auto;padding:2px}
+.scard{border:2px solid #DDE2EA;border-radius:14px;padding:8px;background:#fff;display:flex;flex-direction:column;gap:6px}.scard.pub{border-color:#2C9C72;box-shadow:0 0 0 2px #A5EDC8}
+.sthumb{padding:0;border-radius:10px;overflow:hidden;border:1px solid #E6E9EF;background:#fff;line-height:0}.sthumb:hover{outline:3px solid var(--sky,#8FD3FF)}.mini{width:100%;height:auto;display:block}
+.sname{display:flex;align-items:center;gap:6px}.dot{width:10px;height:10px;border-radius:50%;background:#C7CDD8;flex:none}.dot.on{background:#2C9C72}
+.sacts{display:flex;gap:6px;flex-wrap:wrap}
+.teamsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.teamcard{background:var(--tc);border:2px solid #1E2430;border-radius:14px;padding:10px 12px}.teamcard b{font-size:18px}.teamcard p{margin:4px 0 0;font-weight:700}
+.teamsshow{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9000;background:#fff;border:3px solid #1E2430;border-radius:20px;padding:16px 20px;width:min(640px,92vw);box-shadow:0 20px 50px rgba(0,0,0,.3);text-align:center;animation:cmpop .4s}
+.teamsshow h3{margin:0;font-size:26px}
+.klpill{position:fixed;z-index:70;display:flex;align-items:center;gap:8px;background:#fff;border:2px solid #1E2430;border-radius:999px;padding:5px 8px 5px 12px;box-shadow:0 6px 18px rgba(0,0,0,.18);font-weight:800}
+#noisew{left:50%;transform:translateX(-50%);bottom:84px}#musicw{right:16px;bottom:84px}#voicew{left:50%;transform:translateX(-50%);top:70px}#recw{right:16px;top:70px}
+.nface{font-size:26px;line-height:1}.nbar{position:relative;width:160px;height:14px;border-radius:7px;background:#EEF1F6;overflow:visible}
+.nbar i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:linear-gradient(90deg,#2C9C72,#FFD23F 60%,#E3202C);transition:width .15s}.nbar b{position:absolute;top:-4px;bottom:-4px;width:3px;background:#1E2430;border-radius:2px}
+#noisew[data-l="2"]{animation:shake .3s infinite}@keyframes shake{0%,100%{margin-left:0}50%{margin-left:4px}}
+.klpill input[type=range]{width:90px}.mnote{animation:bob 1.2s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-4px)}}
+.vlive{color:#E3202C}.vlive::first-letter{animation:blink 1s infinite}@keyframes blink{50%{opacity:.2}}
+.rdot{width:12px;height:12px;border-radius:50%;background:#E3202C;animation:blink 1s infinite}.rdot.pz{animation:none;background:#8B93A5}
+.recvid{width:100%;max-height:55vh;border-radius:12px;background:#000}.steps{padding-left:20px;line-height:1.6;font-weight:700}
+/* ===== Шаблоны, версии, папки ===== */
+.tplgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.tplcard{display:flex;flex-direction:column;gap:4px;text-align:left;padding:12px;border:2px solid #DDE2EA;border-radius:16px;background:#fff;transition:transform .12s,border-color .12s}
+.tplcard:hover{transform:translateY(-2px);border-color:var(--plate,#0F5CA8)}.tplic{font-size:30px}.tplcard b{font-size:16px}
+.snaplist{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto;margin:8px 0}
+.snaprow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:12px;background:#F6F8FC}
+.folders{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.fchip{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:#fff;border:2px solid #DDE2EA;font-weight:800}
+.fchip i{font-style:normal;font-size:12px;background:#EEF1F6;border-radius:999px;padding:1px 7px}.fchip.on{background:var(--plate,#0F5CA8);border-color:var(--plate,#0F5CA8);color:#fff}.fchip.on i{background:rgba(255,255,255,.25)}
+.fchip.add{border-style:dashed;color:#5C6577}
+.bcard-fold{position:relative;z-index:2;align-self:flex-start;font-size:12px;font-weight:800;padding:3px 9px;border-radius:999px;background:#F6F8FC;border:1px solid #DDE2EA}
 </style>
 </head>
 <body>
@@ -4292,6 +4348,7 @@ function cleanHTML(html){
   })(root);
   return root.innerHTML;
 }
+const EXT={};// новые типы объектов: clean(r,o), el(r), render(el,r), draw(g,r)
 function cleanRec(r){
   if(!r||typeof r!=='object'||typeof r.id!=='string'||!/^[\w-]{1,40}$/.test(r.id))return null;
   if(typeof r.c!=='string'||r.c.length>30)return null;
@@ -4303,6 +4360,9 @@ function cleanRec(r){
   if(r.t!=='page'&&+r.rot)o.rot=((num(r.rot,0,720)%360)+360)%360;
   if(r.nt)o.nt=1;
   if(typeof r.by==='string'&&r.by.length<=30)o.by=r.by;
+  if(r.pv)o.pv=1;
+  if(r.mm)o.mm=1;
+  if(typeof r.cm==='string'&&r.cm)o.cm=r.cm.slice(0,400);
   if(typeof r.grp==='string'&&/^[\w-]{1,40}$/.test(r.grp))o.grp=r.grp;
   if(r.t==='bm'){if(typeof r.pg!=='string'||!/^[\w-]{1,40}$/.test(r.pg))return null;Object.assign(o,{pg:r.pg,x:num(r.x),y:num(r.y),vz:Math.max(.05,Math.min(8,num(r.vz,1,8))),name:String(r.name||'').slice(0,80),ts:num(r.ts,0,9e15),col:col(r.col,'#FE0000')});return o;}
   if(r.t==='hw'){o.title=String(r.title||'').slice(0,80);o.text=String(r.text||'').slice(0,3000);o.due=num(r.due,0,9e15);o.ts=num(r.ts,0,9e15);o.pg=typeof r.pg==='string'&&/^[\w-]{0,40}$/.test(r.pg)?r.pg:'';o.done={};
@@ -4311,7 +4371,7 @@ function cleanRec(r){
     o.chk={};if(r.chk&&typeof r.chk==='object')for(const k of Object.keys(r.chk).slice(0,60)){const c=r.chk[k];if(/^[\w-]{1,40}$/.test(k)&&c&&['5','4','3','2','✓','⭐','🔁'].includes(c.g))o.chk[k]={g:c.g,c:String(c.c||'').slice(0,160),at:num(c.at,0,9e15)};}
     return o;}
   if(r.t==='word'){o.w=String(r.w||'').slice(0,80).trim();o.tr=String(r.tr||'').slice(0,160);o.ex=String(r.ex||'').slice(0,240);o.la=/^[a-z]{2}-[a-z]{2}$/.test(r.la)?r.la:'en-ru';o.ts=num(r.ts,0,9e15);if(!o.w&&!o.del)return null;return o;}
-  if(r.t==='page'){o.title=String(r.title||'').slice(0,60);o.order=num(r.order);o.bg=BGS.some(b=>b[0]===r.bg)?r.bg:'grid';if(r.hw)o.hw=true;return o;}
+  if(r.t==='page'){o.title=String(r.title||'').slice(0,60);o.order=num(r.order);o.bg=BGS.some(b=>b[0]===r.bg)?r.bg:'grid';if(r.hw)o.hw=true;if(typeof r.own==='string'&&r.own.length<=30){o.own=r.own;o.on=String(r.on||'').slice(0,30);if(r.pub)o.pub=1;if(typeof r.src==='string'&&r.src.length<=40)o.src=r.src;}if(typeof r.fd==='string')o.fd=r.fd.slice(0,40);return o;}
   if(typeof r.page!=='string'||r.page.length>40)return null;
   Object.assign(o,{page:r.page,x:num(r.x),y:num(r.y),w:num(r.w,10,1e5),h:num(r.h,10,1e5),z:num(r.z,0,9e15)});
   switch(r.t){
@@ -4327,10 +4387,10 @@ function cleanRec(r){
     case'link':{let ok=false;try{ok=/^https?:$/.test(new URL(String(r.url)).protocol);}catch(e){}if(!ok)return null;o.url=String(r.url).slice(0,600);o.title=String(r.title||'').slice(0,80);break;}
     case'walk':o.has=(Array.isArray(r.has)?r.has:[]).map(v=>num(v)|0).filter(v=>v>=0&&v<30);o.used=(Array.isArray(r.used)?r.used:[]).map(v=>num(v)|0).filter(v=>v>=0&&v<30);break;
     case'table':tableClean(r,o);break;
+    default:if(EXT[r.t]&&EXT[r.t].clean(r,o)!==false)break;return null;
     case'image':case'audio':case'video':
       if(typeof r.mid!=='string'||!/^[\w-]{1,40}$/.test(r.mid))return null;
       o.mid=r.mid;o.name=String(r.name||'').slice(0,120);break;
-    default:return null;
   }
   return o;
 }
@@ -4379,6 +4439,7 @@ function ingest(list){ // данные от других участников
   return applied;
 }
 function afterChange(list){
+  if(list.some(r=>r.t==='frame'))setTimeout(renderPages,0);
   if(list.some(r=>r.t==='page')){
     const pg=pagesList();
     if(!curPage||!recs.get(curPage)||recs.get(curPage).del)gotoPage(pg[0]?pg[0].id:null);
@@ -4487,8 +4548,10 @@ function renderRec(r){
       break;}
     default:
       el.style.width=r.w+'px';el.style.height=r.h+'px';
+      if(EXT[r.t]){EXT[r.t].render(el,r);break;}
       fillMedia(el,r);
   }
+  if(typeof recDeco==='function')recDeco(el,r);
 }
 // Мел: поверх линии идут рваные просветы, поэтому она выглядит как на настоящей доске
 const CHALK_BOARD='#1F4A3F',GRAIN=[.85,'.7 6.3 1.4 9.1 .5 4.7 2.1 11.3 .9 7.7 1.2 13.1',.42],EDGE=[1.25,'1.1 8.3 .6 5.2 1.7 12.4 .8 6.900',.2];
@@ -4513,6 +4576,8 @@ function makeEl(r){
     el=h('div',{class:'obj sticker',html:STICKERS[r.s]()});
   }else if(r.t==='image'){
     el=h('div',{class:'obj image'});
+  }else if(EXT[r.t]){
+    el=EXT[r.t].el(r);
   }else if(r.t==='table'){
     el=tableEl();
   }else if(r.t==='link'){
@@ -4529,7 +4594,7 @@ function makeEl(r){
   el.dataset.id=r.id;el.dataset.t=r.t;
   return el;
 }
-function dropEl(id){const el=els.get(id);if(el){const m=el.querySelector('video,audio');if(m)m.pause();el.remove();els.delete(id);}}
+function dropEl(id){const el=els.get(id);if(el){const m=el.querySelector('video,audio');if(m)m.pause();el.remove();els.delete(id);}if(typeof dropDeco==='function')dropDeco(id);}
 async function getBlob(mid){
   if(blobCache.has(mid))return blobCache.get(mid);
   const row=await DB.get('media',B.id+'/'+mid).catch(()=>null);
@@ -4788,6 +4853,8 @@ async function renderPage(){
       const hh=boxOf(r).h;const cg=g.createLinearGradient(0,0,40,0);cg.addColorStop(0,'#8E0F24');cg.addColorStop(.5,'#D3203F');cg.addColorStop(1,'#8E0F24');g.fillStyle='#B0172F';g.fillRect(0,0,r.w,hh);g.fillStyle='#D4A72C';g.fillRect(0,0,r.w,Math.min(hh,30));
     }else if(r.t==='text'){
       g.restore();drawText(g,r);continue;
+    }else if(EXT[r.t]){
+      if(EXT[r.t].draw)await EXT[r.t].draw(g,r);
     }else if(r.t==='table'){
       const el=els.get(r.id);if(el){const base=el.getBoundingClientRect(),k=r.w/Math.max(1,base.width);g.font=`${r.fs}px '${r.ff}'`;g.textBaseline='top';
         for(const td of el.querySelectorAll('td')){const q=td.getBoundingClientRect(),x=(q.left-base.left)*k,y=(q.top-base.top)*k,w=q.width*k,hh=q.height*k;const bg=td.style.background;if(bg){g.fillStyle=bg;g.fillRect(x,y,w,hh);}
@@ -4967,6 +5034,7 @@ function showCtx(){
   }else if(t==='magic'){
     magicPanel(add);
   }else if(t==='shape'){
+    if(canManage())add(h('button',{class:'tabbtn frbtn','data-tip':'Раздел: рамка с названием, всё внутри двигается вместе. В режиме показа разделы листаются как слайды',onclick:addFrame},'▭ Раздел'),h('button',{class:'tabbtn mmbtn','data-tip':'Интеллект-карта: тема в центре и ветки вокруг',onclick:mmRoot},'🧠 Интеллект-карта'),sep());
     geoPanel(add);
     add(sep(),swatches(PEN_COLORS.slice(0,7),S.shapeCol,v=>{S.shapeCol=v;saveTool();showCtx();}),sep(),h('span',{class:'clabel'},'Заливка'),swatches(['none',...MARK_COLORS.slice(0,4)],S.shapeFill,v=>{S.shapeFill=v;saveTool();showCtx();}),sep(),widthBtns([2,4,8],S.shapeW,v=>{S.shapeW=v;saveTool();showCtx();}));
   }else if(TBL.ed||(t==='select'&&list.length===1&&list[0].t==='table')){
@@ -4989,6 +5057,7 @@ function selActions(add){
   {const l=selRecs();add(cbtn(ICON.rotate,'Повернуть на 90°',()=>rotateSel(90)));if(l.length>1){add(cbtn(ICON.align,'Выровнять',e=>alignMenu(e.currentTarget)),cbtn(ICON.group,'Сгруппировать (Ctrl+G)',groupSel));}if(l.some(r=>r.grp))add(cbtn(ICON.group,'Разгруппировать',ungroupSel,true));}
   if(canEdit())add(h('button',{class:'cbtn alivebtn','data-tip':'Оживить: рисунок начнёт прыгать, летать, танцевать — у всех на экране',onmousedown:e=>e.preventDefault(),onclick:e=>aliveMenu(e.currentTarget)},'✨ Оживить'));
   add(h('button',{class:'cbtn hwsend','data-tip':'Скопировать выделенное на страницу «Домашка»',onmousedown:e=>e.preventDefault(),onclick:hwSendSel,html:HW_ICON}));
+  if(typeof selMore==='function')selMore(add,selRecs());
   add(cbtn(ICON.copy,'Дублировать (Ctrl+D)',duplicateSel),cbtn(ICON.front,'На передний план',()=>zOrder(true)),cbtn(ICON.back,'На задний план',()=>zOrder(false)),cbtn(ICON.trash,'Удалить (Delete)',deleteSel));
 }
 function textPanel(add,list){
@@ -4997,7 +5066,7 @@ function textPanel(add,list){
   const fsel=h('select',{class:'csel','aria-label':'Шрифт',onchange:e=>textFont(e.target.value)},FONT_GROUPS.map(([g,L])=>{const og=h('optgroup',{label:g});for(const f of L){const o=h('option',{value:f,selected:f===ff},f);o.style.fontFamily=`'${f}'`;og.append(o);}return og;}));
   const sizes=[14,18,22,28,36,48,64,90,120];if(!sizes.includes(Math.round(fs)))sizes.push(Math.round(fs));sizes.sort((a,b)=>a-b);
   const ssel=h('select',{class:'csel','aria-label':'Размер',onchange:e=>textSize(+e.target.value)},sizes.map(v=>h('option',{value:v,selected:v===Math.round(fs)},v)));
-  add(fsel,ssel,sep(),h('button',{class:'cbtn tbins','data-tip':'Вставить таблицу: выберите число строк и столбцов или нарисуйте рамкой',onmousedown:e=>e.preventDefault(),onclick:e=>tablePicker(e.currentTarget)},'▦ Таблица'),sep());
+  add(fsel,ssel,sep(),h('button',{class:'cbtn tbins','data-tip':'Вставить таблицу: выберите число строк и столбцов или нарисуйте рамкой',onmousedown:e=>e.preventDefault(),onclick:e=>tablePicker(e.currentTarget)},'▦ Таблица'),h('button',{class:'cbtn tbins mathbtn','data-tip':'Формула: дроби, степени, корни — как в учебнике',onmousedown:e=>e.preventDefault(),onclick:()=>mathDialog()},'√x Формула'),sep());
   for(const[lab,cmd,st]of[['Ж','bold','font-weight:800'],['К','italic','font-style:italic'],['Ч','underline','text-decoration:underline'],['З','strikeThrough','text-decoration:line-through']])
     add(h('button',{class:'cbtn',style:st,title:{bold:'Жирный',italic:'Курсив',underline:'Подчёркнутый',strikeThrough:'Зачёркнутый'}[cmd],onmousedown:e=>e.preventDefault(),onclick:()=>textCmd(cmd)},lab));
   add(sep(),swatches(PEN_COLORS.slice(0,7),tc,textColor),customColor(tc,textColor),sep(),h('span',{class:'clabel'},'Маркер'),swatches(MARK_COLORS.slice(0,4),'',v=>textCmd('hiliteColor',v)),h('button',{class:'sw none','aria-label':'Убрать выделение',onmousedown:e=>e.preventDefault(),onclick:()=>textCmd('hiliteColor','transparent')}),sep());
@@ -5266,6 +5335,7 @@ stageEl.addEventListener('pointerdown',e=>{
 });
 // Выделения маркером, лежащие на тексте (или картинке, заметке), едут вместе с ним
 function attachHl(before){
+  for(const f of[...before.values()].filter(r=>r.t==='frame'))for(const m of pageObjs()){if(before.has(m.id)||m.t==='frame'||m.t==='conn'||!editable(m))continue;const b=boxOf(m),cx=b.x+b.w/2,cy=b.y+b.h/2;if(cx>f.x&&cx<f.x+f.w&&cy>f.y&&cy<f.y+f.h)before.set(m.id,m);}
   const hosts=[...before.values()].filter(r=>['text','sticker','image','link','shape'].includes(r.t));if(!hosts.length)return;
   for(const m of pageObjs()){if(before.has(m.id)||m.t!=='stroke'||(m.kind!=='marker'&&m.kind!=='tape')||!editable(m))continue;
     const a=boxOf(m),area=Math.max(1,a.w*a.h);
@@ -5337,7 +5407,7 @@ stageEl.addEventListener('pointermove',e=>{
       const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
       for(const ev of evs.length?evs:[e]){
         const q=toWorld(ev.clientX,ev.clientY),n=G.pts.length;
-        if(Math.hypot(q.x-G.pts[n-2],q.y-G.pts[n-1])>=.9/view.z)G.pts.push(Math.round(q.x*10)/10,Math.round(q.y*10)/10);
+        if(Math.hypot(q.x-G.pts[n-2],q.y-G.pts[n-1])>=.9/view.z){G.pts.push(Math.round(q.x*10)/10,Math.round(q.y*10)/10);if(Math.hypot(q.x-(G.hx||0),q.y-(G.hy||0))*view.z>4){G.hx=q.x;G.hy=q.y;G.mt=performance.now();}}
       }
       if(G.type==='laser'&&G.pts.length>90){const cut=G.pts.length-90;G.pts=G.pts.slice(cut);G.sent=Math.max(0,(G.sent||0)-cut);}
       drawLive(G);sendLive(G,false);break;}
@@ -5415,7 +5485,8 @@ function endGesture(e){
       let a=1e9,b=1e9,c=-1e9,d=-1e9;
       for(let i=0;i<g.pts.length;i+=2){a=Math.min(a,g.pts[i]);c=Math.max(c,g.pts[i]);b=Math.min(b,g.pts[i+1]);d=Math.max(d,g.pts[i+1]);}
       const w=c-a,hh=d-b,pts=g.pts.map((v,i)=>Math.round((i%2?v-b:v-a)*10)/10);
-      if(g.kind==='pen'&&S.smart&&B.role!=='student'){const sh=smartShape(g.pts);if(sh){setRecs([{id:g.id,t:'shape',page:curPage,...sh,z:topZ(),col:g.col,fill:'none',sw:g.sw}]);break;}}
+      const held=g.kind==='pen'&&B.role!=='student'&&g.pts.length>12&&g.mt&&performance.now()-g.mt>650;
+      if(g.kind==='pen'&&((S.smart&&B.role!=='student')||held)){const sh=smartShape(g.pts);if(sh){if(held&&!S.smart)toast('✨ Фигура выровнена. Отменить: Ctrl+Z');setRecs([{id:g.id,t:'shape',page:curPage,...sh,z:topZ(),col:g.col,fill:'none',sw:g.sw}]);break;}}
       setRecs([{id:g.id,t:'stroke',page:curPage,x:a,y:b,w,h:hh,ow:w,oh:hh,pts,col:g.col,sw:g.sw,kind:g.kind,op:g.kind==='marker'?.55:g.kind==='chalk'?.92:1,z:topZ()}]);
       break;}
     case'laser':{
@@ -5686,8 +5757,8 @@ function studentFilter(list,k,c){
     if(!cur&&raw.t==='word'&&!raw.del&&raw.w)out={...raw,by:k.cid};
     else if(cur&&cur.t==='word'&&cur.by===k.cid)out={...raw,t:'word',by:k.cid};
     else if(cur&&cur.t==='hw'&&!cur.del&&!raw.del)out={...cur,l:raw.l,c:raw.c,done:{...(cur.done||{}),[k.cid]:Array.isArray(raw.done&&raw.done[k.cid])?raw.done[k.cid]:[]},nm:{...(cur.nm||{}),[k.cid]:String((raw.nm&&raw.nm[k.cid])||k.name||'').slice(0,30)}};
-    else if(!cur){if((raw.t==='stroke'||raw.t==='text')&&!raw.lock&&!raw.grp&&!raw.pc&&!raw.wk&&!raw.del&&raw.kind!=='tape'&&recs.get(raw.page))out={...raw,by:k.cid};}
-    else if(cur.by&&cur.by===k.cid&&(cur.t==='stroke'||cur.t==='text')&&!raw.lock&&raw.kind!=='tape')out={...raw,t:cur.t,by:k.cid};
+    else if(!cur){if((raw.t==='stroke'||raw.t==='text')&&!raw.lock&&!raw.grp&&!raw.pc&&!raw.wk&&!raw.del&&raw.kind!=='tape'&&recs.get(raw.page)&&visTo(recs.get(raw.page),k)){out={...raw,by:k.cid};delete out.pv;delete out.cm;delete out.mm;if(B.priv)out.pv=1;}}
+    else if(cur.by&&cur.by===k.cid&&(cur.t==='stroke'||cur.t==='text')&&!raw.lock&&raw.kind!=='tape'){out={...raw,t:cur.t,by:k.cid,page:cur.page};delete out.pv;delete out.cm;if(cur.pv)out.pv=1;if(cur.cm)out.cm=cur.cm;}
     else if((cur.pc||cur.wk)&&!raw.del&&!cur.del)out={...cur,x:raw.x,y:raw.y,z:raw.z,l:raw.l,c:raw.c,...(Number.isFinite(+raw.cell)?{cell:raw.cell}:{})};
     if(out)ok.push(out);else if(cur)back.push(cur);
   }
@@ -5794,8 +5865,8 @@ const Net={
       default:await this.onMedia(c,m);
     }
   },
-  sendRecs(c,list){for(let i=0;i<list.length;i+=250)c.send({t:'recs',list:list.slice(i,i+250)});},
-  relay(m,except){for(const c of this.conns.values())if(c!==except&&c.kd&&c.kd.authed&&c.open){try{c.send(m);}catch(e){}}},
+  sendRecs(c,list){if(isOwner()&&c.kd)list=list.filter(r=>visTo(r,c.kd));for(let i=0;i<list.length;i+=250)c.send({t:'recs',list:list.slice(i,i+250)});},
+  relay(m,except){for(const c of this.conns.values())if(c!==except&&c.kd&&c.kd.authed&&c.open){const mm=klFilter(m,c.kd);if(mm)try{c.send(mm);}catch(e){}}},
   publishPeers(){
     const list=[...this.conns.values()].filter(c=>c.kd&&c.kd.authed).map(c=>({id:c.kd.id,name:c.kd.name,cat:c.kd.cat,aid:c.kd.a.id}));
     this.peers=new Map(list.map(p=>[p.id,p]));
@@ -6170,7 +6241,7 @@ function handSet(m){
 }
 function handOff(id){hands.delete(id);refreshFaces();Net.send({t:'fx',k:'handoff',to:id});}
 function fxLocal(m){
-  if(plusFx(m))return;
+  if(plusFx(m)||klassFx(m))return;
   switch(m.k){
     case'party':party();break;
     case'dice':showDice(Math.max(1,Math.min(6,Math.round(num(m.v,1,6)))),m.fn&&String(m.fn).slice(0,30));break;
@@ -6190,6 +6261,7 @@ function fxLocal(m){
 }
 function fxSend(m){fxLocal({...m,f:'me'});Net.send({t:'fx',...m});}
 function syncFunTo(c){
+  try{klSync(c);}catch(e){console.warn(e);}
   try{
     if(Timer.on)c.send({t:'fx',k:'timer',a:Timer.run?'start':'pause',sec:Timer.run?(Timer.end-Date.now())/1000:Timer.left,f:'host'});
     if(Spot.on)c.send({t:'fx',k:'spot',on:true,f:Spot.who==='me'?'host':Spot.who});
@@ -6265,10 +6337,11 @@ async function importPDF(f){
   }catch(e){console.warn(e);toast('PDF не открылся. Возможно, он защищён паролем или повреждён.',1);}
 }
 function magicPanel(add){
-  const b=(icon,label,fn,on)=>h('button',{class:'magicbtn'+(on?' on':''),onclick:fn,html:icon},h('span',{},label)),owner=isOwner(),tab=['lesson','fun'].includes(S.mgTab)?S.mgTab:'games';
-  for(const[k,n]of[['games','Игры для занятий'],['lesson','На уроке'],['fun','Для удовольствия']])add(h('button',{class:'tabbtn'+(tab===k?' on':''),onclick:()=>{S.mgTab=k;saveTool();showCtx();}},n));
+  const b=(icon,label,fn,on)=>h('button',{class:'magicbtn'+(on?' on':''),onclick:fn,html:icon},h('span',{},label)),owner=isOwner(),tab=['lesson','fun','klass'].includes(S.mgTab)?S.mgTab:'games';
+  for(const[k,n]of[['games','Игры'],['klass','Класс'],['lesson','На уроке'],['fun','Для удовольствия']])add(h('button',{class:'tabbtn'+(tab===k?' on':''),onclick:()=>{S.mgTab=k;saveTool();showCtx();}},n));
   const row=h('div',{class:'magicrow'});add(row);const put=(...k)=>row.append(...k.filter(Boolean));
   if(tab==='fun')funPanel(put,b);
+  else if(tab==='klass'){row.classList.add('klrow');klassPanel(put,b);}
   else if(tab==='games')put(
     owner?b(GICON.make,'Конструктор заданий',makerOpen):null,
     b(GICON.ship,'Морской бой',()=>bsOpen()),
@@ -6283,18 +6356,15 @@ function magicPanel(add){
     owner?b(GICON.make,'Конструктор заданий',makerOpen):null,
     b(GICON.calc,'Калькулятор',calcOpen),
     canEdit()?b(LICON.gen,'Примеры',exampleDialog):null,
-    owner?b(LICON.focus,focusOn?'Внимание: включено':'Внимание на меня',()=>fxSend({k:'focus',on:!focusOn}),focusOn):null,
     b(LICON.dict,'Словарик',dictOpen),
     b(PAINT_ICON,'Котостудия',paintOpen),
     owner?b(LICON.book,'Учебник',bookOpen):null,
-    canEdit()?b(LICON.ask,'Быстрый вопрос',askDialog):null,
     b(GICON.poll,'Опрос',()=>gStartDialog('poll')),
     canEdit()?b(LICON.exit,'Билет на выход',()=>gOp({op:'start',s:{type:'exit'}})):null,
     b(LICON.replay,'Повтор урока',replayOpen),
     b(GICON.buzz,'Кто первый',()=>gOp({op:'start',s:{type:'buzz'}})),
     b(STICKERS.y_fish(),'Рыбки-баллы',()=>gOp({op:'start',s:{type:'score',players:(B.scores)||{}}})),
     b(TOOL_ICON.laser,'Салют',()=>fxSend({k:'party'})),
-    b(STICKERS.y_clock(),'Таймер',e=>{openMenu(e.currentTarget,[1,2,3,5,10,15,20,30].map(m=>({label:`${m} мин`,fn:()=>fxSend({k:'timer',a:'start',sec:m*60})})));}),
     owner?b(STICKERS.y_flag(),'Шторка',addCover):null,
     b(STICKERS.y_sun(),'Прожектор',()=>fxSend({k:'spot',on:!(Spot.on&&Spot.who==='me')}),Spot.on),
     b(STICKERS.y_note(),'Голос',voiceDialog),
@@ -6303,7 +6373,6 @@ function magicPanel(add){
     b(GICON.axes,'Координаты',addAxes),
     b(GICON.table,'Таблица',e=>openMenu(e.currentTarget,[[2,3],[3,3],[4,4],[5,3],[6,2]].map(([c,r])=>({label:`${r} строки, ${c} столбца`,fn:()=>addTable(c,r)})))),
     b(STICKERS.y_book(),'PDF-листы',()=>{$('#file-media').click();}),
-    owner?b(STICKERS.y_crown(),'Все за мной',()=>{Net.leading=!Net.leading;Net.send({t:'fx',k:'lead',on:Net.leading});Net.followTick(true);showCtx();},Net.leading):null,
     b(S.sound===false?STICKERS.y_cross():STICKERS.y_check(),S.sound===false?'Звук выключен':'Звук включён',()=>{S.sound=S.sound===false;saveTool();showCtx();}));
 }
 
@@ -7196,10 +7265,10 @@ function presentStart(){
   document.body.classList.add('present');const el=document.documentElement;if(el.requestFullscreen)el.requestFullscreen().catch(()=>{});
   if(isOwner()&&!Net.leading){Net.leading=true;Net.send({t:'fx',k:'lead',on:true});}
   let bar=$('#presbar');if(!bar){bar=h('div',{id:'presbar'});$('#app').append(bar);}
-  const draw=()=>{const pg=pagesList(),i=pg.findIndex(p=>p.id===curPage);bar.textContent='';bar.append(h('button',{class:'cbtn','aria-label':'Предыдущая страница',disabled:i<=0,onclick:()=>presGo(-1)},'◀'),h('b',{},`${i+1} из ${pg.length}`),h('button',{class:'cbtn','aria-label':'Следующая страница',disabled:i>=pg.length-1,onclick:()=>presGo(1)},'▶'),h('button',{class:'cbtn','aria-label':'Закончить показ',html:ICON.x,onclick:presentStop}));};
-  bar._draw=draw;draw();viewTouched=false;fitView();
+  const draw=()=>{const{L:pg,i}=presWhere();bar.textContent='';bar.append(h('button',{class:'cbtn','aria-label':'Предыдущая страница',disabled:i<=0,onclick:()=>presGo(-1)},'◀'),h('b',{},`${i+1} из ${pg.length}`),h('button',{class:'cbtn','aria-label':'Следующая страница',disabled:i>=pg.length-1,onclick:()=>presGo(1)},'▶'),h('button',{class:'cbtn','aria-label':'Закончить показ',html:ICON.x,onclick:presentStop}));};
+  bar._draw=draw;presIdx=-1;presShow(presWhere().i);
 }
-function presGo(d){const pg=pagesList(),i=pg.findIndex(p=>p.id===curPage),n=pg[i+d];if(!n)return;gotoPage(n.id);viewTouched=false;fitView();const b=$('#presbar');if(b&&b._draw)b._draw();}
+function presGo(d){const{L,i}=presWhere();if(!L[i+d])return;presShow(i+d);}
 function presentStop(){document.body.classList.remove('present');const b=$('#presbar');if(b)b.remove();if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});if(isOwner()&&Net.leading){Net.leading=false;Net.send({t:'fx',k:'lead',on:false});}fitView();}
 addEventListener('keydown',e=>{if(!document.body.classList.contains('present'))return;if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();presGo(1);}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();presGo(-1);}else if(e.key==='Escape')presentStop();},true);
 let swX=null;addEventListener('pointerdown',e=>{if(document.body.classList.contains('present')&&e.pointerType!=='mouse')swX=[e.clientX,e.clientY];},true);
@@ -7212,6 +7281,7 @@ function linkDialog(){
     m.append(h('label',{class:'field'},h('span',{},'Адрес'),u),h('label',{class:'field'},h('span',{},'Подпись'),t),err,h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:()=>{
       let v=u.value.trim();if(v&&!/^https?:\/\//i.test(v))v='https://'+v;let ok=false;try{ok=/^https?:$/.test(new URL(v).protocol);}catch(e){}
       if(!ok){err.textContent='Вставьте адрес сайта, например https://example.com';return;}
+      if(embedOf(v)){close();videoLinkDialog(v);return;}
       const c=center(),r={id:rid(),t:'link',page:curPage,url:v,title:t.value.trim()||new URL(v).hostname,x:c.x-160,y:c.y-40,w:320,h:80,z:topZ()};
       close();setRecs([r]);setTool('select');sel=new Set([r.id]);drawSel();showCtx();}},'Добавить ссылку')));
   });
@@ -7233,7 +7303,7 @@ async function exportAllPDF(){
 function mediaMenu(a){
   if(!canManage())return;
   const pick=acc=>{const i=$('#file-media');i.accept=acc;i.click();setTimeout(()=>{i.accept='image/*,audio/*,video/*,application/pdf,.pdf,.avi,.wmv,.mkv,.flv,.mpg,.mpeg,.mov,.3gp,.vob,.wma,.amr,.flac,.m4a';},1000);};
-  openMenu(a,[{icon:ICON.image,label:'Картинка',fn:()=>pick('image/*')},{icon:GICON.sound,label:'Аудиофайл: mp3, m4a, wav, ogg',fn:()=>pick('audio/*,.mp3,.m4a,.wav,.ogg,.aac,.opus,.flac,.wma,.amr')},{icon:STICKERS.y_note(),label:'Записать голос',fn:voiceDialog},{icon:ICON.media,label:'Видео: MP4, AVI, MOV, MKV, WMV…',fn:()=>pick('video/*,.avi,.wmv,.mkv,.flv,.mpg,.mpeg,.mov,.3gp,.vob,.m4v')},{icon:STICKERS.y_book(),label:'PDF-листы',fn:()=>pick('application/pdf,.pdf')},{icon:LICON.book,label:'Учебник сбоку (листать PDF)',fn:bookOpen},{icon:ICON.globe,label:'Ссылка на сайт',fn:linkDialog}]);
+  openMenu(a,[{icon:ICON.image,label:'Картинка',fn:()=>pick('image/*')},{icon:GICON.sound,label:'Аудиофайл: mp3, m4a, wav, ogg',fn:()=>pick('audio/*,.mp3,.m4a,.wav,.ogg,.aac,.opus,.flac,.wma,.amr')},{icon:STICKERS.y_note(),label:'Записать голос',fn:voiceDialog},{icon:ICON.media,label:'Видео: MP4, AVI, MOV, MKV, WMV…',fn:()=>pick('video/*,.avi,.wmv,.mkv,.flv,.mpg,.mpeg,.mov,.3gp,.vob,.m4v')},{icon:STICKERS.y_book(),label:'PDF-листы',fn:()=>pick('application/pdf,.pdf')},{icon:LICON.book,label:'Учебник сбоку (листать PDF)',fn:bookOpen},{icon:ICON.media,label:'Видео по ссылке: YouTube, RuTube, VK',fn:()=>videoLinkDialog()},{icon:ICON.globe,label:'Ссылка на сайт',fn:linkDialog}]);
 }
 
 // ---- Любые видео и аудио: AVI, WMV, MKV, FLV, MPG, 3GP, WMA, AMR… переделываются в MP4/M4A прямо в браузере ----
@@ -9561,6 +9631,787 @@ addEventListener('keydown',e=>{
   if(e.key==='Tab'){e.preventDefault();let i=TBL.i,j=TBL.j+(e.shiftKey?-1:1);if(j>=r.cols){j=0;i++;}if(j<0){j=r.cols-1;i--;}if(i<0)return;if(i>=r.rows){TBL.i=r.rows-1;tbAddRow(true);return;}tbEdit(r.id,i,j);return;}
 },true);
 
+// ================= Разделы-фреймы, стрелки-соединители, интеллект-карты, видео по ссылке, формулы, комментарии =================
+const FR_COLS=['#0F5CA8','#2C9C72','#E07F10','#7A4FD6','#E3202C','#0E7C86'];
+const MM_PAL=['#FFD23F','#A5EDC8','#8FD3FF','#FFB3C7','#C9B6FF','#FFC48C'];
+const MM_LINE={'#FFD23F':'#C99A00','#A5EDC8':'#2C9C72','#8FD3FF':'#0F5CA8','#FFB3C7':'#D6336C','#C9B6FF':'#7A4FD6','#FFC48C':'#E07F10'};
+const CONN=new Map(); // id объекта -> id стрелок, которые к нему прикреплены
+
+// Показать прямоугольник мира на экране целиком
+function viewBox(q,pad=30){
+  const A=freeArea(),z=Math.max(.15,Math.min(4,Math.min((A.r-A.l-pad*2)/Math.max(q.w,1),(A.b-A.t-pad*2)/Math.max(q.h,1))));
+  view.z=z;view.x=(A.l+A.r)/2-(q.x+q.w/2)*z;view.y=(A.t+A.b)/2-(q.y+q.h/2)*z;viewTouched=true;applyView();
+}
+function lowZ(){let m=Infinity;for(const r of pageObjs())m=Math.min(m,r.z);return Number.isFinite(m)?Math.max(0,m-1):0;}
+
+// ---- Фрейм: раздел доски с названием ----
+EXT.frame={
+  clean(r,o){o.title=String(r.title||'').slice(0,60);o.fc=col(r.fc,'#0F5CA8');},
+  el(){return h('div',{class:'obj frame'},h('div',{class:'fr-t'}));},
+  render(el,r){el.style.setProperty('--fc',r.fc);el.querySelector('.fr-t').textContent=r.title||'Раздел';},
+  draw(g,r){g.strokeStyle=r.fc;g.lineWidth=3;g.fillStyle=r.fc+'12';g.beginPath();g.roundRect(0,0,r.w,r.h,18);g.fill();g.stroke();g.fillStyle=r.fc;g.font="800 22px Nunito";g.textBaseline='bottom';g.textAlign='left';g.fillText(r.title||'Раздел',6,-8);}
+};
+function pageFrames(p=curPage){return[...recs.values()].filter(r=>r.t==='frame'&&r.page===p&&!r.del).sort((a,b)=>(Math.round(a.y/300)-Math.round(b.y/300))||a.x-b.x);}
+function addFrame(){
+  if(!canManage()||!curPage)return;
+  const n=pageFrames().length,A=freeArea(),c=toWorld((A.l+A.r)/2,(A.t+A.b)/2+20),w=Math.round((A.r-A.l)*.62/view.z),hh=Math.round((A.b-A.t)*.6/view.z);
+  modal('Новый раздел',(m,close)=>{
+    const inp=h('input',{class:'input',value:'',placeholder:['Разминка','Новая тема','Практика','Итог урока'][n%4],maxLength:60});
+    let fc=FR_COLS[n%FR_COLS.length];const sw=h('div',{class:'frcols'});
+    const paint=()=>{sw.textContent='';for(const c0 of FR_COLS)sw.append(h('button',{class:'frcol'+(c0===fc?' on':''),style:`background:${c0}`,'aria-label':'Цвет рамки',onclick:()=>{fc=c0;paint();}}));};paint();
+    const go=()=>{close();const r={id:rid(),t:'frame',page:curPage,x:c.x-w/2,y:c.y-hh/2,w,h:hh,z:lowZ(),title:inp.value.trim()||inp.placeholder,fc};setRecs([r]);setTool('select');sel=new Set([r.id]);drawSel();showCtx();renderPages();};
+    m.append(h('p',{class:'hint'},'Раздел — это рамка с названием. Всё, что внутри, двигается вместе с ней. В «Режиме показа» разделы листаются как слайды.'),
+      h('label',{class:'field'},h('span',{},'Название'),inp),h('div',{class:'field'},h('span',{},'Цвет'),sw),
+      h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:go},'Добавить раздел')));
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+  });
+}
+function renameFrame(r){
+  if(!canManage())return;
+  modal('Название раздела',(m,close)=>{const inp=h('input',{class:'input',value:r.title||'',maxLength:60});
+    const go=()=>{close();const q=recs.get(r.id);if(q)setRecs([{...q,title:inp.value.trim()||'Раздел'}]);renderPages();};
+    m.append(h('label',{class:'field'},h('span',{},'Название'),inp),h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:go},'Сохранить')));inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});setTimeout(()=>inp.select(),30);});
+}
+function framesMenu(btn){
+  const fr=pageFrames();
+  openMenu(btn,[...fr.map((f,i)=>({label:`${i+1}. ${f.title||'Раздел'}`,fn:()=>{viewBox(boxOf(f));if(Net.leading)Net.followTick(true);}})),
+    {label:'Вся страница',fn:()=>{viewTouched=false;fitView();}},
+    canManage()?{label:'＋ Новый раздел',fn:addFrame}:null]);
+}
+// В режиме показа разделы листаются как слайды
+function presSlides(){
+  const out=[];
+  for(const p of pagesList()){if(p.own)continue;const fr=pageFrames(p.id);if(fr.length)for(const f of fr)out.push({p:p.id,f:f.id});else out.push({p:p.id});}
+  return out;
+}
+let presIdx=0;
+function presShow(i){
+  const L=presSlides();if(!L.length)return;i=Math.max(0,Math.min(L.length-1,i));presIdx=i;const s=L[i];
+  if(s.p!==curPage)gotoPage(s.p);
+  const f=s.f&&recs.get(s.f);
+  setTimeout(()=>{if(f)viewBox(boxOf(f),20);else{viewTouched=false;fitView();}Net.followTick(true);const b=$('#presbar');if(b&&b._draw)b._draw();},30);
+}
+function presWhere(){const L=presSlides();let i=presIdx;if(!L[i]||L[i].p!==curPage)i=L.findIndex(s=>s.p===curPage);return{L,i:Math.max(0,i)};}
+
+// ---- Стрелки, которые держатся за объекты ----
+EXT.conn={
+  clean(r,o){if(typeof r.a!=='string'||typeof r.b!=='string'||!/^[\w-]{1,40}$/.test(r.a)||!/^[\w-]{1,40}$/.test(r.b))return false;o.a=r.a;o.b=r.b;o.col=col(r.col,'#5C6577');o.sw=num(r.sw,4,30);o.ar=r.ar?1:0;o.cv=r.cv?1:0;},
+  el(){const s=svgEl('svg',{class:'obj conn'});s.append(svgEl('path',{class:'ln',fill:'none','stroke-linecap':'round'}),svgEl('path',{class:'ah','stroke-linejoin':'round'}),svgEl('path',{class:'hit','stroke-linecap':'round'}));return s;},
+  render(el,r){
+    const A=recs.get(r.a),Bq=recs.get(r.b);
+    for(const k of[r.a,r.b]){if(!CONN.has(k))CONN.set(k,new Set());CONN.get(k).add(r.id);}
+    if(!A||!Bq||A.del||Bq.del||A.page!==r.page||Bq.page!==r.page){el.style.display='none';return;}
+    el.style.display='';
+    const g=connGeom(boxOf(A),boxOf(Bq),r),pad=r.sw*3+14;
+    r.x=g.x0-pad;r.y=g.y0-pad;r.w=Math.max(10,g.x1-g.x0+pad*2);r.h=Math.max(10,g.y1-g.y0+pad*2);
+    el.style.left=r.x+'px';el.style.top=r.y+'px';el.style.width=r.w+'px';el.style.height=r.h+'px';
+    const d=g.d(r.x,r.y),ln=el.querySelector('.ln'),hit=el.querySelector('.hit'),ah=el.querySelector('.ah');
+    ln.setAttribute('d',d);ln.setAttribute('stroke',r.col);ln.setAttribute('stroke-width',r.sw);
+    hit.setAttribute('d',d);hit.setAttribute('stroke-width',Math.max(16,r.sw*3));
+    if(r.ar){const[x,y,ux,uy]=g.end,s=r.sw*2.6+6,ox=x-r.x,oy=y-r.y;ah.setAttribute('d',`M${ox} ${oy}L${ox-ux*s-uy*s*.6} ${oy-uy*s+ux*s*.6}L${ox-ux*s+uy*s*.6} ${oy-uy*s-ux*s*.6}Z`);ah.setAttribute('fill',r.col);ah.setAttribute('stroke',r.col);ah.style.display='';}else ah.style.display='none';
+  },
+  draw(g,r){const A=recs.get(r.a),Bq=recs.get(r.b);if(!A||!Bq||A.del||Bq.del)return;const q=connGeom(boxOf(A),boxOf(Bq),r);g.strokeStyle=r.col;g.lineWidth=r.sw;g.lineCap='round';g.stroke(new Path2D(q.d(r.x,r.y)));}
+};
+function connGeom(a,b,r){
+  const ca=[a.x+a.w/2,a.y+a.h/2],cb=[b.x+b.w/2,b.y+b.h/2];
+  const edge=(q,c,tx,ty)=>{const dx=tx-c[0],dy=ty-c[1];if(!dx&&!dy)return c;const k=Math.min(Math.abs((q.w/2+6)/(dx||1e-9)),Math.abs((q.h/2+6)/(dy||1e-9)));return[c[0]+dx*Math.min(1,k),c[1]+dy*Math.min(1,k)];};
+  let p1,p2,c1,c2;
+  if(r.cv){ // плавная ветка интеллект-карты: выходит из бока узла
+    const hor=Math.abs(cb[0]-ca[0])>=Math.abs(cb[1]-ca[1])*.8,sx=Math.sign(cb[0]-ca[0])||1,sy=Math.sign(cb[1]-ca[1])||1;
+    if(hor){p1=[ca[0]+sx*(a.w/2+4),ca[1]];p2=[cb[0]-sx*(b.w/2+4),cb[1]];const m=(p2[0]-p1[0])/2;c1=[p1[0]+m,p1[1]];c2=[p2[0]-m,p2[1]];}
+    else{p1=[ca[0],ca[1]+sy*(a.h/2+4)];p2=[cb[0],cb[1]-sy*(b.h/2+4)];const m=(p2[1]-p1[1])/2;c1=[p1[0],p1[1]+m];c2=[p2[0],p2[1]-m];}
+  }else{p1=edge(a,ca,cb[0],cb[1]);p2=edge(b,cb,ca[0],ca[1]);c1=p1;c2=p2;}
+  const xs=[p1[0],p2[0],c1[0],c2[0]],ys=[p1[1],p2[1],c1[1],c2[1]];
+  const L=Math.hypot(p2[0]-c2[0],p2[1]-c2[1])||Math.hypot(p2[0]-p1[0],p2[1]-p1[1])||1,ux=(p2[0]-(r.cv?c2[0]:p1[0]))/(r.cv?L:(Math.hypot(p2[0]-p1[0],p2[1]-p1[1])||1)),uy=(p2[1]-(r.cv?c2[1]:p1[1]))/(r.cv?L:(Math.hypot(p2[0]-p1[0],p2[1]-p1[1])||1));
+  return{x0:Math.min(...xs),y0:Math.min(...ys),x1:Math.max(...xs),y1:Math.max(...ys),end:[p2[0],p2[1],ux,uy],
+    d:(ox,oy)=>r.cv?`M${p1[0]-ox} ${p1[1]-oy}C${c1[0]-ox} ${c1[1]-oy} ${c2[0]-ox} ${c2[1]-oy} ${p2[0]-ox} ${p2[1]-oy}`:`M${p1[0]-ox} ${p1[1]-oy}L${p2[0]-ox} ${p2[1]-oy}`};
+}
+function connectSel(){
+  const l=selRecs().filter(r=>r.t!=='conn'&&r.t!=='frame');if(l.length!==2){toast('Выделите два объекта, чтобы соединить их стрелкой.');return;}
+  l.sort((a,b)=>a.z-b.z);
+  const r={id:rid(),t:'conn',page:curPage,a:l[0].id,b:l[1].id,x:0,y:0,w:10,h:10,z:lowZ(),col:S.shapeCol||'#5C6577',sw:4,ar:1};
+  setRecs([r]);toast('Готово! Стрелка держится за объекты и тянется за ними.');
+}
+
+// ---- Интеллект-карта ----
+function mmRoot(){
+  if(!canManage()||!curPage)return;
+  const c=center(),d=h('div',{});d.innerHTML='<b>Тема</b>';
+  const r={id:rid(),t:'text',page:curPage,x:c.x-130,y:c.y-40,w:260,h:70,z:topZ(),html:d.innerHTML,ff:'Nunito',fs:34,col:'#1E2430',al:'center',bg:'#FFD23F',mm:1};
+  setRecs([r]);setTool('select');sel=new Set([r.id]);drawSel();showCtx();setTimeout(()=>{startEdit(r.id);const tx=els.get(r.id)&&els.get(r.id).querySelector('.tx');if(tx){const rg=document.createRange();rg.selectNodeContents(tx);const s=getSelection();s.removeAllRanges();s.addRange(rg);}},40);
+  toast('Впишите тему. Кнопки «＋» вокруг добавляют ветки, а Tab — ветку справа.');
+}
+function mmParent(id){for(const r of pageObjs())if(r.t==='conn'&&r.b===id&&r.cv)return recs.get(r.a);return null;}
+function mmAdd(src,dir){
+  if(!src||!canEdit())return;
+  const q=boxOf(src),root=!mmParent(src.id),kids=pageObjs().filter(r=>r.t==='conn'&&r.a===src.id).length;
+  const bg=root?MM_PAL[(kids+1)%MM_PAL.length]:src.bg,w=200,hh=Math.max(46,(src.fs>26?26:src.fs)*1.6),gap=150;
+  const cx=q.x+q.w/2,cy=q.y+q.h/2,free=(x,y)=>!pageObjs().some(r=>{if(r.t==='conn'||r.t==='frame')return false;const b=boxOf(r);return x<b.x+b.w+12&&x+w>b.x-12&&y<b.y+b.h+12&&y+hh>b.y-12;});
+  let x,y;
+  for(const k of[0,1,-1,2,-2,3,-3,4,-4,5,-5]){
+    if(dir==='e'||dir==='w'){x=dir==='e'?q.x+q.w+gap:q.x-gap-w;y=cy-hh/2+k*(hh+26);}
+    else{y=dir==='s'?q.y+q.h+gap*.7:q.y-gap*.7-hh;x=cx-w/2+k*(w+30);}
+    if(free(x,y))break;
+  }
+  const n={id:rid(),t:'text',page:curPage,x,y,w,h:hh,z:topZ(),html:'',ff:src.ff||'Nunito',fs:Math.max(20,Math.min(26,(src.fs||30)-6)),col:'#1E2430',al:'center',bg,mm:1};
+  const c={id:rid(),t:'conn',page:curPage,a:src.id,b:n.id,x:0,y:0,w:10,h:10,z:lowZ(),col:MM_LINE[bg]||'#5C6577',sw:root?6:4,cv:1};
+  setRecs([n,c]);setTool('select');sel=new Set([n.id]);drawSel();showCtx();setTimeout(()=>startEdit(n.id),30);
+}
+function selDeco(){
+  overlay.querySelectorAll('.mmadd').forEach(e=>e.remove());
+  if(sel.size!==1||editing||!canEdit())return;const r=selRecs()[0];if(!r||!r.mm||!editable(r))return;
+  const q=boxOf(r),x1=q.x*view.z+view.x,y1=q.y*view.z+view.y,x2=(q.x+q.w)*view.z+view.x,y2=(q.y+q.h)*view.z+view.y;
+  for(const[dn,x,y]of[['e',x2+30,(y1+y2)/2],['w',x1-30,(y1+y2)/2],['s',(x1+x2)/2,y2+30],['n',(x1+x2)/2,y1-50]]){
+    const b=h('button',{class:'mmadd','aria-label':'Добавить ветку',title:'Добавить ветку',onpointerdown:e=>{e.stopPropagation();e.preventDefault();},onclick:e=>{e.stopPropagation();mmAdd(recs.get(r.id),dn);}},'＋');
+    b.style.left=x+'px';b.style.top=y+'px';overlay.append(b);
+  }
+}
+{const base=drawSel;drawSel=function(){base();try{selDeco();}catch(e){console.warn(e);}};}
+addEventListener('keydown',e=>{
+  if(e.key!=='Tab'||!editing)return;const r=recs.get(editing);if(!r||!r.mm)return;
+  e.preventDefault();e.stopPropagation();const id=r.id;finishEdit();const q=recs.get(id);if(q&&!q.del)mmAdd(q,e.shiftKey?'s':'e');
+},true);
+
+// ---- Видео по ссылке: YouTube, RuTube, VK Видео ----
+const EMBED_OK=/^https:\/\/(www\.youtube-nocookie\.com\/embed\/[\w-]{6,20}|rutube\.ru\/play\/embed\/[0-9a-f]{20,40}|vk\.com\/video_ext\.php\?oid=-?\d+&id=\d+)/i;
+function embedOf(u){
+  const yt=id=>/^[\w-]{6,20}$/.test(id||'')?{src:'https://www.youtube-nocookie.com/embed/'+id+'?rel=0',k:'YouTube'}:null;
+  try{
+    if(!/^https?:\/\//i.test(u))u='https://'+u;const x=new URL(u),H=x.hostname.replace(/^(www|m)\./,'');
+    if(H==='youtu.be')return yt(x.pathname.slice(1));
+    if(/(^|\.)youtube(-nocookie)?\.com$/.test(H)){if(x.searchParams.get('v'))return yt(x.searchParams.get('v'));const m=x.pathname.match(/^\/(shorts|embed|live)\/([\w-]{6,20})/);if(m)return yt(m[2]);}
+    if(/(^|\.)rutube\.ru$/.test(H)){const m=x.pathname.match(/\/(?:video|play\/embed|shorts)\/([0-9a-f]{20,40})/i);if(m)return{src:'https://rutube.ru/play/embed/'+m[1],k:'RuTube'};}
+    if(/(^|\.)(vk\.com|vk\.ru|vkvideo\.ru)$/.test(H)){const m=(x.pathname+x.search+x.hash).match(/video(-?\d+)_(\d+)/);if(m)return{src:`https://vk.com/video_ext.php?oid=${m[1]}&id=${m[2]}&hd=2`,k:'VK Видео'};}
+  }catch(e){}
+  return null;
+}
+EXT.embed={
+  clean(r,o){const s=String(r.src||'');if(!EMBED_OK.test(s))return false;o.src=s.slice(0,300);o.title=String(r.title||'').slice(0,80);},
+  el(r){return h('div',{class:'obj media embed'},h('div',{class:'media-head',html:catFace('tim')},h('span',{class:'emt'})),h('div',{class:'media-body'},h('iframe',{allow:'autoplay; fullscreen; encrypted-media; picture-in-picture',allowfullscreen:'',referrerpolicy:'strict-origin-when-cross-origin',loading:'lazy',title:'Видео'})));},
+  render(el,r){el.classList.remove('frozen');el.querySelector('.emt').textContent=r.title||'Видео';const f=el.querySelector('iframe');if(f.getAttribute('src')!==r.src)f.setAttribute('src',r.src);},
+  draw(g,r){g.fillStyle='#111';g.fillRect(0,0,r.w,r.h);g.fillStyle='#fff';g.font="800 22px Nunito";g.textAlign='center';g.textBaseline='middle';g.fillText('▶ '+(r.title||'Видео'),r.w/2,r.h/2,r.w-40);}
+};
+function videoLinkDialog(pre=''){
+  if(!canManage()||!curPage)return;
+  modal('Видео по ссылке',(m,close)=>{
+    const u=h('input',{class:'input',value:pre,placeholder:'https://youtu.be/… или https://rutube.ru/video/…',inputMode:'url',maxLength:600}),err=h('p',{class:'err'});
+    const go=()=>{const e=embedOf(u.value.trim());if(!e){err.textContent='Не узнаю ссылку. Подходят видео с YouTube, RuTube и VK Видео.';return;}
+      const c=center(),r={id:rid(),t:'embed',page:curPage,src:e.src,title:e.k,x:c.x-320,y:c.y-200,w:640,h:390,z:topZ()};close();setRecs([r]);setTool('select');sel=new Set([r.id]);drawSel();showCtx();};
+    m.append(h('p',{class:'hint'},'Скопируйте адрес видео на YouTube, RuTube или VK Видео и вставьте сюда. Видео появится прямо на доске, ученики смогут его посмотреть (нужен интернет).'),
+      h('label',{class:'field'},h('span',{},'Ссылка на видео'),u),err,h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:go},'Добавить видео')));
+    u.addEventListener('keydown',e=>{if(e.key==='Enter')go();});setTimeout(()=>u.focus(),30);
+  });
+}
+
+// ---- Формулы: пишем x^2, (a+b)/2, sqrt(16) — получаем красиво ----
+const MGREEK={pi:'π',alpha:'α',beta:'β',gamma:'γ',delta:'δ',theta:'θ',lambda:'λ',mu:'μ',sigma:'σ',omega:'ω',Delta:'Δ',deg:'°',inf:'∞'};
+const MFUNC=new Set(['sin','cos','tg','ctg','tan','cot','log','lg','ln','lim','max','min']);
+function mathML(src){
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const T=[],re=/\s*(\d+(?:[.,]\d+)?|<=|>=|!=|\+-|->|[A-Za-zА-Яа-яЁё]+|\S)/gy;let m;
+  src=String(src||'').slice(0,300);
+  while(re.lastIndex<src.length&&(m=re.exec(src)))T.push(m[1]);
+  let i=0;const peek=()=>T[i],next=()=>T[i++];
+  const OPS={'*':'×','·':'·','×':'×',':':'÷','÷':'÷','-':'−','+':'+','=':'=','<':'&lt;','>':'&gt;','<=':'≤','>=':'≥','!=':'≠','+-':'±','±':'±','≤':'≤','≥':'≥','≠':'≠','≈':'≈',',':',',';':';','->':'→','%':'%','°':'°','!':'!','|':'|','∞':'∞'};
+  function atom(){
+    const t=next();if(t===undefined)return{x:'<mrow></mrow>'};
+    if(/^\d/.test(t))return{x:`<mn>${esc(t.replace('.',','))}</mn>`};
+    if(t==='('||t==='{'||t==='['){const cl=t==='('?')':t==='{'?'}':']',e=expr(cl);if(peek()===cl)i++;return t==='{'?{x:`<mrow>${e}</mrow>`}:{x:`<mrow><mo>${t}</mo>${e}<mo>${cl}</mo></mrow>`,i:`<mrow>${e}</mrow>`};}
+    if(t==='sqrt'||t==='√'){const a=atom();return{x:`<msqrt>${a.i||a.x}</msqrt>`};}
+    if(/^[A-Za-zА-Яа-яЁё]+$/.test(t)){if(MGREEK[t])return{x:`<mi>${MGREEK[t]}</mi>`};if(MFUNC.has(t))return{x:`<mi mathvariant="normal">${t}</mi><mo>&#8289;</mo>`};return{x:[...t].map(c=>`<mi>${esc(c)}</mi>`).join('')};}
+    if(OPS[t])return{x:`<mo>${OPS[t]}</mo>`};
+    return{x:`<mi>${esc(t)}</mi>`};
+  }
+  function power(){
+    const b=atom();let x=b.x;
+    if(peek()==='^'||peek()==='_'){
+      let sup=null,sub=null;for(let k=0;k<2;k++){if(peek()==='^'){i++;const a=atom();sup=a.i||a.x;}else if(peek()==='_'){i++;const a=atom();sub=a.i||a.x;}}
+      const base=`<mrow>${b.x}</mrow>`;x=sup&&sub?`<msubsup>${base}<mrow>${sub}</mrow><mrow>${sup}</mrow></msubsup>`:sup?`<msup>${base}<mrow>${sup}</mrow></msup>`:`<msub>${base}<mrow>${sub}</mrow></msub>`;return{x};
+    }
+    return b;
+  }
+  function frac(){let p=power();while(peek()==='/'){i++;const q=power();p={x:`<mfrac><mrow>${p.i||p.x}</mrow><mrow>${q.i||q.x}</mrow></mfrac>`};}return p.x;}
+  function expr(close){let out='';while(i<T.length&&peek()!==close){if(peek()===')'||peek()==='}'||peek()===']'){out+=`<mo>${next()}</mo>`;continue;}out+=frac();}return out;}
+  return`<math display="inline"><mrow>${expr(null)}</mrow></math>`;
+}
+EXT.math={
+  clean(r,o){o.src=String(r.src||'').slice(0,300);o.col=col(r.col,'#1E2430');if(!o.src&&!o.del)return false;},
+  el(){return h('div',{class:'obj mathobj'},h('div',{class:'mx'}));},
+  render(el,r){
+    const mx=el.firstChild;if(el.dataset.src!==r.src){mx.innerHTML=mathML(r.src);el.dataset.src=r.src;}
+    mx.style.color=r.col;mx.style.fontSize='100px';el.style.width='auto';el.style.height='auto';
+    const nw=Math.max(20,mx.scrollWidth),nh=Math.max(20,mx.scrollHeight),k=r.w/nw;
+    mx.style.fontSize=(100*k)+'px';el.style.width=r.w+'px';r.h=Math.max(10,nh*k);el.style.height=r.h+'px';
+  },
+  draw(g,r){g.fillStyle=r.col;g.font=`${Math.max(12,r.h*.6)}px 'Times New Roman',serif`;g.textBaseline='middle';g.textAlign='left';g.fillText(r.src.replace(/\*/g,'×').replace(/sqrt/g,'√'),0,r.h/2,r.w);}
+};
+function mathDialog(edit){
+  if(!canEdit()||!curPage)return;
+  modal(edit?'Изменить формулу':'Формула',(m,close)=>{
+    const inp=h('input',{class:'input mathin',value:edit?edit.src:'',placeholder:'Например: (a+b)/2 или x^2+y^2=r^2',maxLength:300,autocomplete:'off'}),pv=h('div',{class:'mathpv'});
+    const upd=()=>{pv.innerHTML=inp.value.trim()?mathML(inp.value):'<span class="hint">Здесь появится формула</span>';};
+    const ins=(t,back=0)=>{const a=inp.selectionStart??inp.value.length,b=inp.selectionEnd??a;inp.value=inp.value.slice(0,a)+t+inp.value.slice(b);inp.focus();const p=a+t.length-back;inp.setSelectionRange(p,p);upd();};
+    const pal=h('div',{class:'mathpal'});
+    for(const[lab,t,bk,tip]of[['a/b','()/()',4,'Дробь'],['x²','^2',0,'Квадрат'],['xⁿ','^()',1,'Степень'],['√','sqrt()',1,'Корень'],['x₁','_1',0,'Индекс'],['×','×',0,'Умножить'],['÷',':',0,'Разделить'],['±','±',0,'Плюс-минус'],['≤','≤',0,''],['≥','≥',0,''],['≠','≠',0,''],['≈','≈',0,''],['π','pi',0,'Пи'],['°','°',0,'Градус'],['( )','()',1,'Скобки'],['∞','∞',0,'Бесконечность']])
+      pal.append(h('button',{class:'cbtn mathk',title:tip||lab,onclick:()=>ins(t,bk)},lab));
+    const ex=h('div',{class:'mathex'},h('span',{class:'hint'},'Примеры: '),...['3/4+1/4=1','x^2+y^2=r^2','sqrt(16)=4','S=a·b','(a+b)^2','v=s/t'].map(s=>h('button',{class:'chip',onclick:()=>{inp.value=s;upd();inp.focus();}},s)));
+    const go=()=>{const v=inp.value.trim();if(!v){close();return;}close();
+      if(edit){const q=recs.get(edit.id);if(q)setRecs([{...q,src:v}]);return;}
+      const c=center(),r={id:rid(),t:'math',page:curPage,src:v,col:isChalk()?S.chalk:S.txtCol,x:c.x-120,y:c.y-40,w:Math.min(700,Math.max(120,v.length*26)),h:80,z:topZ()};setRecs([r]);setTool('select');sel=new Set([r.id]);drawSel();showCtx();};
+    inp.addEventListener('input',upd);inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});upd();
+    m.append(h('p',{class:'hint'},'Пишите как в тетради: дробь — косая черта /, степень — ^, корень — sqrt(…). Или нажимайте кнопки.'),pal,h('label',{class:'field'},h('span',{},'Формула'),inp),pv,ex,
+      h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:go},edit?'Сохранить':'Вставить формулу')));
+    setTimeout(()=>inp.focus(),30);
+  });
+}
+
+// ---- Комментарии учителя к объектам ----
+function cmDialog(r){
+  if(!r||!canManage())return;
+  modal('Комментарий',(m,close)=>{
+    const ta=h('textarea',{class:'input',rows:3,maxLength:400,placeholder:'Например: проверь окончание 🙂'},r.cm||'');
+    const save=v=>{close();const q=recs.get(r.id);if(q){const n={...q};if(v)n.cm=v;else delete n.cm;setRecs([n]);}};
+    m.append(h('p',{class:'hint'},'Комментарий появится значком 💬 рядом с объектом. Ученики нажмут на него и прочитают.'),ta,
+      h('div',{class:'modal-acts'},r.cm?h('button',{class:'btn',onclick:()=>save('')},'Убрать комментарий'):null,h('button',{class:'btn main',onclick:()=>save(ta.value.trim())},'Сохранить')));
+    setTimeout(()=>ta.focus(),30);
+  });
+}
+function pinUpd(r){
+  let p=world.querySelector(`.cmpin[data-pin="${CSS.escape(r.id)}"]`);
+  if(!r.cm||r.del||r.page!==curPage){if(p)p.remove();return;}
+  if(!p){p=h('button',{class:'cmpin','data-pin':r.id,'aria-label':'Комментарий учителя',onpointerdown:e=>e.stopPropagation(),onclick:e=>{e.stopPropagation();cmShow(r.id,p);}},'💬');world.append(p);}
+  const q=boxOf(r);p.style.left=(q.x-34)+'px';p.style.top=(q.y-30)+'px';p.title=r.cm;
+}
+function cmShow(id,pin){
+  document.querySelectorAll('.cmpop').forEach(e=>e.remove());const r=recs.get(id);if(!r||!r.cm)return;
+  const q=pin.getBoundingClientRect(),pop=h('div',{class:'cmpop',role:'dialog'},h('p',{},r.cm),canManage()?h('div',{class:'cmacts'},h('button',{class:'cbtn',onclick:()=>{pop.remove();cmDialog(recs.get(id));}},'Изменить'),h('button',{class:'cbtn',onclick:()=>{pop.remove();const n={...recs.get(id)};delete n.cm;setRecs([n]);}},'Убрать')):null);
+  pop.style.left=Math.min(innerWidth-280,q.left)+'px';pop.style.top=(q.bottom+6)+'px';document.body.append(pop);
+  setTimeout(()=>addEventListener('pointerdown',function f(e){if(!pop.contains(e.target)){pop.remove();removeEventListener('pointerdown',f,true);}},true),0);
+}
+
+// ---- Общие украшения объекта после отрисовки ----
+function recDeco(el,r){
+  if(r.cm||world.querySelector(`.cmpin[data-pin="${CSS.escape(r.id)}"]`))pinUpd(r);
+  el.classList.toggle('pvobj',!!(r.pv&&isOwner()));
+  if(r.t!=='conn'&&CONN.has(r.id)){for(const cid of[...CONN.get(r.id)]){const c=recs.get(cid);if(!c||c.del||(c.a!==r.id&&c.b!==r.id)){CONN.get(r.id).delete(cid);continue;}if(c.page===curPage)renderRec(c);}}
+}
+function dropDeco(id){
+  const p=world.querySelector(`.cmpin[data-pin="${CSS.escape(id)}"]`),r=recs.get(id);
+  if(p)p.remove();
+  if(r&&r.del&&CONN.has(id))for(const cid of CONN.get(id)){const c=recs.get(cid);if(c&&!c.del&&c.page===curPage)renderRec(c);}
+}
+// Двойной щелчок: переименовать раздел, изменить формулу
+addEventListener('dblclick',e=>{
+  const o=e.target.closest&&e.target.closest('.obj[data-id]');if(!o)return;const r=recs.get(o.dataset.id);if(!r)return;
+  if(r.t==='frame'&&e.target.closest('.fr-t'))renameFrame(r);
+  else if(r.t==='math'&&editable(r))mathDialog(r);
+});
+// Дополнительные кнопки для выделенного
+function selMore(add,l){
+  if(l.length===2&&canEdit())add(h('button',{class:'cbtn pgtxt','data-tip':'Соединить два объекта стрелкой. Стрелка тянется за ними',onmousedown:e=>e.preventDefault(),onclick:connectSel},'↗ Соединить'));
+  if(l.length===1&&canManage()&&l[0].t!=='conn')add(h('button',{class:'cbtn pgtxt','data-tip':'Комментарий к объекту: ученик увидит значок 💬',onmousedown:e=>e.preventDefault(),onclick:()=>cmDialog(l[0])},'💬'));
+  if(l.length===1&&l[0].t==='conn'&&canEdit()){const c=l[0];add(h('button',{class:'cbtn pgtxt'+(c.ar?' on':''),onmousedown:e=>e.preventDefault(),onclick:()=>{setRecs([{...recs.get(c.id),ar:c.ar?0:1}]);showCtx();}},c.ar?'Со стрелкой':'Без стрелки'));}
+}
+
+// ================= Класс: личные листы, скрытые ответы, команды, шумомер, музыка, голосовая связь, запись объяснения =================
+const KICON={
+  sheets:TI(`<rect x="3" y="7" width="12" height="16" rx="2" fill="#8FD3FF" stroke="#1E2430" stroke-width="2"/><rect x="10" y="4" width="12" height="16" rx="2" fill="#FFD23F" stroke="#1E2430" stroke-width="2"/><rect x="17" y="10" width="12" height="16" rx="2" fill="#FFB3C7" stroke="#1E2430" stroke-width="2"/><path d="M20 15h6M20 19h4" stroke="#1E2430" stroke-width="2" stroke-linecap="round"/>`),
+  priv:TI(`<path d="M3 16c4-7 9-10 13-10s9 3 13 10c-4 7-9 10-13 10S7 23 3 16z" fill="#C9B6FF" stroke="#1E2430" stroke-width="2"/><circle cx="16" cy="16" r="5" fill="#fff" stroke="#1E2430" stroke-width="2"/><path d="M5 27L27 5" stroke="#E3202C" stroke-width="3" stroke-linecap="round"/>`),
+  teams:TI(`<circle cx="10" cy="11" r="5" fill="#FFD23F" stroke="#1E2430" stroke-width="2"/><circle cx="22" cy="11" r="5" fill="#8FD3FF" stroke="#1E2430" stroke-width="2"/><path d="M2 27c0-6 4-9 8-9s8 3 8 9z" fill="#FFD23F" stroke="#1E2430" stroke-width="2" stroke-linejoin="round"/><path d="M14 27c0-6 4-9 8-9s8 3 8 9z" fill="#8FD3FF" stroke="#1E2430" stroke-width="2" stroke-linejoin="round"/>`),
+  pick:TI(`<circle cx="16" cy="16" r="13" fill="#A5EDC8" stroke="#1E2430" stroke-width="2"/><circle cx="16" cy="12" r="4" fill="#fff" stroke="#1E2430" stroke-width="2"/><path d="M8 25c1-5 4-7 8-7s7 2 8 7" fill="#fff" stroke="#1E2430" stroke-width="2"/><text x="26" y="9" font-size="10" font-weight="900" fill="#E3202C" font-family="Nunito">?</text>`),
+  noise:TI(`<rect x="4" y="18" width="4" height="9" rx="1.5" fill="#2C9C72" stroke="#1E2430" stroke-width="1.5"/><rect x="11" y="13" width="4" height="14" rx="1.5" fill="#FFD23F" stroke="#1E2430" stroke-width="1.5"/><rect x="18" y="8" width="4" height="19" rx="1.5" fill="#FF9F43" stroke="#1E2430" stroke-width="1.5"/><rect x="25" y="3" width="4" height="24" rx="1.5" fill="#E3202C" stroke="#1E2430" stroke-width="1.5"/>`),
+  music:TI(`<path d="M12 23V7l15-3v16" fill="none" stroke="#1E2430" stroke-width="2.200" stroke-linejoin="round"/><ellipse cx="8.500" cy="23.500" rx="4.500" ry="3.500" fill="#FF8FB0" stroke="#1E2430" stroke-width="2"/><ellipse cx="23.500" cy="20.500" rx="4.500" ry="3.500" fill="#8FD3FF" stroke="#1E2430" stroke-width="2"/>`),
+  voice:TI(`<rect x="11" y="3" width="10" height="17" rx="5" fill="#FFD23F" stroke="#1E2430" stroke-width="2"/><path d="M6 15a10 10 0 0 0 20 0M16 25v4M11 29h10" fill="none" stroke="#1E2430" stroke-width="2" stroke-linecap="round"/>`),
+  rec:TI(`<rect x="2" y="8" width="20" height="16" rx="4" fill="#8FD3FF" stroke="#1E2430" stroke-width="2"/><path d="M22 14l8-4v12l-8-4z" fill="#8FD3FF" stroke="#1E2430" stroke-width="2" stroke-linejoin="round"/><circle cx="10" cy="16" r="4" fill="#E3202C"/>`),
+  timer:TI(`<circle cx="16" cy="18" r="11" fill="#fff" stroke="#1E2430" stroke-width="2"/><path d="M16 18V11M13 4h6" stroke="#1E2430" stroke-width="2.400" stroke-linecap="round"/><path d="M16 18l5 3" stroke="#E3202C" stroke-width="2.400" stroke-linecap="round"/>`),
+};
+const studentConns=()=>isOwner()?Net.connected().filter(c=>c.kd&&c.kd.role==='student'):[];
+function classNames(){const n=isOwner()?Net.connected().map(c=>c.kd.name):[...Net.peers.values()].filter(p=>p.id!=='host').map(p=>p.name);return[...new Set(n.filter(Boolean))];}
+
+// ---- Видимость: что учитель отправляет каждому ученику ----
+function visTo(r,k){
+  if(!r||!k||k.role==='editor')return true;
+  if(r.pv&&r.by!==k.cid)return false;
+  const p=r.t==='page'?r:(typeof r.page==='string'?recs.get(r.page):null);
+  if(p&&p.own&&!p.pub&&p.own!==k.cid)return false;
+  return true;
+}
+function klFilter(m,k){
+  if(!B||!isOwner()||!m||!k||k.role==='editor')return m;
+  if(m.t==='recs'){const l=(m.list||[]).filter(r=>visTo(r,k));return l.length===(m.list||[]).length?m:l.length?{...m,list:l}:null;}
+  if((m.t==='follow'||m.t==='goto'||m.t==='live'||m.t==='cur')&&typeof m.page==='string'){
+    const p=recs.get(m.page);if(p&&p.own&&!p.pub&&p.own!==k.cid)return null;
+    if(m.t==='follow'&&B.sheetsLive&&pagesList().some(q=>q.own===k.cid&&!q.del)&&!(p&&p.own===k.cid))return null; // ученик остаётся на своём листе
+  }
+  if(m.t==='live'&&B.priv&&m.f&&m.f!=='host'){const src=[...Net.conns.values()].find(c=>c.kd&&c.kd.id===m.f);if(src&&src.kd.role==='student'&&src.kd!==k)return null;}
+  return m;
+}
+// Учитель открыл что-то новое для всех — дослать недостающее
+function klResync(test){
+  if(!isOwner())return;
+  for(const c of Net.connected()){const l=[...recs.values()].filter(r=>test(r)&&visTo(r,c.kd));if(l.length)Net.sendRecs(c,l);}
+}
+function klSync(c){
+  if(!B)return;
+  if(B.priv)c.send({t:'fx',k:'priv',on:true,f:'host'});
+  if(Music.on)c.send({t:'fx',k:'music',on:true,st:Music.st,f:'host'});
+  if(Voice.on)setTimeout(()=>voiceCall(c),1500);
+}
+function klassFx(m){
+  switch(m.k){
+    case'priv':if(!isOwner())privBanner(!!m.on);return true;
+    case'sheet':if(!isOwner())toast('📄 Это ваш личный лист. Его видите только вы и учитель.');return true;
+    case'teams':if(!isOwner())teamsShow(m.teams);return true;
+    case'noise':if(!isOwner())noiseShow(num(m.v,0,100),num(m.th,60,100),!!m.on);return true;
+    case'music':musicSet(!!m.on,m.st);return true;
+    case'voice':if(!isOwner()){if(m.on===false)voiceStopGuest();else if(m.mute)voiceMuteMe(true);}return true;
+  }
+  return false;
+}
+
+// ---- Скрытые ответы ----
+function privToggle(){
+  if(!isOwner())return;
+  if(!B.priv){B.priv=true;Store.meta();fxSend({k:'priv',on:true});toast('🙈 Ответы скрыты: ученики пишут, но не видят друг друга. Вы видите всё.');showCtx();return;}
+  const hidden=[...recs.values()].filter(r=>r.pv&&!r.del);
+  B.priv=false;Store.meta();fxSend({k:'priv',on:false});
+  if(hidden.length){setRecs(hidden.map(r=>{const n={...r};delete n.pv;return n;}),{undo:false});toast(`👀 Ответы открыты всем: ${hidden.length}`);}
+  else toast('Ответы снова видны всем.');
+  showCtx();
+}
+function privBanner(on){
+  let b=$('#privban');if(!on){if(b)b.remove();return;}
+  if(!b){b=h('div',{id:'privban',role:'status'},'🙈 Пишите свой ответ — другие ученики его пока не видят');$('#app').append(b);}
+}
+
+// ---- Личные листы ----
+function sheetsOf(src){return pagesList().filter(p=>p.own&&(!src||p.src===src));}
+function sheetsDialog(){
+  if(!isOwner()||!curPage)return;
+  const st=studentConns(),cur=recs.get(curPage),src=cur&&cur.own?cur.src:curPage,have=new Set(sheetsOf(src).map(p=>p.own));
+  modal('Личные листы',(m,close)=>{
+    if(!st.length){m.append(h('p',{},'Сейчас нет учеников на связи. Отправьте им ссылку через «Поделиться» — когда они подключатся, вы сможете раздать листы.'));if(sheetsOf().length)m.append(h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:()=>{close();galleryOpen();}},'Открыть листы учеников')));return;}
+    const boxes=st.map(c=>{const cb=h('input',{type:'checkbox',checked:!have.has(c.kd.cid)});return{c,cb,row:h('label',{class:'shrow'},cb,h('span',{html:avHtml(c.kd.cat)}),h('b',{},c.kd.name||'Ученик'),have.has(c.kd.cid)?h('i',{class:'hint'},' уже есть лист'):null)};});
+    let mode='copy';const mb=k=>h('button',{class:'tabbtn'+(mode===k?' on':''),onclick:e=>{mode=k;e.currentTarget.parentNode.querySelectorAll('.tabbtn').forEach(x=>x.classList.toggle('on',x===e.currentTarget));}},k==='copy'?'📋 Копия этой страницы':'⬜ Чистый лист');
+    m.append(h('p',{class:'hint'},'Каждый ученик получит свой лист и сразу перейдёт на него. Другие дети его не видят. Вы видите все листы плиткой и можете открыть любой.'),
+      h('div',{class:'field'},h('span',{},'Что будет на листе'),h('div',{class:'tabrow'},mb('copy'),mb('blank'))),
+      h('div',{class:'shlist'},...boxes.map(b=>b.row)),
+      h('div',{class:'modal-acts'},sheetsOf().length?h('button',{class:'btn',onclick:()=>{close();galleryOpen();}},'Листы учеников'):null,h('button',{class:'btn main',onclick:()=>{const who=boxes.filter(b=>b.cb.checked).map(b=>b.c);if(!who.length){toast('Отметьте хотя бы одного ученика.');return;}close();sheetsGive(who,src,mode==='copy');}},'Раздать листы')));
+  },{wide:true});
+}
+function sheetsGive(conns,src,copy){
+  const sp=recs.get(src),objs=copy?pageObjs(src):[],out=[],go=[];let ord=Math.max(0,...pagesList().map(p=>p.order||0));
+  for(const c of conns){
+    const k=c.kd,pid=rid(),map=new Map();
+    out.push({id:pid,t:'page',title:'Лист: '+(k.name||'ученик'),order:++ord+1000,bg:sp?sp.bg:'grid',own:k.cid,on:k.name||'Ученик',src});
+    for(const r of objs)map.set(r.id,rid());
+    for(const r of objs){const n={...r,id:map.get(r.id),page:pid,z:r.z};delete n.by;delete n.pv;delete n.cm;if(n.grp)n.grp=n.grp+'s'+pid.slice(0,4);if(n.t==='conn'){n.a=map.get(r.a)||r.a;n.b=map.get(r.b)||r.b;}if(n.wk)n.wk=map.get(r.wk)||n.wk;n.lock=true;out.push(n);}
+    go.push([c,pid]);
+  }
+  setRecs(out,{undo:false});B.sheetsLive=true;Store.meta();
+  setTimeout(()=>{for(const[c,pid]of go){try{c.send({t:'follow',page:pid});c.send({t:'fx',k:'sheet',f:'host'});}catch(e){}}},400);
+  toast(`📄 Листы розданы: ${conns.length}. Смотрите их кнопкой «Листы учеников» внизу.`);renderPages();
+  setTimeout(galleryOpen,600);
+}
+function sheetsBack(){
+  if(!isOwner())return;B.sheetsLive=false;Store.meta();
+  const main=pagesList().find(p=>!p.own);const back=recs.get(curPage)&&!recs.get(curPage).own?curPage:main&&main.id;
+  if(back){if(back!==curPage){gotoPage(back);fitView();}Net.relay({t:'follow',page:back});}
+  toast('Все вернулись к общей доске. Листы сохранены — их можно открыть снова.');renderPages();
+}
+function sheetPublish(id,on){
+  const p=recs.get(id);if(!p)return;setRecs([{...p,pub:on?1:0}],{undo:false});
+  if(on){klResync(r=>r.page===id&&!r.del);setTimeout(()=>{gotoPage(id);fitView();Net.showEveryone();},300);}
+  else{const main=pagesList().find(q=>!q.own);if(main&&curPage===id){gotoPage(main.id);fitView();}}
+}
+// мини-картинка страницы для галереи
+function miniPage(pid,W=240,H=160){
+  const L=pageObjs(pid).filter(r=>r.t!=='conn');const bg=(recs.get(pid)||{}).bg;
+  if(!L.length)return`<svg viewBox="0 0 ${W} ${H}" class="mini"><rect width="${W}" height="${H}" fill="${BG_COLOR[bg]||'#fff'}"/><text x="${W/2}" y="${H/2}" text-anchor="middle" font-family="Nunito" font-size="14" fill="#8B93A5">Пока пусто</text></svg>`;
+  let a=1e9,b=1e9,c=-1e9,d=-1e9;for(const r of L){const q=boxOf(r);a=Math.min(a,q.x);b=Math.min(b,q.y);c=Math.max(c,q.x+q.w);d=Math.max(d,q.y+q.h);}
+  const k=Math.min(W/Math.max(1,c-a+40),H/Math.max(1,d-b+40)),ox=(W-(c-a)*k)/2-a*k,oy=(H-(d-b)*k)/2-b*k;
+  const E=s=>String(s).replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));let s='';
+  for(const r of L.sort((x,y)=>x.z-y.z)){
+    const t=`translate(${r.x*k+ox} ${r.y*k+oy}) scale(${k})`;
+    if(r.t==='stroke')s+=`<path transform="${t}" d="${strokeD(r.pts,r.ow?r.w/r.ow:1,r.oh?r.h/r.oh:1)}" fill="none" stroke="${r.col}" stroke-width="${r.sw}" stroke-linecap="round" stroke-linejoin="round" opacity="${r.kind==='marker'?.5:1}"/>`;
+    else if(r.t==='shape')s+=`<path transform="${t}" d="${shapeD(r)}" fill="${r.fill!=='none'&&!['line','arrow'].includes(r.s)?r.fill:'none'}" stroke="${r.col}" stroke-width="${r.sw}"/>`;
+    else if(r.t==='text'){const q=boxOf(r),tx=(els.get(r.id)?els.get(r.id).innerText:r.html.replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim().slice(0,40);s+=`<g transform="${t}">${r.bg!=='none'?`<rect width="${r.w}" height="${q.h}" rx="8" fill="${r.bg}"/>`:''}<text x="6" y="${r.fs}" font-family="Nunito" font-size="${r.fs}" fill="${r.col}">${E(tx)}</text></g>`;}
+    else if(r.t==='image'&&urlCache.has(r.mid))s+=`<image transform="${t}" href="${urlCache.get(r.mid)}" width="${r.w}" height="${r.h}" preserveAspectRatio="none"/>`;
+    else if(r.t!=='frame')s+=`<rect transform="${t}" width="${r.w}" height="${r.h}" rx="6" fill="#EEF1F6" stroke="#C7CDD8"/>`;
+  }
+  return`<svg viewBox="0 0 ${W} ${H}" class="mini"><rect width="${W}" height="${H}" fill="${BG_COLOR[bg]||'#fff'}"/>${s}</svg>`;
+}
+function galleryOpen(){
+  if(!isOwner())return;
+  modal('Листы учеников',(m,close)=>{
+    const grid=h('div',{class:'sgrid'}),online=new Set(Net.connected().map(c=>c.kd.cid));
+    const fill=()=>{
+      const L=sheetsOf();grid.textContent='';
+      if(!L.length){grid.append(h('p',{class:'hint'},'Листов пока нет. Нажмите «Раздать листы».'));return;}
+      for(const p of L){const n=pageObjs(p.id).filter(r=>r.by===p.own).length;
+        grid.append(h('article',{class:'scard'+(p.pub?' pub':'')},
+          h('button',{class:'sthumb','aria-label':'Открыть лист '+p.on,html:miniPage(p.id),onclick:()=>{close();gotoPage(p.id);fitView();}}),
+          h('div',{class:'sname'},h('i',{class:'dot'+(online.has(p.own)?' on':''),title:online.has(p.own)?'На связи':'Не на связи'}),h('b',{},p.on||'Ученик'),h('span',{class:'hint'},n?` · записей: ${n}`:' · пока пусто')),
+          h('div',{class:'sacts'},h('button',{class:'cbtn pgtxt',onclick:()=>{close();gotoPage(p.id);fitView();}},'✏️ Открыть'),
+            h('button',{class:'cbtn pgtxt'+(p.pub?' on':''),title:p.pub?'Снова сделать личным':'Показать этот лист всем ученикам',onclick:()=>{close();sheetPublish(p.id,!p.pub);}},p.pub?'🙈 Скрыть':'📺 Показать всем'))));
+      }
+    };
+    fill();const tm=setInterval(()=>{if(!grid.isConnected){clearInterval(tm);return;}fill();},2500);
+    m.append(h('p',{class:'hint'},'Работы обновляются сами. Откройте лист, чтобы проверить и написать на нём: ученик сразу увидит ваши пометки.'),grid,
+      h('div',{class:'modal-acts'},
+        h('button',{class:'btn',onclick:()=>{confirmBox('Удалить все личные листы?','Листы учеников и всё, что на них написано, исчезнут.','Удалить',()=>{close();const L=sheetsOf(),ids=new Set(L.map(p=>p.id));setRecs([...L.map(p=>({...p,del:true})),...[...recs.values()].filter(r=>ids.has(r.page)&&!r.del).map(r=>({...r,del:true}))],{undo:false});B.sheetsLive=false;Store.meta();renderPages();});}},'Удалить листы'),
+        h('button',{class:'btn',onclick:()=>{close();sheetsDialog();}},'Раздать ещё'),
+        h('button',{class:'btn main',onclick:()=>{close();sheetsBack();}},'Все к общей доске')));
+  },{wide:true});
+}
+// Нижняя панель страниц: листы и разделы
+function pagesExtra(p,tabs,pg){
+  const T=[...tabs.querySelectorAll('.ptab')];
+  let num0=0;pg.forEach((x,i)=>{const t=T[i];if(t&&!x.own&&!x.hw&&t.firstChild&&t.firstChild.nodeType===3)t.firstChild.nodeValue=String(++num0);});
+  pg.forEach((x,i)=>{const t=T[i];if(!t||!x.own)return;
+    if(!isOwner()){if(x.own===B.clientId){t.textContent='📄 Мой лист';t.classList.add('mysheet');}return;}
+    if(x.id!==curPage)t.remove();else{t.textContent='📄 '+(x.on||'Лист');t.classList.add('mysheet');}
+  });
+  if(isOwner()){const n=pg.filter(x=>x.own).length;
+    if(n)tabs.after(h('button',{class:'cbtn pgtxt sheetsbtn',title:'Листы учеников плиткой','aria-label':'Листы учеников',onclick:galleryOpen},`👥 Листы (${n})`));
+    const cur=recs.get(curPage);if(cur&&cur.own)tabs.after(h('button',{class:'cbtn pgtxt',onclick:()=>{const m=pagesList().find(q=>!q.own);if(m){gotoPage(m.id);fitView();}}},'⬅ К уроку'));
+  }
+  if(pageFrames().length)p.append(h('button',{class:'cbtn pgtxt frnav',title:'Разделы этой страницы','aria-label':'Разделы страницы',onclick:e=>framesMenu(e.currentTarget)},`▭ Разделы (${pageFrames().length})`));
+}
+
+// ---- Команды и счёт ----
+const TEAM_NAMES=['Котики','Совята','Лисята','Зайчата'],TEAM_COL=['#FFD23F','#8FD3FF','#FFB3C7','#A5EDC8'];
+function teamsDialog(){
+  if(!isOwner())return;
+  let names=classNames();
+  modal('Команды',(m,close)=>{
+    let n=2,teams=[];const area=h('div',{class:'teamsgrid'}),ta=h('textarea',{class:'input',rows:2,placeholder:'Имена через запятую, если учеников нет на связи'},names.length?'':'');
+    const shuffle=()=>{const L=(names.length?names:ta.value.split(/[,\n]/).map(s=>s.trim()).filter(Boolean)).slice();for(let i=L.length-1;i>0;i--){const j=crypto.getRandomValues(new Uint32Array(1))[0]%(i+1);[L[i],L[j]]=[L[j],L[i]];}
+      teams=Array.from({length:n},(_,i)=>({n:TEAM_NAMES[i],m:[]}));L.forEach((x,i)=>teams[i%n].m.push(x));paint();};
+    const paint=()=>{area.textContent='';teams.forEach((t,i)=>area.append(h('div',{class:'teamcard',style:`--tc:${TEAM_COL[i]}`},h('b',{},t.n),h('p',{},t.m.join(', ')||'—'))));};
+    const nb=h('div',{class:'tabrow'},...[2,3,4].map(k=>h('button',{class:'tabbtn'+(k===n?' on':''),onclick:e=>{n=k;nb.querySelectorAll('.tabbtn').forEach(x=>x.classList.toggle('on',x===e.currentTarget));shuffle();}},`${k} команды`)));
+    m.append(h('p',{class:'hint'},names.length?`Учеников на связи: ${names.length}. Нажмите «Перемешать», если состав не нравится.`:'Учеников на связи нет — впишите имена или просто начните счёт для команд.'),names.length?null:ta,nb,area,
+      h('div',{class:'modal-acts'},h('button',{class:'btn',onclick:shuffle},'🔀 Перемешать'),h('button',{class:'btn main',onclick:()=>{close();if(!teams.length)shuffle();
+        fxSend({k:'teams',teams});const pl={};teams.forEach(t=>pl[t.n]=0);gOp({op:'start',s:{type:'score',players:pl}});}},'Показать всем и начать счёт')));
+    ta.addEventListener('input',shuffle);shuffle();
+  },{wide:true});
+}
+function teamsShow(teams){
+  if(!Array.isArray(teams))return;document.querySelectorAll('.teamsshow').forEach(e=>e.remove());
+  const box=h('div',{class:'teamsshow',role:'status'},h('h3',{},'Команды'),h('div',{class:'teamsgrid'},...teams.slice(0,4).map((t,i)=>h('div',{class:'teamcard',style:`--tc:${TEAM_COL[i]}`},h('b',{},String(t.n||'').slice(0,20)),h('p',{},(Array.isArray(t.m)?t.m:[]).map(x=>String(x).slice(0,30)).join(', ')||'—')))),h('button',{class:'btn',onclick:()=>box.remove()},'Понятно'));
+  document.body.append(box);setTimeout(()=>box.remove(),9000);
+}
+// ---- Случайный ученик ----
+function pickPupil(){
+  const L=classNames();
+  if(L.length<2){toast('Нужно хотя бы двое учеников на связи. Можно вписать имена в «Колесо».');gStartDialog('wheel');return;}
+  gOp({op:'start',s:{type:'wheel',items:L.slice(0,24)}});setTimeout(()=>gOp({op:'spin'}),500);
+}
+
+// ---- Шумомер ----
+const Noise={on:false,th:70,v:0};
+async function noiseToggle(){
+  if(Noise.on){noiseStop();return;}
+  try{Noise.st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});}catch(e){toast('Нужен доступ к микрофону, чтобы слушать шум в классе.',1);return;}
+  const ctx=Noise.ctx=new AudioContext(),an=ctx.createAnalyser();an.fftSize=1024;ctx.createMediaStreamSource(Noise.st).connect(an);const buf=new Float32Array(an.fftSize);
+  Noise.on=true;let sent=0,loud=0;
+  const tick=()=>{if(!Noise.on)return;an.getFloatTimeDomainData(buf);let s=0;for(const v of buf)s+=v*v;const db=20*Math.log10(Math.sqrt(s/buf.length)+1e-6);
+    const v=Math.max(0,Math.min(100,(db+60)*2));Noise.v=Noise.v*.8+v*.2;noiseShow(Noise.v,Noise.th,true);
+    if(Noise.v>Noise.th){loud++;if(loud===45)toast('🙀 Ой, громко! Давайте потише.');}else loud=0;
+    const n=performance.now();if(isOwner()&&n-sent>600){sent=n;Net.send({t:'fx',k:'noise',v:Math.round(Noise.v),th:Noise.th,on:true});}
+    requestAnimationFrame(tick);};
+  tick();toast('Шумомер включён. Ползунком можно задать, что считается «громко».');
+}
+function noiseStop(){Noise.on=false;try{Noise.st.getTracks().forEach(t=>t.stop());Noise.ctx.close();}catch(e){}noiseShow(0,0,false);if(isOwner())Net.send({t:'fx',k:'noise',on:false});}
+function noiseShow(v,th,on){
+  let w=$('#noisew');if(!on){if(w)w.remove();return;}
+  if(!w){w=h('div',{id:'noisew',class:'klpill'},h('span',{class:'nface'},'😺'),h('div',{class:'nbar'},h('i',{}),h('b',{})),isOwner()?h('input',{type:'range',min:30,max:95,value:Noise.th,'aria-label':'Порог громкости',title:'Что считать громким',oninput:e=>{Noise.th=+e.target.value;}}):null,isOwner()?h('button',{class:'cbtn','aria-label':'Выключить шумомер',html:ICON.x,onclick:noiseStop}):null);$('#app').append(w);}
+  w.querySelector('.nbar i').style.width=v+'%';w.querySelector('.nbar b').style.left=th+'%';
+  const lvl=v>th?2:v>th*.75?1:0;w.querySelector('.nface').textContent=['😺','😼','🙀'][lvl];w.dataset.l=lvl;
+}
+
+// ---- Музыка для самостоятельной работы (рождается прямо в браузере) ----
+const MSTYLE={calm:{n:'Спокойная',bpm:66,base:57,sc:[0,2,4,7,9],wave:'sine'},happy:{n:'Весёлая',bpm:104,base:60,sc:[0,2,4,5,7,9,11],wave:'triangle'},space:{n:'Космос',bpm:48,base:50,sc:[0,3,5,7,10],wave:'sine'},rain:{n:'Дождик',bpm:80,base:62,sc:[0,2,4,7,9],wave:'sine'}};
+const Music={on:false,st:'calm',vol:lsGet('kd.mvol',.5)};
+function musicSet(on,st){
+  if(!on){Music.on=false;clearInterval(Music.tm);if(Music.ctx){const c=Music.ctx;Music.g.gain.setTargetAtTime(0,c.currentTime,.4);setTimeout(()=>c.close().catch(()=>{}),1500);Music.ctx=null;}musicPill();return;}
+  Music.st=MSTYLE[st]?st:'calm';if(Music.on&&Music.ctx){musicPill();return;}
+  Music.on=true;const ctx=Music.ctx=new AudioContext(),g=Music.g=ctx.createGain();g.gain.value=Music.vol*.35;
+  const dl=ctx.createDelay(),fb=ctx.createGain(),lp=ctx.createBiquadFilter();dl.delayTime.value=.33;fb.gain.value=.35;lp.type='lowpass';lp.frequency.value=2400;
+  g.connect(lp);lp.connect(ctx.destination);lp.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(ctx.destination);
+  let t=ctx.currentTime+.1,step=0;
+  const note=(midi,at,len,vol,type)=>{const o=ctx.createOscillator(),e=ctx.createGain();o.type=type;o.frequency.value=440*Math.pow(2,(midi-69)/12);e.gain.setValueAtTime(0,at);e.gain.linearRampToValueAtTime(vol,at+.04);e.gain.exponentialRampToValueAtTime(.001,at+len);o.connect(e);e.connect(g);o.start(at);o.stop(at+len+.05);};
+  const rnd=n=>crypto.getRandomValues(new Uint32Array(1))[0]%n;
+  Music.tm=setInterval(()=>{
+    if(!Music.ctx)return;const S0=MSTYLE[Music.st],beat=60/S0.bpm/2;
+    while(t<ctx.currentTime+.6){
+      const bar=Math.floor(step/8),root=[0,5,3,4][bar%4],deg=S0.sc;
+      if(step%8===0){for(const iv of[0,4,7])note(S0.base-12+root+iv+(iv===4&&deg.includes(3)&&!deg.includes(4)?-1:0),t,beat*8,.06,'sine');}
+      if(Music.st==='rain'){if(rnd(3)===0)note(S0.base+24+deg[rnd(deg.length)],t,.25,.05,'sine');}
+      else if(rnd(10)<(Music.st==='happy'?8:5)){note(S0.base+12*(rnd(2))+deg[rnd(deg.length)],t,beat*(Music.st==='space'?6:3),.11,S0.wave);}
+      t+=beat;step++;
+    }
+  },150);
+  if(ctx.state==='suspended')ctx.resume().catch(()=>{});
+  musicPill();
+}
+function musicPill(){
+  let w=$('#musicw');if(!Music.on){if(w)w.remove();return;}
+  if(!w){w=h('div',{id:'musicw',class:'klpill'});$('#app').append(w);}
+  w.textContent='';
+  w.append(h('span',{class:'mnote'},'🎵'),h('b',{},MSTYLE[Music.st].n),
+    Music.ctx&&Music.ctx.state==='suspended'?h('button',{class:'cbtn pgtxt',onclick:()=>{Music.ctx.resume().then(musicPill);}},'🔊 Нажмите, чтобы слышать'):null,
+    h('input',{type:'range',min:0,max:1,step:.05,value:Music.vol,'aria-label':'Громкость музыки',oninput:e=>{Music.vol=+e.target.value;lsSet('kd.mvol',Music.vol);if(Music.g)Music.g.gain.value=Music.vol*.35;}}),
+    isOwner()?h('button',{class:'cbtn','aria-label':'Выключить музыку для всех',html:ICON.x,onclick:()=>fxSend({k:'music',on:false})}):null);
+}
+function musicMenu(btn){
+  if(!isOwner()){toast('Музыку включает учитель.');return;}
+  openMenu(btn,[...Object.entries(MSTYLE).map(([k,v])=>({label:(Music.on&&Music.st===k?'✓ ':'')+'🎵 '+v.n,fn:()=>fxSend({k:'music',on:true,st:k})})),Music.on?{label:'⏹ Выключить музыку',fn:()=>fxSend({k:'music',on:false})}:null]);
+}
+
+// ---- Голосовая связь прямо на доске ----
+const Voice={on:false,calls:new Map(),mix:new Map(),srcs:new Map(),me:null};
+async function voiceToggle(){
+  if(!isOwner())return;
+  if(Voice.on){voiceStopHost();return;}
+  if(!Net.peer){toast('Голосовая связь работает, когда доска открыта ученикам через «Поделиться».',1);return;}
+  try{Voice.mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});}catch(e){toast('Нужен доступ к микрофону.',1);return;}
+  Voice.ctx=new AudioContext();Voice.micSrc=Voice.ctx.createMediaStreamSource(Voice.mic);Voice.on=true;
+  for(const c of Net.connected())voiceCall(c);
+  fxSend({k:'voice',on:true});voicePill();toast('🎙 Вы в эфире: ученики на доске слышат вас.');
+}
+function voiceCall(c){
+  if(!Voice.on||!c||!c.kd||!c.kd.authed||c.relay||!Net.peer||Voice.calls.has(c.kd.id))return;
+  const id=c.kd.id,dest=Voice.ctx.createMediaStreamDestination();Voice.micSrc.connect(dest);
+  for(const[o,s]of Voice.srcs)if(o!==id)s.connect(dest);Voice.mix.set(id,dest);
+  let call;try{call=Net.peer.call(c.peer,dest.stream,{metadata:{kd:'voice'}});}catch(e){return;}if(!call)return;
+  Voice.calls.set(id,call);
+  call.on('stream',st=>voiceIn(id,st));
+  const end=()=>{Voice.calls.delete(id);const s=Voice.srcs.get(id);if(s){try{s.disconnect();}catch(e){}Voice.srcs.delete(id);}Voice.mix.delete(id);voicePill();};
+  call.on('close',end);call.on('error',end);
+}
+function voiceIn(id,st){
+  if(!Voice.ctx||Voice.srcs.has(id))return;
+  const a=new Audio();a.srcObject=st;a.muted=true;a.play().catch(()=>{});(Voice.keep||(Voice.keep=[])).push(a);
+  const s=Voice.ctx.createMediaStreamSource(st);Voice.srcs.set(id,s);s.connect(Voice.ctx.destination);
+  for(const[o,d]of Voice.mix)if(o!==id)s.connect(d);voicePill();
+}
+function voiceStopHost(){
+  Voice.on=false;for(const c of Voice.calls.values())try{c.close();}catch(e){}Voice.calls.clear();Voice.srcs.clear();Voice.mix.clear();
+  try{Voice.mic.getTracks().forEach(t=>t.stop());Voice.ctx.close();}catch(e){}Voice.keep=[];
+  fxSend({k:'voice',on:false});voicePill();
+}
+function voicePill(){
+  let w=$('#voicew');const show=isOwner()?Voice.on:!!Voice.call;
+  if(!show){if(w)w.remove();return;}
+  if(!w){w=h('div',{id:'voicew',class:'klpill'});$('#app').append(w);}w.textContent='';
+  if(isOwner()){
+    const mt=Voice.mic&&Voice.mic.getAudioTracks()[0];
+    w.append(h('span',{class:'vlive'},'● В эфире'),h('span',{class:'hint'},`слушают: ${Voice.calls.size}`),
+      h('button',{class:'cbtn pgtxt'+(mt&&!mt.enabled?' on':''),onclick:()=>{if(mt){mt.enabled=!mt.enabled;voicePill();}}},mt&&!mt.enabled?'🔇 Микрофон выключен':'🎙 Микрофон'),
+      h('button',{class:'cbtn pgtxt',title:'Выключить микрофоны всех учеников',onclick:()=>{Net.send({t:'fx',k:'voice',mute:true});toast('Микрофоны учеников выключены.');}},'🤫 Тишина'),
+      h('button',{class:'cbtn pgtxt',onclick:voiceStopHost},'Завершить'));
+  }else{
+    w.append(h('span',{class:'vlive'},'● Учитель в эфире'),
+      Voice.blocked?h('button',{class:'cbtn pgtxt on',onclick:()=>{Voice.au.play().then(()=>{Voice.blocked=false;voicePill();}).catch(()=>{});}},'🔊 Нажмите, чтобы слышать'):null,
+      h('button',{class:'cbtn pgtxt'+(Voice.talk?' on':''),onclick:()=>voiceMuteMe(!!Voice.talk)},Voice.talk?'🎙 Говорю…':'🎤 Сказать'));
+  }
+}
+// ученик: учитель звонит — отвечаем «тишиной», микрофон подключаем по кнопке
+function voiceAnswer(call){
+  if(isOwner()||!call||!call.metadata||call.metadata.kd!=='voice'){try{call.close();}catch(e){}return;}
+  if(Voice.call)try{Voice.call.close();}catch(e){}
+  if(!Voice.ctx||Voice.ctx.state==='closed'){Voice.ctx=new AudioContext();Voice.out=Voice.ctx.createMediaStreamDestination();}
+  Voice.call=call;call.answer(Voice.out.stream);
+  call.on('stream',st=>{const a=Voice.au||(Voice.au=new Audio());a.autoplay=true;a.srcObject=st;a.play().then(()=>{Voice.blocked=false;voicePill();}).catch(()=>{Voice.blocked=true;voicePill();});});
+  call.on('close',()=>{if(Voice.call===call)voiceStopGuest();});
+  voicePill();
+}
+async function voiceMuteMe(mute){
+  if(isOwner())return;
+  if(mute){if(Voice.mesrc)try{Voice.mesrc.disconnect();}catch(e){}if(Voice.me)Voice.me.getTracks().forEach(t=>t.stop());Voice.me=null;Voice.mesrc=null;Voice.talk=false;voicePill();return;}
+  if(!Voice.ctx)return;
+  try{Voice.me=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});}catch(e){toast('Разрешите микрофон, чтобы говорить.',1);return;}
+  if(Voice.ctx.state==='suspended')Voice.ctx.resume().catch(()=>{});
+  Voice.mesrc=Voice.ctx.createMediaStreamSource(Voice.me);Voice.mesrc.connect(Voice.out);Voice.talk=true;voicePill();
+}
+function voiceStopGuest(){voiceMuteMe(true);if(Voice.call)try{Voice.call.close();}catch(e){}Voice.call=null;if(Voice.au){Voice.au.srcObject=null;}voicePill();}
+setInterval(()=>{const p=Net.peer;if(p&&!p._klv){p._klv=1;p.on('call',voiceAnswer);}},700);
+
+// ---- Запись объяснения: видео доски с голосом ----
+const Rec={on:false};
+async function recStart(){
+  if(Rec.on){recStop();return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){toast('Этот браузер не умеет записывать экран. Откройте доску в Chrome, Edge или Яндекс Браузере.',1);return;}
+  let disp,mic=null;
+  try{disp=await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser',frameRate:24},audio:true,preferCurrentTab:true,selfBrowserSurface:'include',surfaceSwitching:'exclude'});}catch(e){toast('Запись отменена.');return;}
+  try{mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});}catch(e){toast('Микрофон не разрешён — запишется без вашего голоса.');}
+  const ctx=new AudioContext(),dst=ctx.createMediaStreamDestination();
+  for(const s of[disp,mic])if(s&&s.getAudioTracks().length)ctx.createMediaStreamSource(s).connect(dst);
+  const tracks=[...disp.getVideoTracks(),...dst.stream.getAudioTracks()];
+  const type=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||'';
+  const mr=new MediaRecorder(new MediaStream(tracks),type?{mimeType:type,videoBitsPerSecond:2500000}:{});const chunks=[];
+  mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+  mr.onstop=()=>{for(const s of[disp,mic])if(s)s.getTracks().forEach(t=>t.stop());ctx.close().catch(()=>{});Rec.on=false;recPill();recDone(new Blob(chunks,{type:(type||'video/webm').split(';')[0]}));};
+  disp.getVideoTracks()[0].addEventListener('ended',()=>{if(mr.state!=='inactive')mr.stop();});
+  Object.assign(Rec,{on:true,mr,t0:Date.now(),paused:0});mr.start(1000);recPill();
+  Rec.tm=setInterval(()=>{if(!Rec.on){clearInterval(Rec.tm);return;}const b=$('#recw .rtime');if(b&&Rec.mr.state==='recording'){const s=Math.floor((Date.now()-Rec.t0-Rec.paused)/1000);b.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;}},500);
+}
+function recStop(){if(Rec.mr&&Rec.mr.state!=='inactive')Rec.mr.stop();}
+function recPill(){
+  let w=$('#recw');if(!Rec.on){if(w)w.remove();return;}
+  if(!w){w=h('div',{id:'recw',class:'klpill'});$('#app').append(w);}w.textContent='';
+  const pz=Rec.mr.state==='paused';
+  w.append(h('span',{class:'rdot'+(pz?' pz':'')}),h('b',{class:'rtime'},'0:00'),
+    h('button',{class:'cbtn pgtxt',onclick:()=>{if(pz){Rec.mr.resume();Rec.paused+=Date.now()-Rec.ps;}else{Rec.mr.pause();Rec.ps=Date.now();}recPill();}},pz?'▶ Дальше':'⏸ Пауза'),
+    h('button',{class:'cbtn pgtxt on',onclick:recStop},'⏹ Готово'));
+}
+function recDone(blob){
+  if(!blob.size){toast('Запись получилась пустой.',1);return;}
+  const url=URL.createObjectURL(blob),ext=blob.type.includes('mp4')?'mp4':'webm',name=`Объяснение ${new Date().toLocaleDateString('ru-RU')}.${ext}`;
+  modal('Запись готова',(m,close)=>{
+    m.append(h('video',{class:'recvid',src:url,controls:true}),h('p',{class:'hint'},'Скачайте видео и отправьте детям или положите прямо на доску — ученики посмотрят его дома.'),
+      h('div',{class:'modal-acts'},h('button',{class:'btn',onclick:()=>saveBlob(blob,name)},'⬇ Скачать видео'),
+        canManage()?h('button',{class:'btn main',onclick:()=>{close();addFiles([new File([blob],name,{type:blob.type})]);}},'📌 Положить на доску'):null));
+  },{wide:true});
+}
+function recIntro(){
+  modal('Записать объяснение',(m,close)=>{
+    m.append(h('p',{},'Запишется всё, что происходит на доске, и ваш голос. Получится видео, которое дети могут пересмотреть дома.'),
+      h('ol',{class:'steps'},h('li',{},'Нажмите «Начать».'),h('li',{},'Браузер спросит, что записывать, — выберите «Эта вкладка» и нажмите «Поделиться».'),h('li',{},'Объясняйте и пишите на доске. В конце нажмите «⏹ Готово».')),
+      h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:()=>{close();recStart();}},'● Начать запись')));
+  });
+}
+
+// ---- Вкладка «Класс» в подарке ----
+function klassPanel(put,b){
+  const owner=isOwner(),sec=t=>h('div',{class:'klsec'},t);
+  put(owner||canEdit()?sec('Работа учеников'):null,
+    owner?b(KICON.sheets,'Личные листы',sheetsDialog):null,
+    owner&&sheetsOf().length?b(KICON.sheets,'Листы учеников',galleryOpen):null,
+    owner?b(KICON.priv,B.priv?'Показать ответы':'Скрыть ответы',privToggle,B.priv):null,
+    canEdit()?b(LICON.ask,'Быстрый вопрос',askDialog):null,
+    sec('Порядок на уроке'),
+    b(KICON.timer,'Таймер',e=>{openMenu(e.currentTarget,[1,2,3,5,10,15,20,30].map(m=>({label:`${m} мин`,fn:()=>fxSend({k:'timer',a:'start',sec:m*60})})));}),
+    b(KICON.pick,'Кто ответит?',pickPupil),
+    owner?b(KICON.teams,'Команды и счёт',teamsDialog):null,
+    owner?b(KICON.noise,Noise.on?'Шумомер: вкл.':'Шумомер',noiseToggle,Noise.on):null,
+    owner?b(LICON.focus,focusOn?'Внимание: включено':'Внимание на меня',()=>fxSend({k:'focus',on:!focusOn}),focusOn):null,
+    owner?b(STICKERS.y_crown(),'Все за мной',()=>{Net.leading=!Net.leading;Net.send({t:'fx',k:'lead',on:Net.leading});Net.followTick(true);showCtx();},Net.leading):null,
+    owner||canManage()?sec('Звук и запись'):null,
+    owner?b(KICON.voice,Voice.on?'В эфире':'Голосовая связь',voiceToggle,Voice.on):null,
+    owner?b(KICON.music,Music.on?'Музыка играет':'Музыка для работы',e=>musicMenu(e.currentTarget),Music.on):null,
+    canManage()?b(KICON.rec,Rec.on?'Идёт запись':'Записать объяснение',()=>Rec.on?recStop():recIntro(),Rec.on):null);
+}
+
+// ================= Шаблоны страниц, история версий, папки для досок =================
+// ---- Шаблоны ----
+function tplText(pid,x,y,w,html,fs=28,o={}){return{id:rid(),t:'text',page:pid,x,y,w,h:fs*1.4,z:topZ(),html,ff:o.ff||'Nunito',fs,col:o.col||'#1E2430',al:o.al||'left',bg:o.bg||'none',...(o.nt?{nt:1}:{}),...(o.mm?{mm:1}:{})};}
+function tplFrame(pid,x,y,w,hh,title,fc){return{id:rid(),t:'frame',page:pid,x,y,w,h:hh,z:1,title,fc};}
+const TPLS=[
+  {k:'plan',ic:'🗂️',n:'План урока',d:'Четыре раздела: разминка, новая тема, практика, итог. В показе листаются как слайды.',bg:'grid',
+    make:p=>[tplText(p,0,-110,900,'<b>План урока</b>',48),...['Разминка','Новая тема','Практика','Итог урока'].map((t,i)=>tplFrame(p,(i%2)*760,(i>>1)*520,720,480,t,FR_COLS[i]))]},
+  {k:'words',ic:'🧠',n:'Карта слова',d:'Слово в центре и ветки: значение, пример, перевод, синонимы, антонимы, рисунок.',bg:'dots',
+    make:p=>{const root=tplText(p,0,0,280,'<b>Слово</b>',36,{al:'center',bg:'#FFD23F',mm:1});root.h=64;const out=[root];
+      [['Значение',-480,-200],['Пример',-480,30],['Перевод',-480,260],['Синонимы',500,-200],['Антонимы',500,30],['Рисунок',500,260]].forEach(([t,x,y],i)=>{const bg=MM_PAL[(i+1)%MM_PAL.length],n=tplText(p,x,y,260,`<b>${t}:</b> `,24,{al:'center',bg,mm:1});n.h=60;out.push(n,{id:rid(),t:'conn',page:p,a:root.id,b:n.id,x:0,y:0,w:10,h:10,z:2,col:MM_LINE[bg],sw:6,cv:1});});return out;}},
+  {k:'kwl',ic:'💡',n:'Знаю — Хочу узнать — Узнал',d:'Три колонки, чтобы начать тему и подвести итог.',bg:'grid',
+    make:p=>[tplText(p,0,-110,1200,'<b>Что мы знаем о теме?</b>',44),...[['🧠 Знаю',0],['❓ Хочу узнать',1],['💡 Узнал',2]].map(([t,i])=>tplFrame(p,i*560,0,520,720,t,FR_COLS[i]))]},
+  {k:'dialog',ic:'💬',n:'Диалог',d:'Две колонки реплик для разговора на английском или русском.',bg:'dots',
+    make:p=>{const out=[tplText(p,0,-100,1000,'<b>Dialogue</b>',44)];for(let i=0;i<6;i++){const left=i%2===0;out.push(tplText(p,left?0:420,i*120,520,`<b>${left?'A':'B'}:</b> — …`,28,{bg:left?'#FFF3B0':'#D9F0FF',nt:1}));}return out;}},
+  {k:'reflex',ic:'🌈',n:'Рефлексия',d:'Смайлики настроения и три вопроса в конце урока.',bg:'pastel',
+    make:p=>[tplText(p,0,-120,1100,'<b>Как прошёл урок?</b>',48,{al:'center'}),tplText(p,0,-30,1100,'😀  🙂  😐  😕',90,{al:'center'}),
+      ...['Сегодня я узнал…','Было трудно…','Мне понравилось…'].map((t,i)=>tplText(p,i*380,170,340,`<b>${t}</b><br>`,28,{bg:NOTE_PAL[i%NOTE_PAL.length],nt:1}))]},
+  {k:'cross',ic:'✏️',n:'Кроссворд',d:'Сетка 10×10 и места для вопросов по горизонтали и вертикали.',bg:'grid',
+    make:p=>[tplText(p,0,-100,700,'<b>Кроссворд</b>',44),{id:rid(),t:'table',page:p,x:0,y:0,w:520,h:520,z:topZ(),rows:10,cols:10,cw:Array(10).fill(52),rh:Array(10).fill(52),cells:{},mg:[],bc:'#1E2430',bw:2,hd:false,ff:'Nunito',fs:26,col:'#1E2430'},
+      tplText(p,580,0,460,'<b>По горизонтали:</b><br>1. <br>2. <br>3. ',26),tplText(p,580,280,460,'<b>По вертикали:</b><br>1. <br>2. <br>3. ',26)]},
+  {k:'venn',ic:'⭕',n:'Сравнение',d:'Два круга: чем похожи и чем отличаются.',bg:'grid',
+    make:p=>[tplText(p,0,-110,1000,'<b>Сравни</b>',44,{al:'center'}),{id:rid(),t:'shape',s:'ellipse',page:p,x:0,y:0,w:620,h:520,z:topZ(),col:'#0F5CA8',fill:'none',sw:6,fx:false,fy:false},{id:rid(),t:'shape',s:'ellipse',page:p,x:380,y:0,w:620,h:520,z:topZ(),col:'#E3202C',fill:'none',sw:6,fx:false,fy:false},
+      tplText(p,60,30,260,'<b>Первое</b>',30,{al:'center',col:'#0F5CA8'}),tplText(p,680,30,260,'<b>Второе</b>',30,{al:'center',col:'#E3202C'}),tplText(p,400,30,200,'<b>Общее</b>',28,{al:'center'})]},
+  {k:'time',ic:'⏳',n:'Лента времени',d:'Стрелка с пятью событиями по порядку.',bg:'grid',
+    make:p=>{const out=[tplText(p,0,-120,1200,'<b>Лента времени</b>',44),{id:rid(),t:'shape',s:'arrow',page:p,x:0,y:100,w:1300,h:10,z:topZ(),col:'#1E2430',fill:'none',sw:6,fx:false,fy:false}];
+      for(let i=0;i<5;i++){out.push({id:rid(),t:'shape',s:'ellipse',page:p,x:60+i*270,y:85,w:40,h:40,z:topZ(),col:'#1E2430',fill:MM_PAL[i],sw:4,fx:false,fy:false},tplText(p,i*270,150,220,`<b>Событие ${i+1}</b><br>`,24,{al:'center',bg:NOTE_PAL[i%NOTE_PAL.length],nt:1}),tplText(p,i*270+10,20,200,'Дата',24,{al:'center',col:'#5C6577'}));}return out;}},
+];
+function templatesOpen(){
+  if(!canManage())return;
+  modal('Шаблоны страниц',(m,close)=>{
+    const g=h('div',{class:'tplgrid'});
+    for(const T of TPLS)g.append(h('button',{class:'tplcard',onclick:()=>{close();tplUse(T);}},h('span',{class:'tplic'},T.ic),h('b',{},T.n),h('span',{class:'hint'},T.d)));
+    m.append(h('p',{class:'hint'},'Шаблон добавит новую страницу с готовой заготовкой. Всё можно менять.'),g);
+  },{wide:true});
+}
+function tplUse(T){
+  const pg=pagesList(),pid=rid(),page={id:pid,t:'page',title:T.n,order:(pg.length?pg[pg.length-1].order:0)+1,bg:BGS.some(b=>b[0]===T.bg)?T.bg:'grid'};
+  const L=T.make(pid);setRecs([page,...L]);gotoPage(pid);setTimeout(()=>{viewTouched=false;fitView();},60);toast(`Шаблон «${T.n}» добавлен на новую страницу.`);
+}
+
+// ---- История версий ----
+const Snap={bid:null,clock:0,t:0};
+const snapKey=(bid,ts)=>'__snap_'+bid+'_'+ts;
+async function snapList(bid=B&&B.id){if(!bid)return[];return(await DB.all('boards').catch(()=>[])).filter(x=>x.snap&&x.board===bid).sort((a,b)=>b.ts-a.ts);}
+async function snapNow(label){
+  if(!B||!isOwner())return null;
+  const list=[...recs.values()].filter(r=>!r.del),ts=Date.now();
+  const row={id:snapKey(B.id,ts),snap:1,board:B.id,ts,label,n:list.filter(r=>r.t!=='page').length,pages:list.filter(r=>r.t==='page').length,recs:list};
+  try{await DB.put('boards',row);}catch(e){return null;}
+  Snap.bid=B.id;Snap.clock=clock;Snap.t=ts;
+  const all=await snapList();for(const x of all.slice(30))DB.run(['boards'],'readwrite',t=>t.objectStore('boards').delete(x.id)).catch(()=>{});
+  return row;
+}
+setInterval(()=>{
+  if(!B||!isOwner()||!DB.ok)return;
+  if(Snap.bid!==B.id){Snap.bid=B.id;Snap.clock=clock;Snap.t=Date.now();snapNow('Когда открыли доску');return;}
+  if(clock!==Snap.clock&&Date.now()-Snap.t>10*60*1000)snapNow('Автосохранение');
+},4000);
+function snapWhen(ts){const d=new Date(ts),t=new Date(),y=new Date(Date.now()-864e5),hm=d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  return d.toDateString()===t.toDateString()?'Сегодня, '+hm:d.toDateString()===y.toDateString()?'Вчера, '+hm:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})+', '+hm;}
+function versionsOpen(){
+  if(!isOwner())return;
+  modal('История версий',async(m,close)=>{
+    const box=h('div',{class:'snaplist'},h('p',{class:'hint'},'Загружаю…'));
+    m.append(h('p',{class:'hint'},'Доска сама запоминает себя при открытии и каждые 10 минут работы. Можно вернуть любую версию — нынешняя тоже сохранится.'),box,
+      h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:async()=>{const r=await snapNow('Сохранено вручную');if(r){toast('📸 Версия сохранена.');fill();}}},'📸 Сохранить версию сейчас')));
+    const fill=async()=>{const L=await snapList();box.textContent='';
+      if(!L.length){box.append(h('p',{class:'hint'},'Версий пока нет.'));return;}
+      for(const s of L)box.append(h('div',{class:'snaprow'},h('div',{},h('b',{},snapWhen(s.ts)),h('span',{class:'hint'},` · ${s.label||''} · страниц: ${s.pages}, объектов: ${s.n}`)),
+        h('button',{class:'cbtn pgtxt',onclick:()=>confirmBox('Вернуть эту версию?',`Доска станет такой, какой была: ${snapWhen(s.ts).toLowerCase()}. Нынешний вид сохранится в истории.`,'Вернуть',async()=>{close();await snapRestore(s);})},'↩ Вернуть')));};
+    fill();
+  },{wide:true});
+}
+async function snapRestore(s){
+  await snapNow('Перед возвратом версии');
+  const want=new Map(s.recs.map(r=>[r.id,r])),out=[];
+  for(const r of recs.values())if(!r.del&&!want.has(r.id))out.push({...r,del:true});
+  for(const r of want.values()){const c=recs.get(r.id);if(!c||c.del||JSON.stringify({...c,l:0,c:0})!==JSON.stringify({...r,l:0,c:0})){const n={...r};delete n.del;out.push(n);}}
+  if(out.length)setRecs(out,{undo:false});
+  const pg=pagesList();if(!recs.get(curPage)||recs.get(curPage).del)gotoPage(pg[0]&&pg[0].id);viewTouched=false;fitView();
+  toast(`↩ Версия возвращена (${snapWhen(s.ts).toLowerCase()}).`);
+}
+
+// ---- Папки на главной ----
+function folderNames(boards){const s=new Set(lsGet('kd.folders',[]));for(const b of boards)if(b.folder)s.add(b.folder);return[...s].sort((a,b)=>a.localeCompare(b,'ru'));}
+function folderBar(boards,inner){
+  const F=folderNames(boards);let cur=lsGet('kd.fold','');if(cur&&!F.includes(cur))cur='';
+  const bar=h('div',{class:'folders',role:'tablist','aria-label':'Папки'});
+  const chip=(v,t,n)=>h('button',{class:'fchip'+(cur===v?' on':''),role:'tab','aria-selected':cur===v?'true':'false',onclick:()=>{lsSet('kd.fold',v);showHome();}},t,h('i',{},String(n)));
+  bar.append(chip('','Все доски',boards.length));
+  for(const f of F)bar.append(chip(f,'📁 '+f,boards.filter(b=>b.folder===f).length));
+  bar.append(h('button',{class:'fchip add',onclick:()=>folderNew(null)},'＋ Папка'));
+  if(boards.length)inner.append(bar);
+  return cur?boards.filter(b=>b.folder===cur):boards;
+}
+function folderNew(b){
+  modal('Новая папка',(m,close)=>{const inp=h('input',{class:'input',placeholder:'Например, 3 класс или Маша',maxLength:40});
+    const go=async()=>{const v=inp.value.trim();if(!v)return;close();const L=lsGet('kd.folders',[]);if(!L.includes(v)){L.push(v);lsSet('kd.folders',L);}
+      if(b){b.folder=v;await DB.put('boards',b);}lsSet('kd.fold',v);showHome();};
+    m.append(h('label',{class:'field'},h('span',{},'Название папки'),inp),h('div',{class:'modal-acts'},h('button',{class:'btn main',onclick:go},'Создать')));inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});setTimeout(()=>inp.focus(),30);});
+}
+function folderBtn(b){
+  return h('button',{class:'bcard-fold','aria-label':'Папка доски '+b.title,title:b.folder?'Папка: '+b.folder:'Положить в папку',onclick:async e=>{e.stopPropagation();const btn=e.currentTarget,all=(await DB.all('boards').catch(()=>[])).filter(x=>!String(x.id).startsWith('__'));
+    openMenu(btn,[...folderNames(all).map(f=>({label:(b.folder===f?'✓ ':'')+'📁 '+f,fn:async()=>{b.folder=f;await DB.put('boards',b);showHome();}})),b.folder?{label:'Убрать из папки',fn:async()=>{delete b.folder;await DB.put('boards',b);showHome();}}:null,{label:'＋ Новая папка…',fn:()=>folderNew(b)}]);}},b.folder?'📁 '+b.folder:'📁');
+}
+// для автотестов: открыть с ?kdtest
+if(/[?&]kdtest\b/.test(location.search))window.KDT={recs,embedOf,presentStart,snapNow,versionsOpen,showHome,pageObjs,Voice,Music,get curPage(){return curPage;}};
+
 // ---- Объёмный 3D-котёнок для лазерной указки: three.js, пушистая шерсть из прозрачных слоёв ----
 const K3={ok:null};
 function k3Supported(){
@@ -9706,6 +10557,14 @@ const HELP=[
   {c:'draw',t:'Котостудия',d:'Большая студия рисования: 17 кистей, слои, симметрия, акварель и блёстки. В «Играх» → «Для удовольствия».',show:{tool:'magic',sel:'#ctx .tabbtn',txt:'удовольствия'}},
   {c:'text',t:'Текст как в Word',d:'Инструмент «Текст»: шрифты, размер, жирный, списки, выравнивание, цвет и фон. Рамку текста можно тянуть в любую сторону.',show:{sel:'[data-tool=text]'},tool:'text'},
   {c:'text',t:'Буквы растут вместе с рамкой',d:'Включите «Буквы с рамкой» — и при растягивании рамки увеличится сам текст.',show:{tool:'text',sel:'#ctx button',txt:'Буквы с рамкой'}},
+  {c:'people',t:'👥 Вкладка «Класс»',d:'«Игры» → «Класс»: личные листы для каждого ученика, скрытые ответы, таймер, «Кто ответит?», команды со счётом, шумомер, голосовая связь, музыка для работы и запись объяснения.'},
+  {c:'people',t:'📄 Личные листы',d:'«Класс» → «Личные листы»: каждый ученик получает свою копию страницы. Другие дети её не видят. Кнопка «👥 Листы» внизу показывает все работы плиткой — откройте любую и проверьте.'},
+  {c:'people',t:'🙈 Скрытые ответы',d:'«Класс» → «Скрыть ответы»: дети пишут на доске, но не видят ответы друг друга. Вы видите всё (ответы обведены фиолетовой рамкой). «Показать ответы» откроет их всем сразу.'},
+  {c:'draw',t:'▭ Разделы и 🧠 интеллект-карты',d:'«Фигуры» → «Раздел»: рамка с названием, всё внутри двигается вместе. В режиме показа разделы листаются как слайды. «Интеллект-карта»: впишите тему, кнопки «＋» или Tab добавляют ветки. Два выделенных объекта можно «↗ Соединить» стрелкой.'},
+  {c:'text',t:'√x Формулы',d:'«Текст» → «√x Формула»: дробь — косая черта (3/4), степень — ^ (x^2), корень — sqrt(16). Двойной щелчок по формуле — изменить.'},
+  {c:'files',t:'▶ Видео с YouTube, RuTube, VK',d:'«Файлы» → «Видео по ссылке»: вставьте адрес — видео появится прямо на доске.'},
+  {c:'draw',t:'✨ Ровная фигура',d:'Нарисуйте круг, квадрат или линию и задержите ручку на месте на секунду — фигура станет ровной.'},
+  {c:'lesson',t:'📚 Шаблоны и 🕓 история версий',d:'Внизу «📚 Шаблоны»: план урока, карта слова, кроссворд, диалог, рефлексия и другие. «…» → «История версий»: доска запоминает себя и её можно вернуть к прошлому виду.'},
   {c:'text',t:'▦ Таблицы как в Word',d:'Инструмент «Текст» → «▦ Таблица»: выберите сетку мышкой или впишите строки и столбцы, можно нарисовать рамкой. Щёлкните по ячейке и печатайте; Tab — следующая ячейка. Строки, столбцы, объединение (Shift + щелчок), заливка, границы, шапка.',show:{tool:'text',sel:'#ctx button',txt:'Таблица'}},
   {c:'text',t:'Заметки-стикеры',d:'Приклейте цветной листочек, напишите на нём. Заметку можно двигать и менять ей размер за уголок.',show:{sel:'[data-tool=note]'},tool:'note'},
   {c:'text',t:'Оценки-котики и разбор слов',d:'Наклейки «Молодец», «5», «Подумай ещё», знаки разбора слова. На оценку все увидят свою реакцию: пятёрка — праздник, двойка — котик утешит.',show:{sel:'[data-tool=sticker]'},tool:'sticker'},
@@ -10358,13 +11217,15 @@ async function showHome(){
     h('button',{class:'btn',onclick:schedOpen},'Расписание')));
   {const st=h('div',{class:'schtoday'});inner.append(st);schedToday(st);}
   if(!DB.ok)inner.append(h('p',{class:'err'},'Браузер не разрешает сохранять доски на компьютере. Откройте файл в Chrome, Edge или Firefox.'));
-  if(boards.length){
+  const shown=folderBar(boards,inner);
+  if(boards.length&&!shown.length)inner.append(h('p',{class:'empty-home'},'В этой папке пока нет досок. Нажмите 📁 на карточке доски, чтобы положить её сюда.'));
+  if(shown.length){
     const g=h('div',{class:'boards'});
-    for(const b of boards){
+    for(const b of shown){
       const role=b.role==='owner'?`Доступов: ${(b.accesses||[]).length}`:b.role==='viewer'?'Только просмотр':'Общая доска';
       g.append(h('article',{class:'bcard'},
         h('button',{class:'bcard-open','aria-label':'Открыть доску '+b.title,onclick:()=>openBoard(b.id)}),
-        h('h3',{},b.title),
+        h('h3',{},b.title),folderBtn(b),
         h('span',{class:'hint'},`${role}. Изменена ${new Date(b.updated||b.created).toLocaleDateString('ru-RU')}`),
         h('button',{class:'bcard-del','aria-label':'Удалить доску '+b.title,html:ICON.trash,onclick:()=>confirmBox('Удалить доску?',`«${b.title}» исчезнет с этого компьютера${b.role==='owner'&&Cloud.uid()?' и из облака':''}. У других участников их копии останутся.`,'Удалить',async()=>{await DB.delBoard(b.id);if(b.role==='owner')Cloud.forget(b.id);showHome();})})));
     }
@@ -10484,6 +11345,7 @@ function moreMenu(a){
     canManage()?{icon:ICON.upload,label:'Объединить с копией',fn:()=>$('#file-backup').click()}:null,
     {icon:ICON.image,label:'Скачать страницу картинкой',fn:exportPNG},
     {icon:ICON.pdf,label:'Скачать все страницы в PDF',fn:exportAllPDF},
+    isOwner()?{icon:ICON.rotate,label:'История версий',fn:versionsOpen}:null,
     {icon:ICON.search,label:'Найти на доске (Ctrl+F)',fn:searchDialog},
     {icon:ICON.map,label:mapOn?'Скрыть мини-карту':'Показать мини-карту',fn:toggleMap},
     {icon:ICON.present,label:'Режим показа',fn:presentStart},
@@ -10523,12 +11385,14 @@ function renderPages(){
   p.append(h('button',{class:'cbtn bmbtn',title:'Закладки и уроки','aria-label':'Закладки и уроки',html:LICON.mark,onclick:marksOpen}));
   if(canManage()){
     p.append(h('button',{class:'cbtn pgtxt',title:'Добавить новую страницу','aria-label':'Новая страница',onclick:addPage},'＋ Страница'));
+    p.append(h('button',{class:'cbtn pgtxt tplbtn',title:'Новая страница по шаблону: план урока, карта слова, кроссворд…','aria-label':'Шаблоны страниц',onclick:templatesOpen},'📚 Шаблоны'));
     p.append(h('button',{class:'cbtn',title:'Фон и страница','aria-label':'Фон и страница',html:ICON.page,onclick:e=>pageMenu(e.currentTarget)}));
     if(pg.length>1)p.append(h('button',{class:'cbtn pgdel pgtxt',title:'Удалить страницу, которая сейчас открыта','aria-label':'Удалить эту страницу',onclick:()=>pageDelete(curPage)},h('span',{html:ICON.trash}),'Удалить'));
     if(pg.length>1)tabs.querySelectorAll('.ptab').forEach((t,i)=>{if(pg[i].id!==curPage)return;t.append(h('span',{class:'ptabx',role:'button','aria-label':'Удалить страницу',title:'Удалить эту страницу',onclick:e=>{e.stopPropagation();pageDelete(pg[i].id);}}));});
     tabs.querySelectorAll('.ptab').forEach((t,i)=>{const x=pg[i];t.title=(x.title||'Страница '+(i+1))+'. Правая кнопка или долгое нажатие — меню страницы';
       t.addEventListener('contextmenu',e=>{e.preventDefault();pageTabMenu(t,x.id);});let lt=null;t.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')lt=setTimeout(()=>pageTabMenu(t,x.id),550);});t.addEventListener('pointerup',()=>clearTimeout(lt));t.addEventListener('pointerleave',()=>clearTimeout(lt));});
   }
+  if(typeof pagesExtra==='function')pagesExtra(p,tabs,pg);
   const on=tabs.querySelector('.on');if(on)on.scrollIntoView({block:'nearest',inline:'nearest'});
 }
 function addPage(){
